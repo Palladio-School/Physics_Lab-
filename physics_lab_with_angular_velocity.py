@@ -34,7 +34,7 @@ class M5App(ctk.CTk):
         self.container.pack(fill="both", expand=True)
 
         self.frames = {}
-        for Page in (StartPage, ForcePage, AngularVelocityPage):
+        for Page in (StartPage, ForcePage, AngularVelocityPage, LoadCellForcePage):
             frame = Page(parent=self.container, controller=self)
             self.frames[Page.__name__] = frame
             frame.grid(row=0, column=0, sticky="nsew")
@@ -53,11 +53,14 @@ class StartPage(ctk.CTkFrame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         ctk.CTkLabel(self, text="Palladio Physics Labs", font=("Arial", 32)).pack(pady=40)
-        ctk.CTkButton(self, text="Force", font=("Arial", 20),
+        ctk.CTkButton(self, text="Force (Accel)", font=("Arial", 20),
                       command=lambda: controller.show_frame("ForcePage")).pack(pady=20)
         ctk.CTkButton(self, text="Angular Velocity", font=("Arial", 20),
                       command=lambda: controller.show_frame("AngularVelocityPage")).pack(pady=20)
+        ctk.CTkButton(self, text="Force Sensor (Load Cell)", font=("Arial", 20),
+              command=lambda: controller.show_frame("LoadCellForcePage")).pack(pady=20)
         ctk.CTkButton(self, text="Exit", font=("Arial", 20), command=controller.on_close).pack(pady=20)
+        
 # ---------- ForcePage ----------
 class ForcePage(ctk.CTkFrame):
     def __init__(self, parent, controller):
@@ -505,6 +508,140 @@ class AngularVelocityPage(ctk.CTkFrame):
         self.line_wy.set_data([], [])
         self.line_wz.set_data([], [])
         self.line_wz_only.set_data([], [])
+        self.canvas.draw()
+        for row in self.tree.get_children():
+            self.tree.delete(row)
+            
+            
+# -----------LOADCELL PAGE-----------
+class LoadCellForcePage(ctk.CTkFrame):
+    def __init__(self, parent, controller):
+        super().__init__(parent)
+        self.controller = controller
+        self.running = False
+        self.sample_count = 0
+        self.force_data = deque([0]*BUFFER_SIZE, maxlen=BUFFER_SIZE)
+        self.time_data = deque(np.linspace(-BUFFER_SIZE/1, 0, BUFFER_SIZE), maxlen=BUFFER_SIZE)
+
+        self.voltage = 0
+        self.last_battery_update = 0
+
+        ctk.CTkButton(self, text="← Back", command=lambda: controller.show_frame("StartPage")).pack(anchor="nw", padx=10, pady=10)
+
+        self.left_frame = ctk.CTkFrame(self, width=200)
+        self.left_frame.pack(side="left", fill="y", padx=10, pady=10)
+
+        self.right_frame = ctk.CTkFrame(self)
+        self.right_frame.pack(side="right", expand=True, fill="both", padx=10, pady=10)
+
+        self.force_label = ctk.CTkLabel(self.left_frame, text="Force: 0.00 N", font=("Arial", 24))
+        self.voltage_label = ctk.CTkLabel(self.left_frame, text="Battery: 0.00V", font=("Arial", 18))
+        self.voltage_bar = ctk.CTkProgressBar(self.left_frame, width=130)
+        self.status = ctk.CTkLabel(self.left_frame, text="Waiting for load cell data...", text_color="gray")
+        self.toggle_button = ctk.CTkButton(self.left_frame, text="Start", command=self.toggle_data)
+        self.export_button = ctk.CTkButton(self.left_frame, text="Export CSV", command=self.export_csv)
+        self.clear_button = ctk.CTkButton(self.left_frame, text="Clear Data", command=self.clear_data)
+
+        for widget in [self.force_label, self.voltage_label, self.voltage_bar, self.status,
+                       self.toggle_button, self.export_button, self.clear_button]:
+            widget.pack(pady=5)
+
+        self.fig, self.ax = plt.subplots(figsize=(6, 3), dpi=100)
+        self.fig.tight_layout(pad=4)
+        self.fig.patch.set_facecolor("#212121")
+        self.ax.set_facecolor("#212121")
+        self.ax.tick_params(axis='x', colors="white")
+        self.ax.tick_params(axis='y', colors="white")
+        self.ax.title.set_color("white")
+        self.ax.xaxis.label.set_color("white")
+        self.ax.yaxis.label.set_color("white")
+        for spine in self.ax.spines.values():
+            spine.set_color("white")
+
+        self.line, = self.ax.plot([], [], color='orange', label="Force")
+        self.ax.set_title("Load Cell Force (N)")
+        self.ax.legend(loc='upper right')
+
+        self.canvas = FigureCanvasTkAgg(self.fig, master=self.right_frame)
+        self.canvas_widget = self.canvas.get_tk_widget()
+        self.canvas_widget.pack(fill="both", expand=True)
+
+        self.toolbar = NavigationToolbar2Tk(self.canvas, self.right_frame)
+        self.toolbar.update()
+        self.toolbar.pack(side="top", fill="x")
+
+        self.tree = ttk.Treeview(self.right_frame, columns=("time", "force"), show="headings", height=8)
+        self.tree.heading("time", text="Time (s)")
+        self.tree.heading("force", text="Force (N)")
+        self.tree.column("time", anchor="center", width=100)
+        self.tree.column("force", anchor="center", width=100)
+        self.tree.pack(fill="x")
+
+        self.start_udp_thread()
+
+    def toggle_data(self):
+        self.running = not self.running
+        self.toggle_button.configure(text="Stop" if self.running else "Start")
+        self.status.configure(text="Receiving data..." if self.running else "Paused",
+                              text_color="green" if self.running else "orange")
+
+    def start_udp_thread(self):
+        threading.Thread(target=self.udp_listener, daemon=True).start()
+
+    def udp_listener(self):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.bind((UDP_IP, 4213))
+        while True:
+            try:
+                data, _ = sock.recvfrom(1024)
+                parts = data.decode().strip().split(",")
+                if len(parts) == 2:
+                    force, voltage = map(float, parts)
+                    self.process_data(force, voltage)
+            except Exception as e:
+                print("Load cell error:", e)
+
+    def process_data(self, force, voltage):
+        self.force_label.configure(text=f"Force: {force:.2f} N")
+
+        if voltage is not None and time.time() - self.last_battery_update >= 60:
+            percent = (voltage - 3.3) / (4.2 - 3.3)
+            percent = max(0.0, min(percent, 1.0))
+            self.voltage_label.configure(text=f"Battery ({int(percent * 100)}%)")
+            self.voltage_bar.set(percent)
+            self.last_battery_update = time.time()
+
+        if not self.running:
+            return
+
+        self.sample_count += 1
+        timestamp = self.sample_count / 1.0
+        self.time_data.append(timestamp)
+        self.force_data.append(force)
+
+        self.line.set_data(self.time_data, self.force_data)
+        self.ax.relim()
+        self.ax.autoscale_view()
+        self.canvas.draw()
+
+        self.tree.insert("", 0, values=(f"{timestamp:.2f}", f"{force:.2f}"))
+        if len(self.tree.get_children()) > BUFFER_SIZE:
+            self.tree.delete(self.tree.get_children()[-1])
+
+    def export_csv(self):
+        file = filedialog.asksaveasfilename(defaultextension=".csv")
+        if file:
+            with open(file, 'w', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerow(["Time", "Force"])
+                for t, f_ in zip(self.time_data, self.force_data):
+                    writer.writerow([t, f_])
+
+    def clear_data(self):
+        self.force_data.clear()
+        self.time_data.clear()
+        self.sample_count = 0
+        self.line.set_data([], [])
         self.canvas.draw()
         for row in self.tree.get_children():
             self.tree.delete(row)
