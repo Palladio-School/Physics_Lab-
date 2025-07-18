@@ -8,7 +8,7 @@ const char* ssid = "Palladio_Teachers";
 const char* password = "P@11@d10";
 
 // UDP settings
-const char* udpAddress = "10.2.0.44";
+const char* udpAddress = "10.2.0.91";
 const int accelPort = 4210;
 const int gyroPort  = 4211;
 const int forcePort = 4213;
