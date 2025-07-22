@@ -577,7 +577,41 @@ class LoadCellForcePage(ctk.CTkFrame):
         self.tree.column("force", anchor="center", width=100)
         self.tree.pack(fill="x")
 
+        self.annotation = None
+        self.vline = None
+        self.canvas.mpl_connect("button_press_event", self.on_click)
+
         self.start_udp_thread()
+
+    def on_click(self, event):
+        if event.inaxes != self.ax:
+            return
+
+        # Find nearest index in time_data
+        times = np.array(self.time_data)
+        if len(times) == 0:
+            return
+        idx = (np.abs(times - event.xdata)).argmin()
+
+        # Remove previous annotation and vline
+        if self.annotation:
+            self.annotation.remove()
+        if self.vline:
+            self.vline.remove()
+
+        # Add new annotation and vertical line
+        self.annotation = self.ax.annotate(
+            f"t = {self.time_data[idx]:.2f}s\nF = {self.force_data[idx]:.2f} N",
+            xy=(self.time_data[idx], self.force_data[idx]),
+            xytext=(10, 20),
+            textcoords="offset points",
+            fontsize=10,
+            color='orange',
+            bbox=dict(boxstyle="round,pad=0.3", fc="black", ec="orange", lw=1)
+        )
+        self.vline = self.ax.axvline(self.time_data[idx], color='orange', linestyle='--', alpha=0.7)
+
+        self.canvas.draw()
 
     def toggle_data(self):
         self.running = not self.running
@@ -642,6 +676,12 @@ class LoadCellForcePage(ctk.CTkFrame):
         self.time_data.clear()
         self.sample_count = 0
         self.line.set_data([], [])
+        if self.annotation:
+            self.annotation.remove()
+            self.annotation = None
+        if self.vline:
+            self.vline.remove()
+            self.vline = None
         self.canvas.draw()
         for row in self.tree.get_children():
             self.tree.delete(row)
