@@ -34,7 +34,7 @@ class M5App(ctk.CTk):
         self.container.pack(fill="both", expand=True)
 
         self.frames = {}
-        for Page in (StartPage, ForcePage, AngularVelocityPage, LoadCellForcePage):
+        for Page in (StartPage, ForcePage, AngularVelocityPage, LoadCellForcePage, UltrasonicPage):
             frame = Page(parent=self.container, controller=self)
             self.frames[Page.__name__] = frame
             frame.grid(row=0, column=0, sticky="nsew")
@@ -59,6 +59,8 @@ class StartPage(ctk.CTkFrame):
                       command=lambda: controller.show_frame("AngularVelocityPage")).pack(pady=20)
         ctk.CTkButton(self, text="Force Sensor (Load Cell)", font=("Arial", 20),
               command=lambda: controller.show_frame("LoadCellForcePage")).pack(pady=20)
+        ctk.CTkButton(self, text="Ultrasonic Motion", font=("Arial", 20),
+              command=lambda: controller.show_frame("UltrasonicPage")).pack(pady=20)
         ctk.CTkButton(self, text="Exit", font=("Arial", 20), command=controller.on_close).pack(pady=20)
         
 # ---------- ForcePage ----------
@@ -682,6 +684,162 @@ class LoadCellForcePage(ctk.CTkFrame):
         if self.vline:
             self.vline.remove()
             self.vline = None
+        self.canvas.draw()
+        for row in self.tree.get_children():
+            self.tree.delete(row)
+
+# ---------- ULTRASONIC PAGE ----------
+class UltrasonicPage(ctk.CTkFrame):
+    def __init__(self, parent, controller):
+        super().__init__(parent)
+        self.controller = controller
+        self.running = False
+        self.sample_count = 0
+
+        self.time_data = deque([0]*BUFFER_SIZE, maxlen=BUFFER_SIZE)
+        self.pos_data = deque([0]*BUFFER_SIZE, maxlen=BUFFER_SIZE)
+        self.vel_data = deque([0]*BUFFER_SIZE, maxlen=BUFFER_SIZE)
+        self.acc_data = deque([0]*BUFFER_SIZE, maxlen=BUFFER_SIZE)
+
+        # Top left: Controls
+        ctk.CTkButton(self, text="← Back", command=lambda: controller.show_frame("StartPage")).pack(anchor="nw", padx=10, pady=10)
+
+        self.left_frame = ctk.CTkFrame(self, width=200)
+        self.left_frame.pack(side="left", fill="y", padx=10, pady=10)
+
+        self.right_frame = ctk.CTkFrame(self)
+        self.right_frame.pack(side="right", expand=True, fill="both", padx=10, pady=10)
+
+        self.status_label = ctk.CTkLabel(self.left_frame, text="Waiting for ultrasonic data...", text_color="gray")
+        self.toggle_button = ctk.CTkButton(self.left_frame, text="Start", command=self.toggle_data)
+        self.clear_button = ctk.CTkButton(self.left_frame, text="Clear Data", command=self.clear_data)
+
+        self.label_d = ctk.CTkLabel(self.left_frame, text="d: 0.00 m", font=("Arial", 20))
+        self.label_v = ctk.CTkLabel(self.left_frame, text="v: 0.00 m/s", font=("Arial", 20))
+        self.label_a = ctk.CTkLabel(self.left_frame, text="a: 0.00 m/s²", font=("Arial", 20))
+
+        for w in [self.label_d, self.label_v, self.label_a, self.status_label, self.toggle_button, self.clear_button]:
+            w.pack(pady=5)
+
+        # Plotting
+        self.fig, self.axes = plt.subplots(3, 1, figsize=(6, 6), dpi=100)
+        self.fig.tight_layout(pad=4)
+        bg_color = "#212121"
+        fg_color = "white"
+
+        self.fig.patch.set_facecolor(bg_color)
+        for ax in self.axes:
+            ax.set_facecolor(bg_color)
+            ax.tick_params(axis='x', colors=fg_color)
+            ax.tick_params(axis='y', colors=fg_color)
+            ax.title.set_color(fg_color)
+            ax.xaxis.label.set_color(fg_color)
+            ax.yaxis.label.set_color(fg_color)
+            for spine in ax.spines.values():
+                spine.set_color(fg_color)
+
+        self.line_d, = self.axes[0].plot([], [], label="Position (m)", color="orange")
+        self.line_v, = self.axes[1].plot([], [], label="Velocity (m/s)", color="cyan")
+        self.line_a, = self.axes[2].plot([], [], label="Acceleration (m/s²)", color="lime")
+
+        self.axes[0].set_title("Position (m)")
+        self.axes[1].set_title("Velocity (m/s)")
+        self.axes[2].set_title("Acceleration (m/s²)")
+
+        for ax in self.axes:
+            ax.legend(loc='upper right')
+
+        self.canvas = FigureCanvasTkAgg(self.fig, master=self.right_frame)
+        self.canvas_widget = self.canvas.get_tk_widget()
+        self.canvas_widget.pack(fill="both", expand=True)
+
+        self.toolbar = NavigationToolbar2Tk(self.canvas, self.right_frame)
+        self.toolbar.update()
+        self.toolbar.pack(side="top", fill="x")
+
+        # Table below
+        style = ttk.Style()
+        style.theme_use("default")
+        style.configure("Treeview",
+                        background="#2b2b2b",
+                        foreground="white",
+                        fieldbackground="#2b2b2b",
+                        rowheight=24,
+                        font=('Arial', 12))
+        style.configure("Treeview.Heading",
+                        background="#1f1f1f",
+                        foreground="white",
+                        font=('Arial', 13, 'bold'))
+
+        self.tree = ttk.Treeview(self.right_frame, columns=("time", "pos", "vel", "acc"), show="headings", height=8)
+        for col in ("time", "pos", "vel", "acc"):
+            self.tree.heading(col, text=col.upper())
+            self.tree.column(col, anchor="center", width=100)
+        self.tree.pack(fill="x", pady=(5, 10))
+
+        self.start_udp_thread()
+
+    def toggle_data(self):
+        self.running = not self.running
+        self.toggle_button.configure(text="Stop" if self.running else "Start")
+        self.status_label.configure(text="Receiving data..." if self.running else "Paused",
+                                    text_color="green" if self.running else "orange")
+
+    def start_udp_thread(self):
+        threading.Thread(target=self.udp_listener, daemon=True).start()
+
+    def udp_listener(self):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.bind((UDP_IP, 4215))
+        while True:
+            try:
+                data, _ = sock.recvfrom(1024)
+                parts = list(map(float, data.decode().strip().split(",")))
+                if len(parts) == 3:
+                    distance, velocity, acceleration = parts
+                    self.process_data(distance, velocity, acceleration)
+            except Exception as e:
+                print("Ultrasonic error:", e)
+
+    def process_data(self, d, v, a):
+        self.label_d.configure(text=f"d: {d:.2f} m")
+        self.label_v.configure(text=f"v: {v:.2f} m/s")
+        self.label_a.configure(text=f"a: {a:.2f} m/s²")
+
+        if not self.running:
+            return
+
+        self.sample_count += 1
+        timestamp = self.sample_count / 20.0  # ~20Hz for ultrasonic
+
+        self.time_data.append(timestamp)
+        self.pos_data.append(d)
+        self.vel_data.append(v)
+        self.acc_data.append(a)
+
+        self.line_d.set_data(self.time_data, self.pos_data)
+        self.line_v.set_data(self.time_data, self.vel_data)
+        self.line_a.set_data(self.time_data, self.acc_data)
+
+        for ax in self.axes:
+            ax.relim()
+            ax.autoscale_view()
+
+        self.canvas.draw()
+
+        self.tree.insert("", 0, values=(f"{timestamp:.2f}", f"{d:.2f}", f"{v:.2f}", f"{a:.2f}"))
+        if len(self.tree.get_children()) > BUFFER_SIZE:
+            self.tree.delete(self.tree.get_children()[-1])
+
+    def clear_data(self):
+        self.time_data.clear()
+        self.pos_data.clear()
+        self.vel_data.clear()
+        self.acc_data.clear()
+        self.sample_count = 0
+        self.line_d.set_data([], [])
+        self.line_v.set_data([], [])
+        self.line_a.set_data([], [])
         self.canvas.draw()
         for row in self.tree.get_children():
             self.tree.delete(row)
