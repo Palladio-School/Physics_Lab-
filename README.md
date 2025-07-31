@@ -1,4 +1,4 @@
-# Palladio Physics Lab 🧪📊
+# Physics Lab 🧪📊
 
 **Palladio Physics Lab** is a cross-platform, open-source educational toolkit designed to bring low-cost, real-time physics experimentation into the classroom or home lab. Built using Python and CustomTkinter, and powered by the M5StickC Plus2 microcontroller, this project helps students collect, visualize, and analyze motion, force, and other physics data live through easy-to-use interfaces.
 
