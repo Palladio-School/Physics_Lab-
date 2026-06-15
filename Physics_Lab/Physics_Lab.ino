@@ -1,7 +1,9 @@
 #include <M5StickCPlus2.h>
 #include <WiFi.h>
 #include <WiFiUdp.h>
+#include <WebServer.h>
 #include "HX711.h"
+#include "web_dashboard.h"
 
 // Classroom wireless mode: the M5StickC Plus2 creates its own Wi-Fi network.
 const char* apSsid = "PhysicsLab-M5";
@@ -14,6 +16,7 @@ const int forcePort = 4213;
 const int ultraPort = 4215;
 
 WiFiUDP udp;
+WebServer server(80);
 
 // Pins
 #define TRIG_PIN 26  // G26
@@ -33,6 +36,11 @@ float lastBatteryVoltage = 0;
 float prev_distance = -1, prev_velocity = 0;
 unsigned long prev_time = 0;
 float smoothed_distance = -1;
+
+float latestAx = 0, latestAy = 0, latestAz = 0;
+float latestGx = 0, latestGy = 0, latestGz = 0;
+float latestForce = 0;
+float latestDistance = 0, latestVelocity = 0, latestAcceleration = 0;
 
 // Display helpers
 void drawFooter() {
@@ -86,10 +94,66 @@ void startAccessPoint() {
   WiFi.softAP(apSsid);
 }
 
+const char* getModeName() {
+  const char* modes[] = {"Acceleration", "Gyroscope", "Load Cell", "WiFi Info", "Ultrasonic"};
+  return modes[mode];
+}
+
 void sendUdpPacket(const char* payload, int port) {
   udp.beginPacket(broadcastAddress, port);
   udp.write((uint8_t*)payload, strlen(payload));
   udp.endPacket();
+}
+
+void handleRoot() {
+  server.send_P(200, "text/html", DASHBOARD_HTML);
+}
+
+void handleData() {
+  char json[512];
+  snprintf(
+    json,
+    sizeof(json),
+    "{\"mode\":%d,\"modeName\":\"%s\",\"ap\":\"%s\",\"ip\":\"%s\",\"battery\":%.2f,"
+    "\"ax\":%.3f,\"ay\":%.3f,\"az\":%.3f,"
+    "\"gx\":%.3f,\"gy\":%.3f,\"gz\":%.3f,"
+    "\"force\":%.3f,\"distance\":%.3f,\"velocity\":%.3f,\"acceleration\":%.3f}",
+    mode,
+    getModeName(),
+    apSsid,
+    WiFi.softAPIP().toString().c_str(),
+    lastBatteryVoltage,
+    latestAx,
+    latestAy,
+    latestAz,
+    latestGx,
+    latestGy,
+    latestGz,
+    latestForce,
+    latestDistance,
+    latestVelocity,
+    latestAcceleration
+  );
+  server.send(200, "application/json", json);
+}
+
+void handleSetMode() {
+  if (server.hasArg("mode")) {
+    int requestedMode = server.arg("mode").toInt();
+    if (requestedMode >= 0 && requestedMode <= maxMode) {
+      mode = requestedMode;
+      M5.Lcd.fillScreen(BLACK);
+      displayMode();
+    }
+  }
+  handleData();
+}
+
+void startWebServer() {
+  server.on("/", handleRoot);
+  server.on("/data", handleData);
+  server.on("/set-mode", handleSetMode);
+  server.begin();
 }
 
 // ULTRASONIC FILTERED READING
@@ -120,6 +184,7 @@ void setup() {
   M5.Lcd.fillScreen(BLACK);
 
   startAccessPoint();
+  startWebServer();
   pinMode(TRIG_PIN, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
 
@@ -134,6 +199,7 @@ void setup() {
 
 void loop() {
   M5.update();
+  server.handleClient();
   unsigned long now = millis();
 
   if (now - lastBatteryUpdate >= 1000 || lastBatteryVoltage == 0) {
@@ -158,6 +224,9 @@ void loop() {
   if (mode == 0) {
     float ax, ay, az;
     M5.Imu.getAccel(&ax, &ay, &az);
+    latestAx = ax * 9.81;
+    latestAy = ay * 9.81;
+    latestAz = az * 9.81;
     M5.Lcd.setCursor(0, 40); M5.Lcd.setTextColor(YELLOW, BLACK); M5.Lcd.setTextSize(2);
     M5.Lcd.printf("X: %.2f\nY: %.2f\nZ: %.2f", ax, ay, az);
     drawFooter();
@@ -170,6 +239,9 @@ void loop() {
   else if (mode == 1) {
     float gx, gy, gz;
     M5.Imu.getGyro(&gx, &gy, &gz);
+    latestGx = gx;
+    latestGy = gy;
+    latestGz = gz;
     M5.Lcd.setCursor(0, 40); M5.Lcd.setTextColor(YELLOW, BLACK); M5.Lcd.setTextSize(2);
     M5.Lcd.printf("Gx: %.2f\nGy: %.2f\nGz: %.2f", gx, gy, gz);
     drawFooter();
@@ -181,6 +253,7 @@ void loop() {
 
   else if (mode == 2) {
     float force = scale.get_units(5);
+    latestForce = force;
     M5.Lcd.setCursor(0, 40); M5.Lcd.setTextColor(YELLOW, BLACK); M5.Lcd.setTextSize(2);
     M5.Lcd.printf("Force: %.2f N", force);
     drawFooter();
@@ -207,6 +280,9 @@ void loop() {
     float d_m = d_cm / 100.0;
     float v = (prev_distance >= 0) ? (d_m - prev_distance) / dt : 0;
     float a = (prev_distance >= 0) ? (v - prev_velocity) / dt : 0;
+    latestDistance = d_m;
+    latestVelocity = v;
+    latestAcceleration = a;
 
     prev_velocity = v;
     prev_distance = d_m;

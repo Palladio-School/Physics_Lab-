@@ -30,7 +30,28 @@
 
 ---
 
-## Run the Desktop App
+## Run the Web Dashboard
+
+The recommended classroom flow is now browser-based:
+
+1. Upload `Physics_Lab/Physics_Lab.ino` to the M5StickC Plus2.
+2. Power on the M5StickC Plus2.
+3. Connect the laptop, tablet, or phone to this Wi-Fi network:
+
+```text
+PhysicsLab-M5
+```
+
+4. Open this address in a browser:
+
+```text
+http://192.168.4.1
+```
+
+The dashboard runs directly from the M5StickC Plus2 and includes live charts,
+mode switching, pause/resume, clear, and CSV export.
+
+## Run the Legacy Desktop App
 
 1. Install Python 3.
 2. Create and activate a virtual environment:
@@ -52,24 +73,20 @@ pip install -r requirements.txt
 python physics_lab_with_angular_velocity.py
 ```
 
-## Wireless Classroom Mode
+## Wireless Classroom Mode Details
 
 The M5StickC Plus2 creates its own Wi-Fi network, so no school Wi-Fi
 credentials or fixed computer IP address are needed.
 
-1. Upload `Physics_Lab/Physics_Lab.ino` to the M5StickC Plus2.
-2. Power on the M5StickC Plus2.
-3. Connect the laptop to this Wi-Fi network:
+The browser dashboard reads live JSON data from:
 
 ```text
-PhysicsLab-M5
+http://192.168.4.1/data
 ```
 
-4. Start the desktop app.
-5. Select the matching experiment page and press `Start`.
-
-The M5StickC Plus2 sends UDP broadcast packets to `192.168.4.255`.
-The Python app listens on these UDP ports:
+The M5StickC Plus2 also keeps sending UDP broadcast packets to `192.168.4.255`
+for compatibility with the legacy Python app. The Python app listens on these
+UDP ports:
 
 - `4210` acceleration / force from accelerometer
 - `4211` angular velocity
