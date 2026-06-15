@@ -57,7 +57,7 @@ python physics_lab_with_angular_velocity.py
 The M5StickC Plus2 creates its own Wi-Fi network, so no school Wi-Fi
 credentials or fixed computer IP address are needed.
 
-1. Upload `Physics_Lab.ino` to the M5StickC Plus2.
+1. Upload `Physics_Lab/Physics_Lab.ino` to the M5StickC Plus2.
 2. Power on the M5StickC Plus2.
 3. Connect the laptop to this Wi-Fi network:
 
