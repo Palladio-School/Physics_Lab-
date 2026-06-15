@@ -3,10 +3,9 @@
 #include <WiFiUdp.h>
 #include "HX711.h"
 
-// WiFi credentials
-const char* ssid = "sotkap";
-const char* password = "lora1234";
-const char* udpAddress = "192.168.46.14";
+// Classroom wireless mode: the M5StickC Plus2 creates its own Wi-Fi network.
+const char* apSsid = "PhysicsLab-M5";
+IPAddress broadcastAddress(192, 168, 4, 255);
 
 // UDP Ports
 const int accelPort = 4210;
@@ -82,9 +81,15 @@ void showSplashScreen() {
   delay(3000);
 }
 
-void connectToWiFi() {
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) delay(500);
+void startAccessPoint() {
+  WiFi.mode(WIFI_AP);
+  WiFi.softAP(apSsid);
+}
+
+void sendUdpPacket(const char* payload, int port) {
+  udp.beginPacket(broadcastAddress, port);
+  udp.write((uint8_t*)payload, strlen(payload));
+  udp.endPacket();
 }
 
 // ULTRASONIC FILTERED READING
@@ -114,7 +119,7 @@ void setup() {
   showSplashScreen();
   M5.Lcd.fillScreen(BLACK);
 
-  connectToWiFi();
+  startAccessPoint();
   pinMode(TRIG_PIN, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
 
@@ -159,9 +164,7 @@ void loop() {
 
     char buf[64];
     snprintf(buf, sizeof(buf), "%.2f,%.2f,%.2f,%.2f", ax, ay, az, lastBatteryVoltage);
-    udp.beginPacket(udpAddress, accelPort);
-    udp.write((uint8_t*)buf, strlen(buf));
-    udp.endPacket();
+    sendUdpPacket(buf, accelPort);
   }
 
   else if (mode == 1) {
@@ -173,9 +176,7 @@ void loop() {
 
     char buf[64];
     snprintf(buf, sizeof(buf), "%.2f,%.2f,%.2f,%.2f", gx, gy, gz, lastBatteryVoltage);
-    udp.beginPacket(udpAddress, gyroPort);
-    udp.write((uint8_t*)buf, strlen(buf));
-    udp.endPacket();
+    sendUdpPacket(buf, gyroPort);
   }
 
   else if (mode == 2) {
@@ -186,15 +187,13 @@ void loop() {
 
     char buf[32];
     snprintf(buf, sizeof(buf), "%.3f,%.2f", force, lastBatteryVoltage);
-    udp.beginPacket(udpAddress, forcePort);
-    udp.write((uint8_t*)buf, strlen(buf));
-    udp.endPacket();
+    sendUdpPacket(buf, forcePort);
   }
 
   else if (mode == 3) {
     M5.Lcd.setTextSize(2); M5.Lcd.setTextColor(YELLOW, BLACK);
     M5.Lcd.setCursor(0, 40);
-    M5.Lcd.printf("SSID:\n%s\nIP:\n%s", ssid, WiFi.localIP().toString().c_str());
+    M5.Lcd.printf("AP:\n%s\nIP:\n%s", apSsid, WiFi.softAPIP().toString().c_str());
     drawFooter();
   }
 
@@ -220,9 +219,7 @@ void loop() {
 
     char buf[64];
     snprintf(buf, sizeof(buf), "%.3f,%.3f,%.3f", d_m, v, a);
-    udp.beginPacket(udpAddress, ultraPort);
-    udp.write((uint8_t*)buf, strlen(buf));
-    udp.endPacket();
+    sendUdpPacket(buf, ultraPort);
   }
 
   delay(50);

@@ -26,7 +26,7 @@
 - ✅ HX711 Module + Load Cell (optional)
 - ✅ HC-SR04 Ultrasonic Sensor (optional)
 - ✅ Breadboard and Jumper Wires
-- ✅ Wi-Fi Network (for UDP communication)
+- ✅ Laptop with Wi-Fi (connects directly to the M5StickC Plus2 hotspot)
 
 ---
 
@@ -52,20 +52,23 @@ pip install -r requirements.txt
 python physics_lab_with_angular_velocity.py
 ```
 
-## Current Connection Model
+## Wireless Classroom Mode
 
-The M5StickC Plus2 sends UDP packets to the computer running the desktop app.
-For now, Wi-Fi credentials and the computer IP address are configured inside
-`Physics_Lab.ino`.
+The M5StickC Plus2 creates its own Wi-Fi network, so no school Wi-Fi
+credentials or fixed computer IP address are needed.
 
-Before uploading the Arduino sketch, update:
+1. Upload `Physics_Lab.ino` to the M5StickC Plus2.
+2. Power on the M5StickC Plus2.
+3. Connect the laptop to this Wi-Fi network:
 
-```cpp
-const char* ssid = "YOUR_WIFI_NAME";
-const char* password = "YOUR_WIFI_PASSWORD";
-const char* udpAddress = "YOUR_COMPUTER_IP";
+```text
+PhysicsLab-M5
 ```
 
+4. Start the desktop app.
+5. Select the matching experiment page and press `Start`.
+
+The M5StickC Plus2 sends UDP broadcast packets to `192.168.4.255`.
 The Python app listens on these UDP ports:
 
 - `4210` acceleration / force from accelerometer
@@ -73,3 +76,5 @@ The Python app listens on these UDP ports:
 - `4213` load cell force
 - `4215` ultrasonic motion
 
+Use the `WiFi Info` mode on the M5StickC Plus2 to confirm the hotspot name and
+device IP address.
