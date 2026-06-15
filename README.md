@@ -30,4 +30,46 @@
 
 ---
 
+## Run the Desktop App
+
+1. Install Python 3.
+2. Create and activate a virtual environment:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+3. Install the app dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+4. Start the desktop app:
+
+```bash
+python physics_lab_with_angular_velocity.py
+```
+
+## Current Connection Model
+
+The M5StickC Plus2 sends UDP packets to the computer running the desktop app.
+For now, Wi-Fi credentials and the computer IP address are configured inside
+`Physics_Lab.ino`.
+
+Before uploading the Arduino sketch, update:
+
+```cpp
+const char* ssid = "YOUR_WIFI_NAME";
+const char* password = "YOUR_WIFI_PASSWORD";
+const char* udpAddress = "YOUR_COMPUTER_IP";
+```
+
+The Python app listens on these UDP ports:
+
+- `4210` acceleration / force from accelerometer
+- `4211` angular velocity
+- `4213` load cell force
+- `4215` ultrasonic motion
 
