@@ -4,6 +4,7 @@
 #include <WebServer.h>
 #include "HX711.h"
 #include "web_dashboard.h"
+#include "logo_asset.h"
 
 // Classroom wireless mode: the M5StickC Plus2 creates its own Wi-Fi network.
 const char* apSsid = "PhysicsLab-M5";
@@ -29,6 +30,11 @@ const float SCALE_FACTOR = 48163.7;
 
 int mode = 0;
 const int maxMode = 4;
+uint16_t sampleRateHz = 10;
+unsigned long sampleIntervalMs = 100;
+unsigned long lastSampleDue = 0;
+unsigned long sampleTimestampMs = 0;
+unsigned long sampleSequence = 0;
 
 unsigned long lastBatteryUpdate = 0;
 float lastBatteryVoltage = 0;
@@ -36,11 +42,16 @@ float lastBatteryVoltage = 0;
 float prev_distance = -1, prev_velocity = 0;
 unsigned long prev_time = 0;
 float smoothed_distance = -1;
+float distanceOffset = 0;
 
 float latestAx = 0, latestAy = 0, latestAz = 0;
 float latestGx = 0, latestGy = 0, latestGz = 0;
 float latestForce = 0;
 float latestDistance = 0, latestVelocity = 0, latestAcceleration = 0;
+float rawAx = 0, rawAy = 0, rawAz = 0;
+float rawGx = 0, rawGy = 0, rawGz = 0;
+float accelOffsetX = 0, accelOffsetY = 0, accelOffsetZ = 0;
+float gyroOffsetX = 0, gyroOffsetY = 0, gyroOffsetZ = 0;
 
 // Display helpers
 void drawFooter() {
@@ -109,12 +120,22 @@ void handleRoot() {
   server.send_P(200, "text/html", DASHBOARD_HTML);
 }
 
+void handleLogo() {
+  server.send_P(
+    200,
+    "image/png",
+    reinterpret_cast<const char*>(assets_palladio_logo_png),
+    assets_palladio_logo_png_len
+  );
+}
+
 void handleData() {
-  char json[512];
+  char json[640];
   snprintf(
     json,
     sizeof(json),
     "{\"mode\":%d,\"modeName\":\"%s\",\"ap\":\"%s\",\"ip\":\"%s\",\"battery\":%.2f,"
+    "\"sampleId\":%lu,\"sampleMs\":%lu,\"sampleRate\":%u,"
     "\"ax\":%.3f,\"ay\":%.3f,\"az\":%.3f,"
     "\"gx\":%.3f,\"gy\":%.3f,\"gz\":%.3f,"
     "\"force\":%.3f,\"distance\":%.3f,\"velocity\":%.3f,\"acceleration\":%.3f}",
@@ -123,6 +144,9 @@ void handleData() {
     apSsid,
     WiFi.softAPIP().toString().c_str(),
     lastBatteryVoltage,
+    sampleSequence,
+    sampleTimestampMs,
+    sampleRateHz,
     latestAx,
     latestAy,
     latestAz,
@@ -142,6 +166,11 @@ void handleSetMode() {
     int requestedMode = server.arg("mode").toInt();
     if (requestedMode >= 0 && requestedMode <= maxMode) {
       mode = requestedMode;
+      prev_distance = -1;
+      prev_velocity = 0;
+      smoothed_distance = -1;
+      prev_time = millis();
+      lastSampleDue = 0;
       M5.Lcd.fillScreen(BLACK);
       displayMode();
     }
@@ -149,10 +178,52 @@ void handleSetMode() {
   handleData();
 }
 
+void handleSettings() {
+  if (server.hasArg("rate")) {
+    int requestedRate = server.arg("rate").toInt();
+    if (requestedRate == 5 || requestedRate == 10 || requestedRate == 20) {
+      sampleRateHz = requestedRate;
+      sampleIntervalMs = 1000UL / sampleRateHz;
+      lastSampleDue = 0;
+    }
+  }
+  handleData();
+}
+
+void handleCalibrate() {
+  String target = server.arg("target");
+  if (target == "accel") {
+    accelOffsetX = rawAx;
+    accelOffsetY = rawAy;
+    accelOffsetZ = rawAz;
+    latestAx = latestAy = latestAz = 0;
+  } else if (target == "gyro") {
+    gyroOffsetX = rawGx;
+    gyroOffsetY = rawGy;
+    gyroOffsetZ = rawGz;
+    latestGx = latestGy = latestGz = 0;
+  } else if (target == "force") {
+    scale.tare(10);
+    latestForce = 0;
+  } else if (target == "distance") {
+    distanceOffset += latestDistance;
+    latestDistance = 0;
+    latestVelocity = 0;
+    latestAcceleration = 0;
+    prev_distance = -1;
+    prev_velocity = 0;
+    prev_time = millis();
+  }
+  handleData();
+}
+
 void startWebServer() {
   server.on("/", handleRoot);
+  server.on("/logo.png", handleLogo);
   server.on("/data", handleData);
   server.on("/set-mode", handleSetMode);
+  server.on("/settings", handleSettings);
+  server.on("/calibrate", handleCalibrate);
   server.begin();
 }
 
@@ -172,6 +243,120 @@ float getFilteredDistanceCM() {
   else smoothed_distance = 0.6 * smoothed_distance + 0.4 * d;
 
   return smoothed_distance;
+}
+
+bool sampleCurrentMode(unsigned long now) {
+  if (mode == 0) {
+    float ax, ay, az;
+    M5.Imu.getAccel(&ax, &ay, &az);
+    rawAx = ax * 9.81;
+    rawAy = ay * 9.81;
+    rawAz = az * 9.81;
+    latestAx = rawAx - accelOffsetX;
+    latestAy = rawAy - accelOffsetY;
+    latestAz = rawAz - accelOffsetZ;
+
+    M5.Lcd.setCursor(0, 40);
+    M5.Lcd.setTextColor(YELLOW, BLACK);
+    M5.Lcd.setTextSize(2);
+    M5.Lcd.printf("X: %.2f\nY: %.2f\nZ: %.2f", latestAx, latestAy, latestAz);
+    drawFooter();
+
+    char buf[64];
+    snprintf(
+      buf,
+      sizeof(buf),
+      "%.2f,%.2f,%.2f,%.2f",
+      latestAx,
+      latestAy,
+      latestAz,
+      lastBatteryVoltage
+    );
+    sendUdpPacket(buf, accelPort);
+    return true;
+  }
+
+  if (mode == 1) {
+    M5.Imu.getGyro(&rawGx, &rawGy, &rawGz);
+    latestGx = rawGx - gyroOffsetX;
+    latestGy = rawGy - gyroOffsetY;
+    latestGz = rawGz - gyroOffsetZ;
+
+    M5.Lcd.setCursor(0, 40);
+    M5.Lcd.setTextColor(YELLOW, BLACK);
+    M5.Lcd.setTextSize(2);
+    M5.Lcd.printf("Gx: %.2f\nGy: %.2f\nGz: %.2f", latestGx, latestGy, latestGz);
+    drawFooter();
+
+    char buf[64];
+    snprintf(
+      buf,
+      sizeof(buf),
+      "%.2f,%.2f,%.2f,%.2f",
+      latestGx,
+      latestGy,
+      latestGz,
+      lastBatteryVoltage
+    );
+    sendUdpPacket(buf, gyroPort);
+    return true;
+  }
+
+  if (mode == 2) {
+    latestForce = scale.get_units(1);
+    M5.Lcd.setCursor(0, 40);
+    M5.Lcd.setTextColor(YELLOW, BLACK);
+    M5.Lcd.setTextSize(2);
+    M5.Lcd.printf("Force: %.2f N", latestForce);
+    drawFooter();
+
+    char buf[32];
+    snprintf(buf, sizeof(buf), "%.3f,%.2f", latestForce, lastBatteryVoltage);
+    sendUdpPacket(buf, forcePort);
+    return true;
+  }
+
+  if (mode == 3) {
+    M5.Lcd.setTextSize(2);
+    M5.Lcd.setTextColor(YELLOW, BLACK);
+    M5.Lcd.setCursor(0, 40);
+    M5.Lcd.printf("AP:\n%s\nIP:\n%s", apSsid, WiFi.softAPIP().toString().c_str());
+    drawFooter();
+    return true;
+  }
+
+  if (mode == 4) {
+    float d_cm = getFilteredDistanceCM();
+    if (d_cm < 0) return false;
+
+    float dt = (now - prev_time) / 1000.0;
+    prev_time = now;
+    if (dt <= 0) dt = sampleIntervalMs / 1000.0;
+
+    float d_m = d_cm / 100.0 - distanceOffset;
+    float v = (prev_distance >= 0) ? (d_m - prev_distance) / dt : 0;
+    float a = (prev_distance >= 0) ? (v - prev_velocity) / dt : 0;
+    latestDistance = d_m;
+    latestVelocity = v;
+    latestAcceleration = a;
+
+    prev_velocity = v;
+    prev_distance = d_m;
+
+    M5.Lcd.fillRect(0, 20, 160, 100, BLACK);
+    M5.Lcd.setTextColor(YELLOW, BLACK);
+    M5.Lcd.setTextSize(2);
+    M5.Lcd.setCursor(0, 30);
+    M5.Lcd.printf("d: %.2fm\nv: %.2fm/s\na: %.2fm/s^2", d_m, v, a);
+    drawFooter();
+
+    char buf[64];
+    snprintf(buf, sizeof(buf), "%.3f,%.3f,%.3f", d_m, v, a);
+    sendUdpPacket(buf, ultraPort);
+    return true;
+  }
+
+  return false;
 }
 
 void setup() {
@@ -195,6 +380,7 @@ void setup() {
   udp.begin(accelPort);
   displayMode();
   prev_time = millis();
+  lastSampleDue = 0;
 }
 
 void loop() {
@@ -210,6 +396,11 @@ void loop() {
 
   if (M5.BtnA.wasPressed()) {
     mode = (mode + 1) % (maxMode + 1);
+    prev_distance = -1;
+    prev_velocity = 0;
+    smoothed_distance = -1;
+    prev_time = now;
+    lastSampleDue = 0;
     M5.Lcd.fillScreen(BLACK);
     displayMode();
   }
@@ -217,86 +408,26 @@ void loop() {
   if (M5.BtnB.wasPressed()) {
     mode--;
     if (mode < 0) mode = maxMode;
+    prev_distance = -1;
+    prev_velocity = 0;
+    smoothed_distance = -1;
+    prev_time = now;
+    lastSampleDue = 0;
     M5.Lcd.fillScreen(BLACK);
     displayMode();
   }
 
-  if (mode == 0) {
-    float ax, ay, az;
-    M5.Imu.getAccel(&ax, &ay, &az);
-    latestAx = ax * 9.81;
-    latestAy = ay * 9.81;
-    latestAz = az * 9.81;
-    M5.Lcd.setCursor(0, 40); M5.Lcd.setTextColor(YELLOW, BLACK); M5.Lcd.setTextSize(2);
-    M5.Lcd.printf("X: %.2f\nY: %.2f\nZ: %.2f", ax, ay, az);
-    drawFooter();
-
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%.2f,%.2f,%.2f,%.2f", ax, ay, az, lastBatteryVoltage);
-    sendUdpPacket(buf, accelPort);
+  if (lastSampleDue == 0 || now - lastSampleDue >= sampleIntervalMs) {
+    if (lastSampleDue == 0 || now - lastSampleDue > sampleIntervalMs * 4) {
+      lastSampleDue = now;
+    } else {
+      lastSampleDue += sampleIntervalMs;
+    }
+    if (sampleCurrentMode(now)) {
+      sampleTimestampMs = now;
+      sampleSequence++;
+    }
   }
 
-  else if (mode == 1) {
-    float gx, gy, gz;
-    M5.Imu.getGyro(&gx, &gy, &gz);
-    latestGx = gx;
-    latestGy = gy;
-    latestGz = gz;
-    M5.Lcd.setCursor(0, 40); M5.Lcd.setTextColor(YELLOW, BLACK); M5.Lcd.setTextSize(2);
-    M5.Lcd.printf("Gx: %.2f\nGy: %.2f\nGz: %.2f", gx, gy, gz);
-    drawFooter();
-
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%.2f,%.2f,%.2f,%.2f", gx, gy, gz, lastBatteryVoltage);
-    sendUdpPacket(buf, gyroPort);
-  }
-
-  else if (mode == 2) {
-    float force = scale.get_units(5);
-    latestForce = force;
-    M5.Lcd.setCursor(0, 40); M5.Lcd.setTextColor(YELLOW, BLACK); M5.Lcd.setTextSize(2);
-    M5.Lcd.printf("Force: %.2f N", force);
-    drawFooter();
-
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%.3f,%.2f", force, lastBatteryVoltage);
-    sendUdpPacket(buf, forcePort);
-  }
-
-  else if (mode == 3) {
-    M5.Lcd.setTextSize(2); M5.Lcd.setTextColor(YELLOW, BLACK);
-    M5.Lcd.setCursor(0, 40);
-    M5.Lcd.printf("AP:\n%s\nIP:\n%s", apSsid, WiFi.softAPIP().toString().c_str());
-    drawFooter();
-  }
-
-  else if (mode == 4) {
-    float d_cm = getFilteredDistanceCM();
-    if (d_cm < 0) return;
-
-    float dt = (now - prev_time) / 1000.0;
-    prev_time = now;
-
-    float d_m = d_cm / 100.0;
-    float v = (prev_distance >= 0) ? (d_m - prev_distance) / dt : 0;
-    float a = (prev_distance >= 0) ? (v - prev_velocity) / dt : 0;
-    latestDistance = d_m;
-    latestVelocity = v;
-    latestAcceleration = a;
-
-    prev_velocity = v;
-    prev_distance = d_m;
-
-    M5.Lcd.fillRect(0, 20, 160, 100, BLACK);
-    M5.Lcd.setTextColor(YELLOW, BLACK); M5.Lcd.setTextSize(2);
-    M5.Lcd.setCursor(0, 30);
-    M5.Lcd.printf("d: %.2fm\nv: %.2fm/s\na: %.2fm/s^2", d_m, v, a);
-    drawFooter();
-
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%.3f,%.3f,%.3f", d_m, v, a);
-    sendUdpPacket(buf, ultraPort);
-  }
-
-  delay(50);
+  delay(1);
 }
