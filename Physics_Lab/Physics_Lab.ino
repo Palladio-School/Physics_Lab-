@@ -36,6 +36,22 @@ unsigned long lastSampleDue = 0;
 unsigned long sampleTimestampMs = 0;
 unsigned long sampleSequence = 0;
 
+struct SampleRecord {
+  unsigned long id;
+  unsigned long timestampMs;
+  uint8_t mode;
+  float ax, ay, az;
+  float gx, gy, gz;
+  float force;
+  float distance, velocity, acceleration;
+  float battery;
+};
+
+const uint16_t sampleBufferSize = 512;
+SampleRecord sampleBuffer[sampleBufferSize];
+uint16_t sampleBufferHead = 0;
+uint16_t sampleBufferCount = 0;
+
 unsigned long lastBatteryUpdate = 0;
 float lastBatteryVoltage = 0;
 
@@ -110,6 +126,37 @@ const char* getModeName() {
   return modes[mode];
 }
 
+void clearSampleBuffer() {
+  sampleBufferHead = 0;
+  sampleBufferCount = 0;
+}
+
+void recordSample(uint8_t sampleMode, unsigned long timestampMs, unsigned long id) {
+  SampleRecord& record = sampleBuffer[sampleBufferHead];
+  record.id = id;
+  record.timestampMs = timestampMs;
+  record.mode = sampleMode;
+  record.ax = latestAx;
+  record.ay = latestAy;
+  record.az = latestAz;
+  record.gx = latestGx;
+  record.gy = latestGy;
+  record.gz = latestGz;
+  record.force = latestForce;
+  record.distance = latestDistance;
+  record.velocity = latestVelocity;
+  record.acceleration = latestAcceleration;
+  record.battery = lastBatteryVoltage;
+
+  sampleBufferHead = (sampleBufferHead + 1) % sampleBufferSize;
+  if (sampleBufferCount < sampleBufferSize) sampleBufferCount++;
+}
+
+uint16_t sampleBufferIndex(uint16_t chronologicalIndex) {
+  uint16_t start = (sampleBufferHead + sampleBufferSize - sampleBufferCount) % sampleBufferSize;
+  return (start + chronologicalIndex) % sampleBufferSize;
+}
+
 void sendUdpPacket(const char* payload, int port) {
   udp.beginPacket(broadcastAddress, port);
   udp.write((uint8_t*)payload, strlen(payload));
@@ -161,6 +208,78 @@ void handleData() {
   server.send(200, "application/json", json);
 }
 
+void sendSampleJson(const SampleRecord& record, bool comma) {
+  char json[384];
+  snprintf(
+    json,
+    sizeof(json),
+    "%s{\"mode\":%u,\"sampleId\":%lu,\"sampleMs\":%lu,\"sampleRate\":%u,"
+    "\"battery\":%.2f,\"ax\":%.3f,\"ay\":%.3f,\"az\":%.3f,"
+    "\"gx\":%.3f,\"gy\":%.3f,\"gz\":%.3f,"
+    "\"force\":%.3f,\"distance\":%.3f,\"velocity\":%.3f,\"acceleration\":%.3f}",
+    comma ? "," : "",
+    record.mode,
+    record.id,
+    record.timestampMs,
+    sampleRateHz,
+    record.battery,
+    record.ax,
+    record.ay,
+    record.az,
+    record.gx,
+    record.gy,
+    record.gz,
+    record.force,
+    record.distance,
+    record.velocity,
+    record.acceleration
+  );
+  server.sendContent(json);
+}
+
+void handleSamples() {
+  unsigned long since = 0;
+  bool includeAll = true;
+  if (server.hasArg("since")) {
+    String sinceArg = server.arg("since");
+    long parsed = sinceArg.toInt();
+    if (parsed >= 0) {
+      since = (unsigned long)parsed;
+      includeAll = false;
+    }
+  }
+
+  char header[256];
+  snprintf(
+    header,
+    sizeof(header),
+    "{\"mode\":%d,\"modeName\":\"%s\",\"ap\":\"%s\",\"ip\":\"%s\",\"battery\":%.2f,"
+    "\"sampleRate\":%u,\"latestId\":%lu,\"bufferCount\":%u,\"samples\":[",
+    mode,
+    getModeName(),
+    apSsid,
+    WiFi.softAPIP().toString().c_str(),
+    lastBatteryVoltage,
+    sampleRateHz,
+    sampleSequence,
+    sampleBufferCount
+  );
+
+  server.setContentLength(CONTENT_LENGTH_UNKNOWN);
+  server.send(200, "application/json", "");
+  server.sendContent(header);
+
+  bool comma = false;
+  for (uint16_t i = 0; i < sampleBufferCount; i++) {
+    const SampleRecord& record = sampleBuffer[sampleBufferIndex(i)];
+    if (!includeAll && record.id <= since) continue;
+    sendSampleJson(record, comma);
+    comma = true;
+  }
+  server.sendContent("]}");
+  server.sendContent("");
+}
+
 void handleSetMode() {
   if (server.hasArg("mode")) {
     int requestedMode = server.arg("mode").toInt();
@@ -171,6 +290,7 @@ void handleSetMode() {
       smoothed_distance = -1;
       prev_time = millis();
       lastSampleDue = 0;
+      clearSampleBuffer();
       M5.Lcd.fillScreen(BLACK);
       displayMode();
     }
@@ -181,7 +301,8 @@ void handleSetMode() {
 void handleSettings() {
   if (server.hasArg("rate")) {
     int requestedRate = server.arg("rate").toInt();
-    if (requestedRate == 5 || requestedRate == 10 || requestedRate == 20) {
+    if (requestedRate == 5 || requestedRate == 10 || requestedRate == 20 ||
+        requestedRate == 50 || requestedRate == 100) {
       sampleRateHz = requestedRate;
       sampleIntervalMs = 1000UL / sampleRateHz;
       lastSampleDue = 0;
@@ -221,6 +342,7 @@ void startWebServer() {
   server.on("/", handleRoot);
   server.on("/logo.png", handleLogo);
   server.on("/data", handleData);
+  server.on("/samples", handleSamples);
   server.on("/set-mode", handleSetMode);
   server.on("/settings", handleSettings);
   server.on("/calibrate", handleCalibrate);
@@ -303,6 +425,7 @@ bool sampleCurrentMode(unsigned long now) {
   }
 
   if (mode == 2) {
+    if (!scale.is_ready()) return false;
     latestForce = scale.get_units(1);
     M5.Lcd.setCursor(0, 40);
     M5.Lcd.setTextColor(YELLOW, BLACK);
@@ -401,6 +524,7 @@ void loop() {
     smoothed_distance = -1;
     prev_time = now;
     lastSampleDue = 0;
+    clearSampleBuffer();
     M5.Lcd.fillScreen(BLACK);
     displayMode();
   }
@@ -413,6 +537,7 @@ void loop() {
     smoothed_distance = -1;
     prev_time = now;
     lastSampleDue = 0;
+    clearSampleBuffer();
     M5.Lcd.fillScreen(BLACK);
     displayMode();
   }
@@ -426,6 +551,7 @@ void loop() {
     if (sampleCurrentMode(now)) {
       sampleTimestampMs = now;
       sampleSequence++;
+      recordSample(mode, sampleTimestampMs, sampleSequence);
     }
   }
 

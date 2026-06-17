@@ -184,6 +184,7 @@ button:focus-visible, select:focus-visible {
   font-size: 13px;
   font-weight: 700;
 }
+.field[hidden] { display: none; }
 select {
   min-height: 38px;
   border: 1px solid #cbd6e2;
@@ -191,6 +192,20 @@ select {
   background: #fff;
   color: var(--ink);
   padding: 0 30px 0 10px;
+}
+input[type="number"] {
+  min-height: 38px;
+  width: 92px;
+  border: 1px solid #cbd6e2;
+  border-radius: 9px;
+  background: #fff;
+  color: var(--ink);
+  padding: 0 10px;
+}
+.field small {
+  color: #7a8b9c;
+  font-size: 11px;
+  font-weight: 800;
 }
 .check {
   min-height: 38px;
@@ -434,13 +449,33 @@ canvas {
   gap: 9px;
 }
 .result-card {
+  width: 100%;
   min-height: 76px;
   padding: 10px 12px;
   border: 1px solid #d9e1e7;
   border-radius: 11px;
   background: linear-gradient(145deg, #fff, #fafcff);
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+  appearance: none;
 }
 .result-card.wide { grid-column: span 2; }
+.result-card:hover {
+  border-color: #bed4f6;
+  box-shadow: 0 10px 24px rgba(38, 84, 163, 0.10);
+  transform: translateY(-1px);
+}
+.result-card.active {
+  border-color: #7eb0ff;
+  background: linear-gradient(145deg, #f8fbff, #eef5ff);
+  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.16);
+}
+.result-card:focus-visible {
+  outline: 3px solid rgba(59, 130, 246, 0.24);
+  outline-offset: 2px;
+}
 .result-card span {
   display: block;
   color: var(--muted);
@@ -464,23 +499,439 @@ canvas {
   color: var(--muted);
   font-size: 12px;
 }
-.result-example {
+.result-card em {
+  display: inline-flex;
+  align-items: center;
   margin-top: 9px;
-  padding-top: 8px;
-  border-top: 1px solid #e7edf3;
-  color: #53677f;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: #edf4ff;
+  color: #2457b8;
   font-size: 11px;
-  line-height: 1.42;
+  font-style: normal;
+  font-weight: 800;
 }
-.result-example b {
-  color: var(--blue-dark);
+.lesson-panel {
+  margin: 0 12px 14px;
+  border: 1px solid #d8e5f0;
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at top right, rgba(96, 165, 250, 0.10), transparent 18rem),
+    linear-gradient(180deg, #fcfdff, #f7fbff);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+}
+.lesson-empty {
+  padding: 18px 16px;
+  color: var(--muted);
+  text-align: center;
+}
+.lesson-head {
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid #e1ebf3;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.lesson-head h4 {
+  margin: 0;
+  color: #17345d;
+  font-size: 18px;
+}
+.lesson-head p {
+  margin: 5px 0 0;
+  color: #5a6f87;
+  font-size: 13px;
+  line-height: 1.48;
+}
+.lesson-tag {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 7px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #edf4ff;
+  color: #2255b3;
+  font-size: 11px;
   font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.lesson-close {
+  min-width: 36px;
+  height: 36px;
+  border: 1px solid #d4e1ee;
+  border-radius: 10px;
+  background: #fff;
+  color: #52667d;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+}
+.lesson-close:hover {
+  border-color: #bad1eb;
+  color: #1d4fa8;
+}
+.lesson-body {
+  padding: 14px 16px 16px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 12px;
+}
+.lesson-section {
+  padding: 12px 13px;
+  border: 1px solid #e0e8f1;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.78);
+}
+.lesson-section.full {
+  grid-column: 1 / -1;
+}
+.lesson-section h5 {
+  margin: 0 0 6px;
+  color: #20446f;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.lesson-section p {
+  margin: 0;
+  color: #41566e;
+  font-size: 13px;
+  line-height: 1.56;
+}
+.lesson-steps {
+  margin: 0;
+  padding-left: 18px;
+  color: #41566e;
+  font-size: 13px;
+  line-height: 1.56;
+}
+.lesson-steps li + li {
+  margin-top: 6px;
+}
+.scenario-panel {
+  padding: 0 16px 16px;
+}
+.scenario-panel h5 {
+  margin: 0 0 10px;
+  color: #20446f;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.scenario-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.scenario-tab {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid #d6e2ef;
+  border-radius: 999px;
+  background: #fff;
+  color: #4a627a;
+  font-size: 12px;
+  font-weight: 800;
+}
+.scenario-tab.active {
+  border-color: #7eb0ff;
+  background: #edf4ff;
+  color: #184799;
+  box-shadow: inset 0 0 0 1px rgba(126,176,255,0.14);
+}
+.scenario-card {
+  border: 1px solid #dbe6f1;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.86);
+  overflow: hidden;
+}
+.scenario-head {
+  padding: 13px 14px 10px;
+  border-bottom: 1px solid #e4edf4;
+}
+.scenario-head h4 {
+  margin: 0;
+  color: #17345d;
+  font-size: 17px;
+}
+.scenario-head p {
+  margin: 5px 0 0;
+  color: #5a6f87;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.scenario-grid {
+  padding: 14px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 12px;
+}
+.scenario-block {
+  padding: 12px 13px;
+  border: 1px solid #e2eaf2;
+  border-radius: 12px;
+  background: #fbfdff;
+}
+.scenario-block.full {
+  grid-column: 1 / -1;
+}
+.scenario-block h6 {
+  margin: 0 0 6px;
+  color: #20446f;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.scenario-block p {
+  margin: 0;
+  color: #41566e;
+  font-size: 13px;
+  line-height: 1.56;
+}
+.scenario-list {
+  margin: 0;
+  padding-left: 18px;
+  color: #41566e;
+  font-size: 13px;
+  line-height: 1.56;
+}
+.scenario-list li + li {
+  margin-top: 6px;
 }
 .analysis-empty {
   grid-column: 1 / -1;
   padding: 22px 16px;
   color: var(--muted);
   text-align: center;
+}
+.experiment-panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.experiment-panel[hidden] { display: none; }
+.experiment-tabs {
+  display: flex;
+  gap: 7px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: var(--shadow-soft);
+}
+.experiment-tabs[hidden] { display: none; }
+.experiment-tabs button {
+  flex: 1;
+  min-height: 38px;
+  padding: 0 10px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: #52667d;
+  font-size: 12px;
+  font-weight: 900;
+  box-shadow: none;
+}
+.experiment-tabs button.active {
+  border-color: #bdd4f4;
+  background: #edf4ff;
+  color: #174b9a;
+}
+.experiment-head {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.experiment-head h3 {
+  margin: 0;
+  font-size: 18px;
+}
+.experiment-head p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.experiment-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.experiment-toggle {
+  padding: 8px 12px;
+  border: 1px solid #d4dce4;
+  border-radius: 10px;
+  background: #fff;
+  color: #304355;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.experiment-toggle:hover {
+  border-color: #b7c8d8;
+  background: #f8fbff;
+}
+.experiment-tools {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e2e8ed;
+  background: #f7f9fb;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.experiment-status {
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4fa8;
+  font-size: 12px;
+  font-weight: 900;
+}
+.experiment-summary {
+  padding: 12px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(150px, 1fr));
+  gap: 9px;
+}
+.experiment-plot {
+  padding: 0 16px 14px;
+}
+.experiment-plot-card {
+  border: 1px solid #dbe5ec;
+  border-radius: 12px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #ffffff, #f8fbff);
+}
+.experiment-plot-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px 10px;
+  border-bottom: 1px solid #e4ebf1;
+}
+.experiment-plot-head h4 {
+  margin: 0;
+  font-size: 14px;
+  color: #1c2b3a;
+}
+.experiment-plot-head p {
+  margin: 4px 0 0;
+  color: #607182;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.experiment-plot-tag {
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: #ecf4ff;
+  color: #1c5fb8;
+  font-size: 11px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+.experiment-plot-wrap {
+  position: relative;
+  height: 230px;
+  padding: 10px 12px 12px;
+}
+.experiment-plot-wrap canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.summary-card {
+  min-height: 74px;
+  padding: 10px 12px;
+  border: 1px solid #d9e1e7;
+  border-radius: 11px;
+  background: linear-gradient(145deg, #fff, #fafcff);
+}
+.summary-card span {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+.summary-card strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--ink);
+  font-size: 19px;
+  line-height: 1.25;
+  font-variant-numeric: tabular-nums;
+}
+.summary-card small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.experiment-empty {
+  padding: 16px;
+  color: var(--muted);
+  text-align: center;
+}
+.experiment-note {
+  padding: 0 16px 14px;
+  color: #52667d;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.experiment-study {
+  padding: 0 16px 16px;
+}
+.experiment-study-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+.experiment-study-card {
+  padding: 12px 13px;
+  border: 1px solid #dce4eb;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ffffff, #fbfdff);
+}
+.experiment-study-card h5 {
+  margin: 0 0 6px;
+  color: #23415f;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.experiment-study-card p,
+.experiment-study-card li {
+  color: #465b72;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.experiment-study-card p {
+  margin: 0;
+}
+.experiment-study-card ol {
+  margin: 0;
+  padding-left: 18px;
+}
+.experiment-study-card li + li {
+  margin-top: 5px;
 }
 .table-panel { overflow-x: auto; }
 .table-title {
@@ -530,8 +981,16 @@ tbody tr:last-child td { border-bottom: 0; }
   .analysis-tools { align-items: stretch; flex-direction: column; }
   .analysis-tools .field { width: 100%; justify-content: space-between; }
   .analysis-tools select { flex: 1; }
+  .experiment-tools { align-items: stretch; flex-direction: column; }
+  .experiment-tools .field { width: 100%; justify-content: space-between; }
+  .experiment-tools input,
+  .experiment-tools select,
+  .experiment-tools button { width: 100%; }
   .results-grid { grid-template-columns: 1fr 1fr; }
+  .experiment-summary { grid-template-columns: 1fr 1fr; }
   .result-card.wide { grid-column: span 2; }
+  .lesson-body { grid-template-columns: 1fr; }
+  .scenario-grid { grid-template-columns: 1fr; }
 }
 
 /* Application workspace layout */
@@ -687,6 +1146,102 @@ tbody tr:last-child td { border-bottom: 0; }
   gap: 18px;
   align-content: start;
 }
+.workspace-grid {
+  --rail-width: 360px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 12px minmax(300px, var(--rail-width));
+  gap: 18px;
+  align-items: start;
+}
+.workspace-main {
+  min-width: 0;
+  display: grid;
+  gap: 18px;
+}
+.rail-resizer {
+  position: relative;
+  width: 12px;
+  align-self: stretch;
+  cursor: col-resize;
+  user-select: none;
+  touch-action: none;
+}
+.rail-resizer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(223, 231, 238, 0.5), rgba(196, 209, 220, 0.9));
+}
+.rail-resizer::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 54px;
+  border-radius: 999px;
+  background: #8ea0b0;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.78);
+}
+.rail-resizer:hover::after,
+.rail-resizer.dragging::after {
+  background: #2f7df6;
+}
+.workspace-rail {
+  min-width: 0;
+  display: grid;
+  gap: 18px;
+  align-content: start;
+}
+.experiment-collapsed-toggle {
+  display: none;
+  min-height: 180px;
+  padding: 18px 10px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: linear-gradient(180deg, #ffffff, #f8fbff);
+  box-shadow: var(--shadow);
+  color: #28435f;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.workspace-rail .experiment-panel {
+  position: sticky;
+  top: 22px;
+}
+.workspace-rail .experiment-summary {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.workspace-rail .summary-card {
+  min-height: 86px;
+}
+.workspace-grid.rail-collapsed {
+  grid-template-columns: minmax(0, 1fr) 0 58px;
+}
+.workspace-grid.rail-collapsed .rail-resizer,
+.workspace-grid.rail-hidden .rail-resizer,
+.workspace-grid.rail-hidden .workspace-rail {
+  display: none;
+}
+.workspace-grid.rail-collapsed .experiment-panel {
+  display: none !important;
+}
+.workspace-grid.rail-collapsed .experiment-tabs {
+  display: none !important;
+}
+.workspace-grid.rail-collapsed .experiment-collapsed-toggle {
+  display: flex;
+  position: sticky;
+  top: 22px;
+}
 .workspace-heading {
   display: flex;
   align-items: flex-end;
@@ -800,6 +1355,11 @@ tbody tr:last-child td { border-bottom: 0; }
   .lab-sidebar { padding-inline: 12px; }
   .lab-sidebar .readouts { grid-template-columns: 1fr; }
   .plot-wrap { height: 54vh; }
+  .workspace-grid { grid-template-columns: 1fr; }
+  .rail-resizer { display: none; }
+  .workspace-rail .experiment-panel { position: static; }
+  .workspace-rail .experiment-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .workspace-grid.rail-collapsed { grid-template-columns: 1fr; }
 }
 @media (max-width: 760px) {
   .app-shell { display: block; }
@@ -852,6 +1412,7 @@ tbody tr:last-child td { border-bottom: 0; }
     justify-content: flex-start;
   }
   .results-grid { grid-template-columns: repeat(2, minmax(140px, 1fr)); }
+  .workspace-rail .experiment-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 520px) {
   .connection { display: none; }
@@ -863,6 +1424,8 @@ tbody tr:last-child td { border-bottom: 0; }
   .zoom-status { display: none; }
   .results-grid { grid-template-columns: 1fr; }
   .result-card.wide { grid-column: span 1; }
+  .workspace-rail .experiment-summary { grid-template-columns: 1fr; }
+  .experiment-plot-wrap { height: 210px; }
 }
 </style>
 </head>
@@ -917,7 +1480,39 @@ tbody tr:last-child td { border-bottom: 0; }
             <option value="5">5 Hz</option>
             <option value="10" selected>10 Hz</option>
             <option value="20">20 Hz</option>
+            <option value="50">50 Hz</option>
+            <option value="100">100 Hz</option>
           </select>
+        </label>
+        <label class="field">
+          Εξομάλυνση
+          <select id="smoothingWindow">
+            <option value="1" selected>Raw</option>
+            <option value="3">3 δείγματα</option>
+            <option value="5">5 δείγματα</option>
+            <option value="9">9 δείγματα</option>
+            <option value="15">15 δείγματα</option>
+            <option value="21">21 δείγματα</option>
+          </select>
+        </label>
+        <label class="field">
+          Γραμμή
+          <select id="curveMode">
+            <option value="smooth" selected>Ομαλή</option>
+            <option value="straight">Ευθεία</option>
+          </select>
+        </label>
+        <label class="field" id="accelViewField" hidden>
+          Προβολή
+          <select id="accelView">
+            <option value="accel">Επιτάχυνση</option>
+            <option value="force">Δύναμη από F = m·a</option>
+          </select>
+        </label>
+        <label class="field" id="collisionMassField" hidden>
+          Μάζα
+          <input id="collisionMass" type="number" min="0.001" step="0.01" value="0.20">
+          <small>kg</small>
         </label>
         <label class="field">
           Παράθυρο
@@ -927,6 +1522,25 @@ tbody tr:last-child td { border-bottom: 0; }
             <option value="60">60 s</option>
           </select>
         </label>
+        <label class="field">
+          Χρόνος
+          <select id="timeScale">
+            <option value="auto" selected>Auto</option>
+            <option value="s">s</option>
+            <option value="ms">ms</option>
+            <option value="us">μs</option>
+          </select>
+        </label>
+        <label class="field">
+          Τιμές
+          <select id="valueScale">
+            <option value="auto" selected>Auto</option>
+            <option value="base">Βασική μονάδα</option>
+            <option value="milli">milli</option>
+            <option value="micro">micro</option>
+            <option value="kilo">kilo</option>
+          </select>
+        </label>
         <label class="check">
           <input id="autoScale" type="checkbox" checked>
           Αυτόματη κλίμακα
@@ -934,74 +1548,286 @@ tbody tr:last-child td { border-bottom: 0; }
       </div>
     </section>
 
-    <section class="chart-panel">
-      <div class="chart-head">
-        <div class="title">
-          <h2 id="chartTitle">Επιτάχυνση</h2>
-          <p id="chartSubtitle">Επιτάχυνση ως προς τον χρόνο</p>
-        </div>
-        <div class="chart-actions">
-          <div class="tool-group" aria-label="Λειτουργία δείκτη">
-            <button data-chart-tool="inspect" title="Ανάγνωση τιμών">Δείκτης</button>
-            <button class="active" data-chart-tool="select" title="Επιλογή διαστήματος">Επιλογή</button>
-            <button data-chart-tool="pan" title="Μετακίνηση γραφήματος">Μετακίνηση</button>
+    <div class="workspace-grid">
+      <div class="workspace-main">
+        <section class="chart-panel">
+          <div class="chart-head">
+            <div class="title">
+              <h2 id="chartTitle">Επιτάχυνση</h2>
+              <p id="chartSubtitle">Επιτάχυνση ως προς τον χρόνο</p>
+            </div>
+            <div class="chart-actions">
+              <div class="tool-group" aria-label="Λειτουργία δείκτη">
+                <button data-chart-tool="inspect" title="Ανάγνωση τιμών">Δείκτης</button>
+                <button class="active" data-chart-tool="select" title="Επιλογή διαστήματος">Επιλογή</button>
+                <button data-chart-tool="pan" title="Μετακίνηση γραφήματος">Μετακίνηση</button>
+              </div>
+              <div class="tool-group" aria-label="Μεγέθυνση γραφήματος">
+                <button id="zoomOut" title="Σμίκρυνση">−</button>
+                <button id="zoomIn" title="Μεγέθυνση">+</button>
+                <button id="zoomReset" title="Επιστροφή στη ζωντανή προβολή">Live</button>
+              </div>
+              <span class="zoom-status" id="zoomStatus">30 s · Live</span>
+            </div>
+            <div class="legend" id="legend" aria-label="Καμπύλες γραφήματος"></div>
           </div>
-          <div class="tool-group" aria-label="Μεγέθυνση γραφήματος">
-            <button id="zoomOut" title="Σμίκρυνση">−</button>
-            <button id="zoomIn" title="Μεγέθυνση">+</button>
-            <button id="zoomReset" title="Επιστροφή στη ζωντανή προβολή">Live</button>
+          <div class="plot-wrap" id="plotWrap">
+            <canvas id="chart" aria-label="Γράφημα μετρήσεων"></canvas>
+            <div class="tooltip" id="tooltip" hidden></div>
           </div>
-          <span class="zoom-status" id="zoomStatus">30 s · Live</span>
-        </div>
-        <div class="legend" id="legend" aria-label="Καμπύλες γραφήματος"></div>
-      </div>
-      <div class="plot-wrap" id="plotWrap">
-        <canvas id="chart" aria-label="Γράφημα μετρήσεων"></canvas>
-        <div class="tooltip" id="tooltip" hidden></div>
-      </div>
-      <div class="chart-foot">
-        <span><strong id="sampleCount">0</strong> δείγματα</span>
-        <span id="chartHint">Σύρε πάνω στη γραφική για επιλογή διαστήματος. Ροδέλα ή pinch για zoom.</span>
-      </div>
-    </section>
+          <div class="chart-foot">
+            <span><strong id="sampleCount">0</strong> δείγματα</span>
+            <span id="chartHint">Σύρε πάνω στη γραφική για επιλογή διαστήματος. Ροδέλα ή pinch για zoom.</span>
+          </div>
+        </section>
 
-    <section class="analysis-panel">
-      <div class="analysis-head">
-        <div>
-          <h3>Ανάλυση γραφικής παράστασης</h3>
-          <p>Επίλεξε ένα διάστημα για fit, ολοκλήρωση και στατιστικά.</p>
-        </div>
-        <span class="selection-status" id="selectionStatus">Ολόκληρο το ορατό διάστημα</span>
-      </div>
-      <div class="analysis-tools">
-        <label class="field">
-          Μέγεθος
-          <select id="analysisSeries"></select>
-        </label>
-        <label class="field">
-          Προσαρμογή
-          <select id="fitType">
-            <option value="linear">Γραμμική y = αt + β</option>
-            <option value="quadratic">Παραβολική y = αt² + βt + γ</option>
-            <option value="best">Καλύτερη από γραμμική / παραβολική</option>
-            <option value="none">Χωρίς καμπύλη fit</option>
-          </select>
-        </label>
-        <button id="clearSelection">Καθαρισμός επιλογής</button>
-      </div>
-      <div class="results-grid" id="analysisResults">
-        <div class="analysis-empty">Αναμονή για αρκετά δείγματα...</div>
-      </div>
-    </section>
+        <section class="analysis-panel">
+          <div class="analysis-head">
+            <div>
+              <h3>Ανάλυση γραφικής παράστασης</h3>
+              <p>Επίλεξε ένα διάστημα για fit, ολοκλήρωση και στατιστικά.</p>
+            </div>
+            <span class="selection-status" id="selectionStatus">Ολόκληρο το ορατό διάστημα</span>
+          </div>
+          <div class="analysis-tools">
+            <label class="field">
+              Μέγεθος
+              <select id="analysisSeries"></select>
+            </label>
+            <label class="field">
+              Προσαρμογή
+              <select id="fitType">
+                <option value="linear">Γραμμική y = αt + β</option>
+                <option value="quadratic">Παραβολική y = αt² + βt + γ</option>
+                <option value="best">Καλύτερη από γραμμική / παραβολική</option>
+                <option value="none">Χωρίς καμπύλη fit</option>
+              </select>
+            </label>
+            <button id="clearSelection">Καθαρισμός επιλογής</button>
+          </div>
+          <div class="results-grid" id="analysisResults">
+            <div class="analysis-empty">Αναμονή για αρκετά δείγματα...</div>
+          </div>
+          <div class="lesson-panel" id="lessonPanel">
+            <div class="lesson-empty">Φορτώνεται το μάθημα του αισθητήρα...</div>
+          </div>
+        </section>
 
-    <details class="table-panel">
-      <summary>Τελευταίες αριθμητικές μετρήσεις</summary>
-      <div class="table-title">Τελευταίες μετρήσεις</div>
-      <table>
-        <thead id="tableHead"></thead>
-        <tbody id="tableBody"></tbody>
-      </table>
-    </details>
+        <details class="table-panel">
+          <summary>Τελευταίες αριθμητικές μετρήσεις</summary>
+          <div class="table-title">Τελευταίες μετρήσεις</div>
+          <table>
+            <thead id="tableHead"></thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </details>
+      </div>
+
+      <div class="rail-resizer" id="collisionRailResizer" aria-hidden="true"></div>
+
+      <aside class="workspace-rail" id="collisionRail" aria-label="Πλευρικό panel πειράματος">
+        <button class="experiment-collapsed-toggle" id="collisionRailOpen" type="button">
+          Πείραμα
+        </button>
+        <div class="experiment-tabs" id="forceExperimentTabs" hidden>
+          <button class="active" data-force-experiment="hooke" type="button">Νόμος του Hooke</button>
+          <button data-force-experiment="buoyancy" type="button">Άνωση</button>
+        </div>
+        <section class="experiment-panel" id="hookeExperiment" hidden>
+          <div class="experiment-head">
+            <div>
+              <h3>Νόμος του Hooke</h3>
+              <p>Διάλεξε ένα σταθερό τμήμα δύναμης με A-B, γράψε την επιμήκυνση του ελατηρίου και αποθήκευσε το ζεύγος F-Δx.</p>
+            </div>
+            <div class="experiment-head-actions">
+              <span class="experiment-status" id="hookeStatus">Περίμενε επιλογή A-B σε σταθερό τμήμα δύναμης</span>
+              <button class="experiment-toggle" id="hookePanelToggle" type="button">Κλείσιμο panel</button>
+            </div>
+          </div>
+          <div class="experiment-tools">
+            <label class="field">
+              Δx
+              <input id="hookeExtensionCm" type="number" step="0.1" min="0" value="1.0">
+              <small>cm</small>
+            </label>
+            <button id="saveHookeTrial">Αποθήκευση δοκιμής</button>
+            <button id="clearHookeTrials">Καθαρισμός δοκιμών</button>
+            <button id="exportHookeTrials">Εξαγωγή δοκιμών CSV</button>
+          </div>
+          <div class="experiment-summary" id="hookeSummary">
+            <div class="experiment-empty">Επίλεξε πρώτα σταθερό plateau δύναμης και αποθήκευσε 2 ή περισσότερες δοκιμές.</div>
+          </div>
+          <div class="experiment-plot">
+            <div class="experiment-plot-card">
+              <div class="experiment-plot-head">
+                <div>
+                  <h4>Mini plot F ως προς Δx</h4>
+                  <p>Για ιδανικό ελατήριο περιμένουμε περίπου ευθεία. Η κλίση της δίνει τη σταθερά του ελατηρίου `k`.</p>
+                </div>
+                <span class="experiment-plot-tag">Hooke</span>
+              </div>
+              <div class="experiment-plot-wrap">
+                <canvas id="hookeChart" aria-label="Μικρό γράφημα δύναμης ως προς επιμήκυνση"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="experiment-study">
+            <div class="experiment-study-grid" id="hookeProtocol"></div>
+          </div>
+          <div class="table-title">Αποθηκευμένες δοκιμές Hooke</div>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Δx (cm)</th>
+                <th>Fmean (N)</th>
+                <th>Fmax (N)</th>
+                <th>σF (N)</th>
+                <th>k = F/Δx (N/m)</th>
+              </tr>
+            </thead>
+            <tbody id="hookeBody">
+              <tr><td colspan="6" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>
+            </tbody>
+          </table>
+          <div class="experiment-note" id="hookeNote">
+            Η πιο καθαρή μέτρηση βγαίνει όταν το ελατήριο έχει ηρεμήσει και το A-B καλύπτει μόνο το σταθερό τμήμα.
+          </div>
+        </section>
+        <section class="experiment-panel" id="buoyancyExperiment" hidden>
+          <div class="experiment-head">
+            <div>
+              <h3>Άνωση</h3>
+              <p>Μέτρα το βάρος του σώματος στον αέρα και το φαινόμενο βάρος μέσα στο υγρό. Η διαφορά τους είναι η άνωση.</p>
+            </div>
+            <div class="experiment-head-actions">
+              <span class="experiment-status" id="buoyancyStatus">Περίμενε δύο σταθερά plateau δύναμης</span>
+              <button class="experiment-toggle" id="buoyancyPanelToggle" type="button">Κλείσιμο panel</button>
+            </div>
+          </div>
+          <div class="experiment-tools">
+            <label class="field">
+              Όγκος
+              <input id="buoyancyVolumeMl" type="number" step="1" min="0" value="100">
+              <small>mL</small>
+            </label>
+            <button id="captureBuoyancyAir">Μέτρηση στον αέρα</button>
+            <button id="captureBuoyancyLiquid">Μέτρηση στο υγρό</button>
+            <button id="saveBuoyancyTrial">Αποθήκευση δοκιμής</button>
+            <button id="clearBuoyancyTrials">Καθαρισμός δοκιμών</button>
+            <button id="exportBuoyancyTrials">Εξαγωγή CSV</button>
+          </div>
+          <div class="experiment-summary" id="buoyancySummary">
+            <div class="experiment-empty">Επίλεξε με A-B ένα σταθερό τμήμα στον αέρα, αποθήκευσέ το, μετά επανάλαβε μέσα στο υγρό.</div>
+          </div>
+          <div class="experiment-study">
+            <div class="experiment-study-grid" id="buoyancyProtocol"></div>
+          </div>
+          <div class="table-title">Αποθηκευμένες δοκιμές άνωσης</div>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>V (mL)</th>
+                <th>Wαέρα (N)</th>
+                <th>Wυγρό (N)</th>
+                <th>Άνωση (N)</th>
+                <th>ρ (kg/m³)</th>
+              </tr>
+            </thead>
+            <tbody id="buoyancyBody">
+              <tr><td colspan="6" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>
+            </tbody>
+          </table>
+          <div class="experiment-note" id="buoyancyNote">
+            Το σώμα πρέπει να είναι πλήρως βυθισμένο, χωρίς να ακουμπά στον πυθμένα ή στα τοιχώματα.
+          </div>
+        </section>
+        <section class="experiment-panel" id="motionExperiment" hidden>
+          <div class="experiment-head">
+            <div>
+              <h3>Ευθύγραμμη ομαλή κίνηση</h3>
+              <p>Πρώτο σχολικό πείραμα με τον υπερηχητικό αισθητήρα: έλεγχος αν η θέση αλλάζει γραμμικά και αν η ταχύτητα μένει περίπου σταθερή.</p>
+            </div>
+            <div class="experiment-head-actions">
+              <span class="experiment-status" id="motionStatus">Περίμενε καθαρή μέτρηση κίνησης</span>
+              <button class="experiment-toggle" id="motionPanelToggle" type="button">Κλείσιμο panel</button>
+            </div>
+          </div>
+          <div class="experiment-summary" id="motionSummary">
+            <div class="experiment-empty">Κάνε μία μέτρηση με αμαξίδιο ή σώμα που κινείται μπροστά από τον αισθητήρα.</div>
+          </div>
+          <div class="experiment-study">
+            <div class="experiment-study-grid" id="motionProtocol"></div>
+          </div>
+          <div class="experiment-note" id="motionNote">
+            Ξεκίνα με το γράφημα θέσης x-t. Αν δεις σχεδόν ευθεία, μετά γύρισε στο velocity για να επιβεβαιώσεις αν η ταχύτητα είναι περίπου σταθερή.
+          </div>
+        </section>
+        <section class="experiment-panel" id="collisionExperiment" hidden>
+          <div class="experiment-head">
+            <div>
+              <h3>3ος Νόμος Newton: Κρούση και ώθηση</h3>
+              <p>Χρησιμοποίησε την επιλογή A-B πάνω στην κρούση, γράψε την αρχική ταχύτητα και αποθήκευσε κάθε δοκιμή για να ελέγξεις τη σχέση ανάμεσα σε δύναμη, χρόνο επαφής και ώθηση.</p>
+            </div>
+            <div class="experiment-head-actions">
+              <span class="experiment-status" id="collisionStatus">Περίμενε επιλογή A-B στη δύναμη</span>
+              <button class="experiment-toggle" id="collisionPanelToggle" type="button">Κλείσιμο panel</button>
+            </div>
+          </div>
+          <div class="experiment-tools">
+            <label class="field">
+              v0
+              <input id="collisionVelocity" type="number" step="0.01" min="0" value="0.50">
+              <small>m/s</small>
+            </label>
+            <button id="saveCollisionTrial">Αποθήκευση δοκιμής</button>
+            <button id="clearCollisionTrials">Καθαρισμός δοκιμών</button>
+            <button id="exportCollisionTrials">Εξαγωγή δοκιμών CSV</button>
+          </div>
+          <div class="experiment-summary" id="collisionSummary">
+            <div class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</div>
+          </div>
+          <div class="experiment-plot">
+            <div class="experiment-plot-card">
+              <div class="experiment-plot-head">
+                <div>
+                  <h4>Mini plot |Impulse| ως προς v0</h4>
+                  <p>Κάθε τελεία είναι μία κρούση. Η γραμμή fit σε βοηθά να συγκρίνεις το αποτέλεσμα με τη σχέση |J| ≈ m·v0.</p>
+                </div>
+                <span class="experiment-plot-tag">Right panel</span>
+              </div>
+              <div class="experiment-plot-wrap">
+                <canvas id="collisionChart" aria-label="Μικρό γράφημα impulse ως προς ταχύτητα"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="experiment-study">
+            <div class="experiment-study-grid" id="collisionProtocol"></div>
+          </div>
+          <div class="table-title">Αποθηκευμένες δοκιμές κρούσης</div>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>v0 (m/s)</th>
+                <th>Impulse (N·s)</th>
+                <th>|Impulse| (N·s)</th>
+                <th>Fmax (N)</th>
+                <th>Fmean (N)</th>
+                <th>Δt (s)</th>
+              </tr>
+            </thead>
+            <tbody id="collisionBody">
+              <tr><td colspan="7" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>
+            </tbody>
+          </table>
+          <div class="experiment-note" id="collisionNote">
+            Βάλε τη συσκευή στην προβολή δύναμης, επίλεξε το spike της κρούσης και αποθήκευσε πολλές δοκιμές για σύγκριση.
+          </div>
+        </section>
+      </aside>
+    </div>
   </main>
 </div>
 <div class="toast" id="toast" hidden></div>
@@ -1023,35 +1849,104 @@ let selectionAnchor = 0;
 let analysisSeriesIndex = 0;
 let fitType = 'linear';
 let analysisCache = null;
+let activeLessonKey = null;
+let activeScenarioId = null;
 let customView = null;
+let customYScale = null;
 let chartTool = 'select';
 let panning = false;
 let panStartX = 0;
+let panStartY = 0;
 let panStartView = null;
+let panStartYScale = null;
+let accelDisplayMode = localStorage.getItem('palladio-accel-view') || 'accel';
+let collisionMassKg = Math.max(0.001, Number(localStorage.getItem('palladio-collision-mass') || '0.20'));
+let timeScaleMode = localStorage.getItem('palladio-time-scale') || 'auto';
+let valueScaleMode = localStorage.getItem('palladio-value-scale') || 'auto';
+let smoothingWindow = Math.max(1, Number(localStorage.getItem('palladio-smoothing-window') || '1'));
+if (![1, 3, 5, 9, 15, 21].includes(smoothingWindow)) smoothingWindow = 1;
+let curveMode = localStorage.getItem('palladio-curve-mode') || 'smooth';
+if (curveMode !== 'smooth' && curveMode !== 'straight') curveMode = 'smooth';
+let collisionRailWidth = Math.min(520, Math.max(300, Number(localStorage.getItem('palladio-collision-rail-width') || '360')));
+let collisionRailCollapsed = localStorage.getItem('palladio-collision-rail-collapsed') === '1';
+let activeForceExperiment = localStorage.getItem('palladio-force-experiment') || 'hooke';
+if (activeForceExperiment !== 'hooke' && activeForceExperiment !== 'buoyancy') activeForceExperiment = 'hooke';
+let hookeExtensionCm = Math.max(0, Number(localStorage.getItem('palladio-hooke-extension-cm') || '1.0'));
+let buoyancyVolumeMl = Math.max(0, Number(localStorage.getItem('palladio-buoyancy-volume-ml') || '100'));
+let buoyancyAirForce = Number(localStorage.getItem('palladio-buoyancy-air-force') || 'NaN');
+let buoyancyLiquidForce = Number(localStorage.getItem('palladio-buoyancy-liquid-force') || 'NaN');
+let collisionTrials = (() => {
+  try {
+    const saved = JSON.parse(localStorage.getItem('palladio-collision-trials') || '[]');
+    return Array.isArray(saved) ? saved : [];
+  } catch (error) {
+    return [];
+  }
+})();
+let hookeTrials = (() => {
+  try {
+    const saved = JSON.parse(localStorage.getItem('palladio-hooke-trials') || '[]');
+    return Array.isArray(saved) ? saved : [];
+  } catch (error) {
+    return [];
+  }
+})();
+let buoyancyTrials = (() => {
+  try {
+    const saved = JSON.parse(localStorage.getItem('palladio-buoyancy-trials') || '[]');
+    return Array.isArray(saved) ? saved : [];
+  } catch (error) {
+    return [];
+  }
+})();
 const activePointers = new Map();
 let pinchState = null;
 let lastSampleId = -1;
 let sampleEpochMs = null;
 let toastTimer = null;
+let railResizeActive = false;
 
 const canvas = document.getElementById('chart');
 const ctx = canvas.getContext('2d');
+const collisionCanvas = document.getElementById('collisionChart');
+const collisionCtx = collisionCanvas ? collisionCanvas.getContext('2d') : null;
+const hookeCanvas = document.getElementById('hookeChart');
+const hookeCtx = hookeCanvas ? hookeCanvas.getContext('2d') : null;
+const workspaceGrid = document.querySelector('.workspace-grid');
+const railResizer = document.getElementById('collisionRailResizer');
 const tooltip = document.getElementById('tooltip');
 const statusDot = document.getElementById('statusDot');
 const modeButtons = [...document.querySelectorAll('[data-mode]')];
 
 const modes = {
   0: {
-    title: 'Επιτάχυνση',
-    subtitle: 'Συνιστώσες επιτάχυνσης ως προς τον χρόνο',
-    yLabel: 'Επιτάχυνση (m/s²)',
     symmetric: true,
     minimumSpan: 24,
-    series: [
-      { key: 'ax', label: 'Άξονας X', short: 'X', unit: 'm/s²', color: '#d63c3c', enabled: true },
-      { key: 'ay', label: 'Άξονας Y', short: 'Y', unit: 'm/s²', color: '#2d9d57', enabled: true },
-      { key: 'az', label: 'Άξονας Z', short: 'Z', unit: 'm/s²', color: '#1769aa', enabled: true }
-    ]
+    views: {
+      accel: {
+        title: 'Επιτάχυνση',
+        subtitle: 'Συνιστώσες επιτάχυνσης ως προς τον χρόνο',
+        yLabel: 'Επιτάχυνση (m/s²)',
+        minimumSpan: 24,
+        series: [
+          { key: 'ax', label: 'Άξονας X', short: 'X', unit: 'm/s²', color: '#d63c3c', enabled: true },
+          { key: 'ay', label: 'Άξονας Y', short: 'Y', unit: 'm/s²', color: '#2d9d57', enabled: true },
+          { key: 'az', label: 'Άξονας Z', short: 'Z', unit: 'm/s²', color: '#1769aa', enabled: true }
+        ]
+      },
+      force: {
+        title: 'Δύναμη από επιτάχυνση',
+        subtitle: 'Υπολογισμός F = m·a από τις μετρήσεις επιτάχυνσης',
+        yLabel: 'Δύναμη (N)',
+        minimumSpan: 2,
+        series: [
+          { key: 'fx', label: 'Δύναμη X', short: 'Fx', unit: 'N', color: '#d63c3c', enabled: true },
+          { key: 'fy', label: 'Δύναμη Y', short: 'Fy', unit: 'N', color: '#2d9d57', enabled: true },
+          { key: 'fz', label: 'Δύναμη Z', short: 'Fz', unit: 'N', color: '#1769aa', enabled: true },
+          { key: 'fnet', label: 'Συνισταμένη |F|', short: '|F|', unit: 'N', color: '#7b4db7', enabled: false }
+        ]
+      }
+    }
   },
   1: {
     title: 'Γωνιακή ταχύτητα',
@@ -1090,12 +1985,112 @@ const modes = {
 };
 
 function currentMode() {
-  return modes[activeMode] || modes[0];
+  const meta = modes[activeMode] || modes[0];
+  if (activeMode !== 0 || !meta.views) return meta;
+  const view = meta.views[accelDisplayMode] || meta.views.accel;
+  return {
+    ...meta,
+    ...view,
+    minimumSpan: accelDisplayMode === 'force'
+      ? Math.max(1, collisionMassKg * meta.minimumSpan)
+      : view.minimumSpan
+  };
 }
 
 function enabledSeries() {
   const enabled = currentMode().series.filter(series => series.enabled);
   return enabled.length ? enabled : [currentMode().series[0]];
+}
+
+function dataValue(sample, key) {
+  const source = sample || {};
+  const mass = Math.max(0.001, collisionMassKg);
+  if (key === 'fx') return Number(source.ax || 0) * mass;
+  if (key === 'fy') return Number(source.ay || 0) * mass;
+  if (key === 'fz') return Number(source.az || 0) * mass;
+  if (key === 'fnet') {
+    const fx = Number(source.ax || 0) * mass;
+    const fy = Number(source.ay || 0) * mass;
+    const fz = Number(source.az || 0) * mass;
+    return Math.sqrt(fx * fx + fy * fy + fz * fz);
+  }
+  return Number(source[key] || 0);
+}
+
+function rawRowValue(row, series) {
+  return dataValue(row.sample || {}, series.key);
+}
+
+function rowValue(row, series) {
+  if (smoothingWindow <= 1 || !row || !row.sample) return rawRowValue(row, series);
+  const index = rows.indexOf(row);
+  if (index < 0) return rawRowValue(row, series);
+  const radius = Math.floor(smoothingWindow / 2);
+  const mode = row.sample.mode;
+  let sum = 0;
+  let count = 0;
+  for (let offset = -radius; offset <= radius; offset++) {
+    const candidate = rows[index + offset];
+    if (!candidate || !candidate.sample || candidate.sample.mode !== mode) continue;
+    const value = rawRowValue(candidate, series);
+    if (!isFinite(value)) continue;
+    sum += value;
+    count++;
+  }
+  return count ? sum / count : rawRowValue(row, series);
+}
+
+function drawDataPath(points) {
+  if (!points.length) return;
+  ctx.beginPath();
+  ctx.moveTo(points[0].x, points[0].y);
+  if (curveMode !== 'smooth' || points.length < 3) {
+    for (let index = 1; index < points.length; index++) {
+      ctx.lineTo(points[index].x, points[index].y);
+    }
+    return;
+  }
+  for (let index = 0; index < points.length - 1; index++) {
+    const p0 = points[Math.max(0, index - 1)];
+    const p1 = points[index];
+    const p2 = points[index + 1];
+    const p3 = points[Math.min(points.length - 1, index + 2)];
+    const cp1x = p1.x + (p2.x - p0.x) / 6;
+    const cp1y = p1.y + (p2.y - p0.y) / 6;
+    const cp2x = p2.x - (p3.x - p1.x) / 6;
+    const cp2y = p2.y - (p3.y - p1.y) / 6;
+    ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, p2.x, p2.y);
+  }
+}
+
+function selectedTimeScale(viewSpan) {
+  if (timeScaleMode === 's') return { unit: 's', multiplier: 1 };
+  if (timeScaleMode === 'ms') return { unit: 'ms', multiplier: 1e-3 };
+  if (timeScaleMode === 'us') return { unit: 'μs', multiplier: 1e-6 };
+  if (viewSpan < 0.001) return { unit: 'μs', multiplier: 1e-6 };
+  if (viewSpan < 1) return { unit: 'ms', multiplier: 1e-3 };
+  return { unit: 's', multiplier: 1 };
+}
+
+function selectedValueScale(selectedSeries, scale) {
+  const units = [...new Set(selectedSeries.map(series => series.unit))];
+  const maxAbs = Math.max(Math.abs(scale.min), Math.abs(scale.max), 1e-12);
+  const mapping = {
+    micro: { prefix: 'μ', multiplier: 1e-6 },
+    milli: { prefix: 'm', multiplier: 1e-3 },
+    base: { prefix: '', multiplier: 1 },
+    kilo: { prefix: 'k', multiplier: 1e3 }
+  };
+  if (units.length !== 1) return { prefix: '', multiplier: 1 };
+  if (valueScaleMode !== 'auto') return mapping[valueScaleMode] || mapping.base;
+  if (maxAbs >= 1000) return mapping.kilo;
+  if (maxAbs < 0.001) return mapping.micro;
+  if (maxAbs < 1) return mapping.milli;
+  return mapping.base;
+}
+
+function displayUnit(unit, scaleInfo) {
+  return (scaleInfo.prefix || '') + unit;
 }
 
 function formatValue(value, span) {
@@ -1115,7 +2110,9 @@ function resetMeasurement() {
   selecting = false;
   analysisCache = null;
   customView = null;
+  customYScale = null;
   panning = false;
+  panStartYScale = null;
   activePointers.clear();
   pinchState = null;
   tooltip.hidden = true;
@@ -1125,9 +2122,870 @@ function resetMeasurement() {
   draw();
 }
 
+function updateDerivedControls() {
+  const accelField = document.getElementById('accelViewField');
+  const massField = document.getElementById('collisionMassField');
+  const accelView = document.getElementById('accelView');
+  const massInput = document.getElementById('collisionMass');
+  const isAccelerationMode = activeMode === 0;
+  accelField.hidden = !isAccelerationMode;
+  massField.hidden = !isAccelerationMode;
+  accelView.value = accelDisplayMode;
+  massInput.value = collisionMassKg.toFixed(2);
+}
+
+function saveCollisionTrials() {
+  localStorage.setItem('palladio-collision-trials', JSON.stringify(collisionTrials));
+}
+
+function saveHookeTrials() {
+  localStorage.setItem('palladio-hooke-trials', JSON.stringify(hookeTrials));
+}
+
+function saveBuoyancyTrials() {
+  localStorage.setItem('palladio-buoyancy-trials', JSON.stringify(buoyancyTrials));
+}
+
+function saveBuoyancyCapture() {
+  localStorage.setItem('palladio-buoyancy-air-force', String(buoyancyAirForce));
+  localStorage.setItem('palladio-buoyancy-liquid-force', String(buoyancyLiquidForce));
+}
+
+function isCollisionExperimentMode() {
+  return activeMode === 0 && accelDisplayMode === 'force';
+}
+
+function isHookeExperimentMode() {
+  return activeMode === 2 && activeForceExperiment === 'hooke';
+}
+
+function isBuoyancyExperimentMode() {
+  return activeMode === 2 && activeForceExperiment === 'buoyancy';
+}
+
+function isForceExperimentMode() {
+  return activeMode === 2;
+}
+
+function isMotionExperimentMode() {
+  return activeMode === 4;
+}
+
+function isRightRailMode() {
+  return isCollisionExperimentMode() || isMotionExperimentMode() || isForceExperimentMode();
+}
+
+function rightRailExperimentTitle() {
+  if (isForceExperimentMode()) return 'Νόμος του Hook / Άνωση';
+  if (isHookeExperimentMode()) return 'Νόμος του Hooke';
+  if (isBuoyancyExperimentMode()) return 'Άνωση';
+  if (isMotionExperimentMode()) return 'Ευθύγραμμη ομαλή κίνηση';
+  if (isCollisionExperimentMode()) return '3ος Νόμος Newton: Κρούση και ώθηση';
+  return 'Πείραμα';
+}
+
+function clampRailWidth(value) {
+  return Math.min(520, Math.max(300, Number(value) || 360));
+}
+
+function applyCollisionRailLayout() {
+  if (!workspaceGrid) return;
+  collisionRailWidth = clampRailWidth(collisionRailWidth);
+  workspaceGrid.style.setProperty('--rail-width', collisionRailWidth + 'px');
+  workspaceGrid.classList.toggle('rail-hidden', !isRightRailMode());
+  workspaceGrid.classList.toggle('rail-collapsed', isRightRailMode() && collisionRailCollapsed);
+  const forceTabs = document.getElementById('forceExperimentTabs');
+  if (forceTabs) {
+    forceTabs.hidden = !isForceExperimentMode();
+    forceTabs.querySelectorAll('[data-force-experiment]').forEach(button => {
+      const active = button.dataset.forceExperiment === activeForceExperiment;
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+  }
+  const railOpen = document.getElementById('collisionRailOpen');
+  if (railOpen) {
+    const title = rightRailExperimentTitle();
+    railOpen.textContent = title;
+    railOpen.setAttribute('aria-label', 'Άνοιγμα πειράματος: ' + title);
+    railOpen.title = title;
+  }
+  ['collisionPanelToggle', 'motionPanelToggle', 'hookePanelToggle', 'buoyancyPanelToggle'].forEach(id => {
+    const toggle = document.getElementById(id);
+    if (toggle) toggle.textContent = collisionRailCollapsed ? 'Άνοιγμα panel' : 'Κλείσιμο panel';
+  });
+}
+
+function setCollisionRailCollapsed(next) {
+  collisionRailCollapsed = Boolean(next);
+  localStorage.setItem('palladio-collision-rail-collapsed', collisionRailCollapsed ? '1' : '0');
+  applyCollisionRailLayout();
+  resizeCanvas();
+}
+
+function setActiveForceExperiment(next) {
+  activeForceExperiment = next === 'buoyancy' ? 'buoyancy' : 'hooke';
+  localStorage.setItem('palladio-force-experiment', activeForceExperiment);
+  applyCollisionRailLayout();
+  renderHookeExperiment();
+  renderBuoyancyExperiment();
+  updateAnalysis();
+  draw();
+}
+
+function startRailResize(event) {
+  if (!isRightRailMode() || window.innerWidth <= 1020) return;
+  event.preventDefault();
+  railResizeActive = true;
+  railResizer.classList.add('dragging');
+  document.body.style.cursor = 'col-resize';
+  document.body.style.userSelect = 'none';
+}
+
+function moveRailResize(event) {
+  if (!railResizeActive || !workspaceGrid) return;
+  const rect = workspaceGrid.getBoundingClientRect();
+  const nextWidth = rect.right - event.clientX - 9;
+  collisionRailWidth = clampRailWidth(nextWidth);
+  localStorage.setItem('palladio-collision-rail-width', String(collisionRailWidth));
+  applyCollisionRailLayout();
+  resizeCanvas();
+}
+
+function stopRailResize() {
+  if (!railResizeActive) return;
+  railResizeActive = false;
+  railResizer.classList.remove('dragging');
+  document.body.style.cursor = '';
+  document.body.style.userSelect = '';
+}
+
+function collisionCurrentMetrics() {
+  if (!isCollisionExperimentMode() || !analysisCache || analysisCache.points.length < 2) return null;
+  const points = analysisCache.points;
+  const peakForce = points.reduce((best, point) => {
+    return Math.abs(point.y) > Math.abs(best) ? point.y : best;
+  }, points[0].y);
+  return {
+    duration: analysisCache.duration,
+    signedArea: analysisCache.signedArea,
+    absoluteArea: analysisCache.absoluteArea,
+    peakForce,
+    meanForce: analysisCache.mean,
+    sampleCount: points.length
+  };
+}
+
+function hookeCurrentMetrics() {
+  if (!isHookeExperimentMode() || !analysisCache || analysisCache.points.length < 2 || !selection) return null;
+  const points = analysisCache.points;
+  const peakForce = points.reduce((best, point) => {
+    return Math.abs(point.y) > Math.abs(best) ? point.y : best;
+  }, points[0].y);
+  return {
+    duration: analysisCache.duration,
+    meanForce: analysisCache.mean,
+    peakForce,
+    stdDev: analysisCache.stdDev,
+    sampleCount: points.length
+  };
+}
+
+function buoyancyCurrentMetrics() {
+  if (!isBuoyancyExperimentMode() || !analysisCache || analysisCache.points.length < 2 || !selection) return null;
+  const points = analysisCache.points;
+  const peakForce = points.reduce((best, point) => {
+    return Math.abs(point.y) > Math.abs(best) ? point.y : best;
+  }, points[0].y);
+  return {
+    duration: analysisCache.duration,
+    meanForce: analysisCache.mean,
+    apparentWeight: Math.abs(analysisCache.mean),
+    peakForce,
+    stdDev: analysisCache.stdDev,
+    sampleCount: points.length
+  };
+}
+
+function buoyancyResult(airForce, liquidForce, volumeMl) {
+  if (!isFinite(airForce) || !isFinite(liquidForce) || volumeMl <= 0) return null;
+  const weightAir = Math.abs(airForce);
+  const weightLiquid = Math.abs(liquidForce);
+  const buoyantForce = weightAir - weightLiquid;
+  const volumeM3 = volumeMl / 1000000;
+  const density = buoyantForce > 0 ? buoyantForce / (9.81 * volumeM3) : 0;
+  const lossPercent = weightAir > 0 ? (buoyantForce / weightAir) * 100 : 0;
+  return { weightAir, weightLiquid, buoyantForce, volumeM3, density, lossPercent };
+}
+
+function hookeFit(trials) {
+  if (trials.length < 2) return null;
+  const points = trials
+    .map(trial => ({ x: trial.extensionM, y: trial.forceMean }))
+    .filter(point => point.x > 0);
+  if (points.length < 2) return null;
+  const meanX = points.reduce((sum, point) => sum + point.x, 0) / points.length;
+  const meanY = points.reduce((sum, point) => sum + point.y, 0) / points.length;
+  let num = 0;
+  let den = 0;
+  points.forEach(point => {
+    const dx = point.x - meanX;
+    const dy = point.y - meanY;
+    num += dx * dy;
+    den += dx * dx;
+  });
+  if (den < 1e-12) return null;
+  const slope = num / den;
+  const intercept = meanY - slope * meanX;
+  const ssTot = points.reduce((sum, point) => sum + (point.y - meanY) * (point.y - meanY), 0);
+  const ssRes = points.reduce((sum, point) => {
+    const predicted = intercept + slope * point.x;
+    return sum + (point.y - predicted) * (point.y - predicted);
+  }, 0);
+  const r2 = ssTot < 1e-12 ? 1 : 1 - ssRes / ssTot;
+  return { slope, intercept, r2 };
+}
+
+function motionExperimentMetrics() {
+  const meta = currentMode();
+  const series = (analysisCache && analysisCache.series) || meta.series[analysisSeriesIndex] || meta.series[0];
+  const result = analysisCache;
+  if (!isMotionExperimentMode()) return null;
+  if (!result || result.points.length < 2) {
+    return { series, ready: false };
+  }
+  const fitR2 = result.fit ? result.fit.r2 : null;
+  const linearR2 = result.linear ? result.linear.r2 : null;
+  const slope = result.fit && result.fit.degree === 1
+    ? result.fit.coefficients[1]
+    : (result.linear ? result.linear.coefficients[1] : result.abSlope);
+  let quality = 'Δοκίμασε λίγο πιο σταθερή διαδρομή.';
+  if (series.key === 'distance' && fitR2 !== null && fitR2 >= 0.985) quality = 'Πολύ καλή ένδειξη ομαλής κίνησης.';
+  else if (series.key === 'velocity' && Math.abs(result.stdDev) < Math.max(0.08, Math.abs(result.mean) * 0.12)) quality = 'Η ταχύτητα φαίνεται αρκετά σταθερή.';
+  else if (series.key === 'acceleration' && Math.abs(result.mean) < 0.2) quality = 'Η επιτάχυνση είναι κοντά στο μηδέν, άρα η κίνηση πλησιάζει την ομαλή.';
+  return {
+    ready: true,
+    series,
+    duration: result.duration,
+    delta: result.delta,
+    mean: result.mean,
+    stdDev: result.stdDev,
+    slope,
+    fitR2,
+    linearR2,
+    quality
+  };
+}
+
+function renderMotionExperiment() {
+  const panel = document.getElementById('motionExperiment');
+  const summary = document.getElementById('motionSummary');
+  const status = document.getElementById('motionStatus');
+  const protocol = document.getElementById('motionProtocol');
+  const note = document.getElementById('motionNote');
+
+  if (!isMotionExperimentMode()) {
+    panel.hidden = true;
+    applyCollisionRailLayout();
+    return;
+  }
+
+  panel.hidden = false;
+  applyCollisionRailLayout();
+  const metrics = motionExperimentMetrics();
+  const series = metrics && metrics.series ? metrics.series : currentMode().series[analysisSeriesIndex] || currentMode().series[0];
+  const usingDistance = series.key === 'distance';
+  const usingVelocity = series.key === 'velocity';
+  const usingAcceleration = series.key === 'acceleration';
+
+  status.textContent = !metrics || !metrics.ready
+    ? 'Κάνε μέτρηση και επίλεξε καθαρό τμήμα της κίνησης'
+    : metrics.quality;
+
+  if (!metrics || !metrics.ready) {
+    summary.innerHTML = '<div class="experiment-empty">Ξεκίνα μία διαδρομή μπροστά από τον αισθητήρα και μετά επίλεξε το πιο καθαρό κομμάτι στο γράφημα.</div>';
+  } else {
+    const cards = [];
+    cards.push('<div class="summary-card"><span>Διάρκεια</span><strong>' + compactNumber(metrics.duration) + '</strong><small>s στο επιλεγμένο τμήμα</small></div>');
+    if (usingDistance) {
+      cards.push('<div class="summary-card"><span>Δx</span><strong>' + compactNumber(metrics.delta) + '</strong><small>m μετατόπιση</small></div>');
+      cards.push('<div class="summary-card"><span>Μέση ταχύτητα</span><strong>' + compactNumber(metrics.slope) + '</strong><small>m/s από την κλίση</small></div>');
+      cards.push('<div class="summary-card"><span>R² fit</span><strong>' + (metrics.fitR2 !== null ? compactNumber(metrics.fitR2) : '—') + '</strong><small>όσο πιο κοντά στο 1 τόσο πιο γραμμικό</small></div>');
+    } else if (usingVelocity) {
+      cards.push('<div class="summary-card"><span>Μέση ταχύτητα</span><strong>' + compactNumber(metrics.mean) + '</strong><small>m/s στο τμήμα</small></div>');
+      cards.push('<div class="summary-card"><span>Τυπική απόκλιση</span><strong>' + compactNumber(metrics.stdDev) + '</strong><small>m/s σταθερότητα</small></div>');
+      cards.push('<div class="summary-card"><span>Κλίση υ-t</span><strong>' + compactNumber(metrics.slope) + '</strong><small>m/s² ιδανικά κοντά στο 0</small></div>');
+    } else {
+      cards.push('<div class="summary-card"><span>Μέση επιτάχυνση</span><strong>' + compactNumber(metrics.mean) + '</strong><small>m/s²</small></div>');
+      cards.push('<div class="summary-card"><span>Τυπική απόκλιση</span><strong>' + compactNumber(metrics.stdDev) + '</strong><small>m/s²</small></div>');
+      cards.push('<div class="summary-card"><span>Γραμμικότητα</span><strong>' + (metrics.linearR2 !== null ? compactNumber(metrics.linearR2) : '—') + '</strong><small>βοηθητικός έλεγχος</small></div>');
+    }
+    summary.innerHTML = cards.join('');
+  }
+
+  const steps = usingDistance
+    ? [
+        'Βάλε ένα αμαξίδιο ή σώμα να κινηθεί ευθύγραμμα μπροστά από τον αισθητήρα.',
+        'Κράτησε όσο γίνεται σταθερό ρυθμό σε ένα τμήμα της διαδρομής.',
+        'Στο x-t επίλεξε με A-B το πιο καθαρό, σχεδόν ευθύγραμμο κομμάτι.',
+        'Έλεγξε αν το R² είναι κοντά στο 1 και αν η κλίση μένει σταθερή.'
+      ]
+    : usingVelocity
+      ? [
+          'Άλλαξε την προβολή στο velocity για το ίδιο τμήμα της κίνησης.',
+          'Κοίτα αν η μέση τιμή είναι σταθερή και η τυπική απόκλιση μικρή.',
+          'Έλεγξε αν η κλίση του υ-t είναι κοντά στο 0.',
+          'Σύγκρινε δύο προσπάθειες από διαφορετικές ομάδες.'
+        ]
+      : [
+          'Άλλαξε στην επιτάχυνση μόνο αφού δεις πρώτα θέση και ταχύτητα.',
+          'Για ομαλή κίνηση περιμένουμε μέση επιτάχυνση κοντά στο 0.',
+          'Χρησιμοποίησε τη std dev για να συζητήσεις θόρυβο και ατέλειες.',
+          'Σύνδεσε αυτό το γράφημα με τα x-t και υ-t της ίδιας μέτρησης.'
+        ];
+
+  const expected = usingDistance
+    ? 'Για ομαλή κίνηση το x-t πρέπει να μοιάζει με ευθεία. Η κλίση της ευθείας είναι η ταχύτητα.'
+    : usingVelocity
+      ? 'Για ομαλή κίνηση το υ-t πρέπει να είναι σχεδόν οριζόντιο, δηλαδή η ταχύτητα να μην αλλάζει πολύ.'
+      : 'Για ομαλή κίνηση το α-t πρέπει να μένει κοντά στο μηδέν, με μικρές μόνο διακυμάνσεις.';
+
+  const teacher = usingDistance
+    ? 'Πριν δείξεις αριθμούς, ζήτησε από τους μαθητές να πουν αν η καμπύλη “μοιάζει” με ευθεία και τι σημαίνει αυτό φυσικά.'
+    : usingVelocity
+      ? 'Ρώτησε αν δύο ομάδες με ίδια μέση ταχύτητα αλλά διαφορετική std dev έχουν εξίσου καλή πειραματική εκτέλεση.'
+      : 'Τόνισε ότι “γρήγορα” δεν σημαίνει “με επιτάχυνση”. Η ομαλή κίνηση μπορεί να είναι και γρήγορη αλλά με α ≈ 0.';
+
+  protocol.innerHTML =
+    '<section class="experiment-study-card"><h5>Στόχος</h5><p>Να ελέγξουν οι μαθητές αν ένα σώμα κινείται με περίπου σταθερή ταχύτητα και να συνδέσουν τα γραφήματα x-t, υ-t και α-t.</p></section>' +
+    '<section class="experiment-study-card"><h5>Στήσιμο</h5><p>Υπερηχητικός αισθητήρας απέναντι από αμαξίδιο ή σώμα που κινείται σε ευθεία, χωρίς εμπόδια και με αρκετά καθαρή ανακλώμενη επιφάνεια.</p></section>' +
+    '<section class="experiment-study-card"><h5>Βήματα</h5><ol>' + steps.map(step => '<li>' + step + '</li>').join('') + '</ol></section>' +
+    '<section class="experiment-study-card"><h5>Τι περιμένουμε</h5><p>' + expected + '</p></section>' +
+    '<section class="experiment-study-card"><h5>Σημείωση καθηγητή</h5><p>' + teacher + '</p></section>';
+
+  note.textContent = usingDistance
+    ? 'Πρώτα δούλεψε σε x-t και μετά ζήτα από τους μαθητές να επιβεβαιώσουν το ίδιο συμπέρασμα στο velocity.'
+    : usingVelocity
+      ? 'Το velocity είναι το καλύτερο σημείο για να φανεί αν η κίνηση είναι όντως ομαλή και όχι απλώς “σχεδόν ευθεία” στο μάτι.'
+      : 'Η επιτάχυνση εδώ είναι εργαλείο επιβεβαίωσης, όχι το πρώτο γράφημα που πρέπει να κοιτάξουν.';
+}
+
+function collisionFit(trials) {
+  if (trials.length < 2) return null;
+  const meanX = trials.reduce((sum, trial) => sum + trial.velocity, 0) / trials.length;
+  const meanY = trials.reduce((sum, trial) => sum + Math.abs(trial.impulse), 0) / trials.length;
+  let num = 0;
+  let den = 0;
+  trials.forEach(trial => {
+    const dx = trial.velocity - meanX;
+    const dy = Math.abs(trial.impulse) - meanY;
+    num += dx * dy;
+    den += dx * dx;
+  });
+  if (den < 1e-9) return null;
+  const slope = num / den;
+  const intercept = meanY - slope * meanX;
+  return { slope, intercept };
+}
+
+function prepareMiniCanvas(canvasEl, context) {
+  if (!canvasEl || !context) return null;
+  const rect = canvasEl.getBoundingClientRect();
+  if (!rect.width || !rect.height) return null;
+  const ratio = window.devicePixelRatio || 1;
+  canvasEl.width = Math.max(200, Math.round(rect.width * ratio));
+  canvasEl.height = Math.max(140, Math.round(rect.height * ratio));
+  context.setTransform(ratio, 0, 0, ratio, 0, 0);
+  return { width: rect.width, height: rect.height };
+}
+
+function drawCollisionExperimentChart(trials, fit) {
+  const geometry = prepareMiniCanvas(collisionCanvas, collisionCtx);
+  if (!geometry) return;
+
+  const width = geometry.width;
+  const height = geometry.height;
+  const pad = { left: 52, right: 16, top: 14, bottom: 34 };
+  const plotW = Math.max(1, width - pad.left - pad.right);
+  const plotH = Math.max(1, height - pad.top - pad.bottom);
+
+  collisionCtx.clearRect(0, 0, width, height);
+  collisionCtx.fillStyle = '#ffffff';
+  collisionCtx.fillRect(0, 0, width, height);
+
+  if (!trials.length) {
+    collisionCtx.strokeStyle = '#d9e4ee';
+    collisionCtx.lineWidth = 1.2;
+    collisionCtx.setLineDash([6, 5]);
+    collisionCtx.strokeRect(pad.left, pad.top, plotW, plotH);
+    collisionCtx.setLineDash([]);
+    collisionCtx.fillStyle = '#607182';
+    collisionCtx.font = '600 13px system-ui';
+    collisionCtx.textAlign = 'center';
+    collisionCtx.textBaseline = 'middle';
+    collisionCtx.fillText('Αποθήκευσε δοκιμές για να φανεί η σχέση', pad.left + plotW / 2, pad.top + plotH / 2 - 8);
+    collisionCtx.font = '12px system-ui';
+    collisionCtx.fillText('|Impulse| σε συνάρτηση με την αρχική ταχύτητα', pad.left + plotW / 2, pad.top + plotH / 2 + 14);
+    return;
+  }
+
+  const points = trials.map(trial => ({ x: trial.velocity, y: Math.abs(trial.impulse) }));
+  const xMax = Math.max(...points.map(point => point.x), 0.1);
+  const yMax = Math.max(...points.map(point => point.y), 0.1);
+  const xScaleMax = xMax * 1.15;
+  const yScaleMax = yMax * 1.18;
+  const xStep = niceNumber(xScaleMax / 4, true);
+  const yStep = niceNumber(yScaleMax / 4, true);
+  const niceXMax = Math.max(xStep, Math.ceil(xScaleMax / xStep) * xStep);
+  const niceYMax = Math.max(yStep, Math.ceil(yScaleMax / yStep) * yStep);
+
+  collisionCtx.font = '11px system-ui';
+  collisionCtx.textBaseline = 'middle';
+  for (let value = 0; value <= niceYMax + yStep / 2; value += yStep) {
+    const y = pad.top + plotH - (value / niceYMax) * plotH;
+    collisionCtx.strokeStyle = value === 0 ? '#90a0af' : '#ebf0f4';
+    collisionCtx.lineWidth = value === 0 ? 1.2 : 1;
+    collisionCtx.beginPath();
+    collisionCtx.moveTo(pad.left, y);
+    collisionCtx.lineTo(pad.left + plotW, y);
+    collisionCtx.stroke();
+    collisionCtx.fillStyle = '#607182';
+    collisionCtx.textAlign = 'right';
+    collisionCtx.fillText(compactNumber(value), pad.left - 8, y);
+  }
+
+  for (let value = 0; value <= niceXMax + xStep / 2; value += xStep) {
+    const x = pad.left + (value / niceXMax) * plotW;
+    collisionCtx.strokeStyle = '#ebf0f4';
+    collisionCtx.lineWidth = 1;
+    collisionCtx.beginPath();
+    collisionCtx.moveTo(x, pad.top);
+    collisionCtx.lineTo(x, pad.top + plotH);
+    collisionCtx.stroke();
+    collisionCtx.fillStyle = '#607182';
+    collisionCtx.textAlign = 'center';
+    collisionCtx.textBaseline = 'top';
+    collisionCtx.fillText(compactNumber(value), x, pad.top + plotH + 7);
+  }
+
+  collisionCtx.strokeStyle = '#6e7e8d';
+  collisionCtx.lineWidth = 1.3;
+  collisionCtx.strokeRect(pad.left, pad.top, plotW, plotH);
+
+  if (fit) {
+    collisionCtx.strokeStyle = '#1f2d3a';
+    collisionCtx.lineWidth = 1.8;
+    collisionCtx.setLineDash([7, 5]);
+    collisionCtx.beginPath();
+    const startY = Math.max(0, fit.intercept);
+    const endY = Math.max(0, fit.slope * niceXMax + fit.intercept);
+    collisionCtx.moveTo(pad.left, pad.top + plotH - (startY / niceYMax) * plotH);
+    collisionCtx.lineTo(pad.left + plotW, pad.top + plotH - (endY / niceYMax) * plotH);
+    collisionCtx.stroke();
+    collisionCtx.setLineDash([]);
+  }
+
+  points.forEach(point => {
+    const x = pad.left + (point.x / niceXMax) * plotW;
+    const y = pad.top + plotH - (point.y / niceYMax) * plotH;
+    collisionCtx.fillStyle = '#2f7df6';
+    collisionCtx.beginPath();
+    collisionCtx.arc(x, y, 4.5, 0, Math.PI * 2);
+    collisionCtx.fill();
+    collisionCtx.strokeStyle = '#ffffff';
+    collisionCtx.lineWidth = 1.4;
+    collisionCtx.stroke();
+  });
+
+  collisionCtx.fillStyle = '#46586a';
+  collisionCtx.font = '600 11px system-ui';
+  collisionCtx.textAlign = 'center';
+  collisionCtx.textBaseline = 'bottom';
+  collisionCtx.fillText('v0 (m/s)', pad.left + plotW / 2, height - 2);
+
+  collisionCtx.save();
+  collisionCtx.translate(12, pad.top + plotH / 2);
+  collisionCtx.rotate(-Math.PI / 2);
+  collisionCtx.textAlign = 'center';
+  collisionCtx.textBaseline = 'top';
+  collisionCtx.fillText('|Impulse| (N·s)', 0, 0);
+  collisionCtx.restore();
+}
+
+function drawHookeExperimentChart(trials, fit) {
+  const geometry = prepareMiniCanvas(hookeCanvas, hookeCtx);
+  if (!geometry) return;
+
+  const width = geometry.width;
+  const height = geometry.height;
+  const pad = { left: 52, right: 16, top: 14, bottom: 34 };
+  const plotW = Math.max(1, width - pad.left - pad.right);
+  const plotH = Math.max(1, height - pad.top - pad.bottom);
+
+  hookeCtx.clearRect(0, 0, width, height);
+  hookeCtx.fillStyle = '#ffffff';
+  hookeCtx.fillRect(0, 0, width, height);
+
+  if (!trials.length) {
+    hookeCtx.strokeStyle = '#d9e4ee';
+    hookeCtx.lineWidth = 1.2;
+    hookeCtx.setLineDash([6, 5]);
+    hookeCtx.strokeRect(pad.left, pad.top, plotW, plotH);
+    hookeCtx.setLineDash([]);
+    hookeCtx.fillStyle = '#607182';
+    hookeCtx.font = '600 13px system-ui';
+    hookeCtx.textAlign = 'center';
+    hookeCtx.textBaseline = 'middle';
+    hookeCtx.fillText('Αποθήκευσε δοκιμές F-Δx για να φανεί η σχέση', pad.left + plotW / 2, pad.top + plotH / 2 - 8);
+    hookeCtx.font = '12px system-ui';
+    hookeCtx.fillText('Η κλίση της ευθείας είναι η σταθερά k', pad.left + plotW / 2, pad.top + plotH / 2 + 14);
+    return;
+  }
+
+  const points = trials.map(trial => ({ x: trial.extensionCm, y: trial.forceMean }));
+  const xMax = Math.max(...points.map(point => point.x), 0.1);
+  const yMax = Math.max(...points.map(point => point.y), 0.1);
+  const xScaleMax = xMax * 1.15;
+  const yScaleMax = yMax * 1.18;
+  const xStep = niceNumber(xScaleMax / 4, true);
+  const yStep = niceNumber(yScaleMax / 4, true);
+  const niceXMax = Math.max(xStep, Math.ceil(xScaleMax / xStep) * xStep);
+  const niceYMax = Math.max(yStep, Math.ceil(yScaleMax / yStep) * yStep);
+
+  hookeCtx.font = '11px system-ui';
+  hookeCtx.textBaseline = 'middle';
+  for (let value = 0; value <= niceYMax + yStep / 2; value += yStep) {
+    const y = pad.top + plotH - (value / niceYMax) * plotH;
+    hookeCtx.strokeStyle = value === 0 ? '#90a0af' : '#ebf0f4';
+    hookeCtx.lineWidth = value === 0 ? 1.2 : 1;
+    hookeCtx.beginPath();
+    hookeCtx.moveTo(pad.left, y);
+    hookeCtx.lineTo(pad.left + plotW, y);
+    hookeCtx.stroke();
+    hookeCtx.fillStyle = '#607182';
+    hookeCtx.textAlign = 'right';
+    hookeCtx.fillText(compactNumber(value), pad.left - 8, y);
+  }
+
+  for (let value = 0; value <= niceXMax + xStep / 2; value += xStep) {
+    const x = pad.left + (value / niceXMax) * plotW;
+    hookeCtx.strokeStyle = '#ebf0f4';
+    hookeCtx.lineWidth = 1;
+    hookeCtx.beginPath();
+    hookeCtx.moveTo(x, pad.top);
+    hookeCtx.lineTo(x, pad.top + plotH);
+    hookeCtx.stroke();
+    hookeCtx.fillStyle = '#607182';
+    hookeCtx.textAlign = 'center';
+    hookeCtx.textBaseline = 'top';
+    hookeCtx.fillText(compactNumber(value), x, pad.top + plotH + 7);
+  }
+
+  hookeCtx.strokeStyle = '#6e7e8d';
+  hookeCtx.lineWidth = 1.3;
+  hookeCtx.strokeRect(pad.left, pad.top, plotW, plotH);
+
+  if (fit) {
+    hookeCtx.strokeStyle = '#1f2d3a';
+    hookeCtx.lineWidth = 1.8;
+    hookeCtx.setLineDash([7, 5]);
+    hookeCtx.beginPath();
+    const startY = Math.max(0, fit.intercept);
+    const endY = Math.max(0, fit.slope * (niceXMax / 100) + fit.intercept);
+    hookeCtx.moveTo(pad.left, pad.top + plotH - (startY / niceYMax) * plotH);
+    hookeCtx.lineTo(pad.left + plotW, pad.top + plotH - (endY / niceYMax) * plotH);
+    hookeCtx.stroke();
+    hookeCtx.setLineDash([]);
+  }
+
+  points.forEach(point => {
+    const x = pad.left + (point.x / niceXMax) * plotW;
+    const y = pad.top + plotH - (point.y / niceYMax) * plotH;
+    hookeCtx.fillStyle = '#0f9f6e';
+    hookeCtx.beginPath();
+    hookeCtx.arc(x, y, 4.5, 0, Math.PI * 2);
+    hookeCtx.fill();
+    hookeCtx.strokeStyle = '#ffffff';
+    hookeCtx.lineWidth = 1.4;
+    hookeCtx.stroke();
+  });
+
+  hookeCtx.fillStyle = '#46586a';
+  hookeCtx.font = '600 11px system-ui';
+  hookeCtx.textAlign = 'center';
+  hookeCtx.textBaseline = 'bottom';
+  hookeCtx.fillText('Δx (cm)', pad.left + plotW / 2, height - 2);
+
+  hookeCtx.save();
+  hookeCtx.translate(12, pad.top + plotH / 2);
+  hookeCtx.rotate(-Math.PI / 2);
+  hookeCtx.textAlign = 'center';
+  hookeCtx.textBaseline = 'top';
+  hookeCtx.fillText('F (N)', 0, 0);
+  hookeCtx.restore();
+}
+
+function renderHookeExperiment() {
+  const panel = document.getElementById('hookeExperiment');
+  const summary = document.getElementById('hookeSummary');
+  const status = document.getElementById('hookeStatus');
+  const body = document.getElementById('hookeBody');
+  const note = document.getElementById('hookeNote');
+  const protocol = document.getElementById('hookeProtocol');
+  const extensionInput = document.getElementById('hookeExtensionCm');
+  extensionInput.value = hookeExtensionCm.toFixed(1);
+
+  if (!isHookeExperimentMode()) {
+    panel.hidden = true;
+    applyCollisionRailLayout();
+    drawHookeExperimentChart([], null);
+    return;
+  }
+
+  panel.hidden = false;
+  applyCollisionRailLayout();
+  const current = hookeCurrentMetrics();
+  status.textContent = current
+    ? 'Έτοιμο plateau: Fmean ' + compactNumber(current.meanForce) + ' N · Fmax ' + compactNumber(current.peakForce) + ' N'
+    : 'Επίλεξε με A-B ένα σταθερό κομμάτι δύναμης';
+
+  protocol.innerHTML =
+    '<section class="experiment-study-card"><h5>Στόχος</h5><p>Να ελέγξουν οι μαθητές αν η δύναμη είναι ανάλογη της επιμήκυνσης και να εκτιμήσουν τη σταθερά του ελατηρίου k.</p></section>' +
+    '<section class="experiment-study-card"><h5>Στήσιμο</h5><p>Ελατήριο συνδεδεμένο με την κυψέλη φορτίου. Για κάθε φόρτιση μετράς ή διαβάζεις την επιμήκυνση Δx και κρατάς σταθερό το ελατήριο μέχρι να ηρεμήσει.</p></section>' +
+    '<section class="experiment-study-card"><h5>Βήματα</h5><ol><li>Κάνε tare πριν από κάθε σειρά.</li><li>Φόρτισε το ελατήριο σε νέο επίπεδο και περίμενε να ηρεμήσει.</li><li>Επίλεξε με A-B μόνο το σταθερό plateau της δύναμης.</li><li>Γράψε την επιμήκυνση Δx και αποθήκευσε τη δοκιμή.</li><li>Με 3 ή περισσότερα σημεία έλεγξε αν το F-Δx είναι σχεδόν ευθεία.</li></ol></section>' +
+    '<section class="experiment-study-card"><h5>Τι περιμένουμε</h5><p>Για μικρές παραμορφώσεις περιμένουμε περίπου F = k·Δx. Στο γράφημα αυτό σημαίνει ευθεία που περνά κοντά από την αρχή των αξόνων.</p></section>' +
+    '<section class="experiment-study-card"><h5>Σημείωση καθηγητή</h5><p>Αν τα σημεία αποκλίνουν έντονα από ευθεία, συζήτησε αν φταίει το πείραμα, η μέτρηση της επιμήκυνσης ή το ότι το ελατήριο βγήκε έξω από την ελαστική περιοχή.</p></section>';
+
+  if (!hookeTrials.length) {
+    body.innerHTML = '<tr><td colspan="6" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>';
+    if (current) {
+      summary.innerHTML = [
+        '<div class="summary-card"><span>Τρέχον Fmean</span><strong>' + compactNumber(current.meanForce) + '</strong><small>N στο plateau</small></div>',
+        '<div class="summary-card"><span>Τρέχον Fmax</span><strong>' + compactNumber(current.peakForce) + '</strong><small>N μέγιστη τιμή</small></div>',
+        '<div class="summary-card"><span>Τυπική απόκλιση</span><strong>' + compactNumber(current.stdDev) + '</strong><small>N σταθερότητα plateau</small></div>',
+        '<div class="summary-card"><span>Διάρκεια</span><strong>' + compactNumber(current.duration) + '</strong><small>s στο A-B</small></div>'
+      ].join('');
+    } else {
+      summary.innerHTML = '<div class="experiment-empty">Επίλεξε ένα plateau δύναμης και σώσε 2 ή περισσότερα σημεία για να υπολογιστεί το k.</div>';
+    }
+    note.textContent = 'Η καλύτερη προσέγγιση είναι να κρατάς 2-3 s σταθερό plateau για κάθε επιμήκυνση και να γράφεις τη Δx σε cm.';
+    drawHookeExperimentChart([], null);
+    return;
+  }
+
+  body.innerHTML = hookeTrials.map((trial, index) => {
+    return '<tr>' +
+      '<td>' + (index + 1) + '</td>' +
+      '<td>' + trial.extensionCm.toFixed(2) + '</td>' +
+      '<td>' + trial.forceMean.toFixed(4) + '</td>' +
+      '<td>' + trial.forceMax.toFixed(4) + '</td>' +
+      '<td>' + trial.stdDev.toFixed(4) + '</td>' +
+      '<td>' + trial.kEstimate.toFixed(2) + '</td>' +
+      '</tr>';
+  }).join('');
+
+  const fit = hookeFit(hookeTrials);
+  const meanK = hookeTrials.reduce((sum, trial) => sum + trial.kEstimate, 0) / hookeTrials.length;
+  const maxForce = hookeTrials.reduce((best, trial) => Math.max(best, Math.abs(trial.forceMax)), 0);
+  const summaryCards = current ? [
+    '<div class="summary-card"><span>Τρέχον Fmean</span><strong>' + compactNumber(current.meanForce) + '</strong><small>N στο plateau</small></div>',
+    '<div class="summary-card"><span>Τρέχον Fmax</span><strong>' + compactNumber(current.peakForce) + '</strong><small>N μέγιστη τιμή</small></div>'
+  ] : [];
+  summaryCards.push(
+    '<div class="summary-card"><span>Δοκιμές</span><strong>' + hookeTrials.length + '</strong><small>αποθηκευμένα σημεία</small></div>',
+    '<div class="summary-card"><span>Μέση εκτίμηση k</span><strong>' + compactNumber(meanK) + '</strong><small>N/m από F/Δx</small></div>',
+    '<div class="summary-card"><span>Μέγιστη δύναμη</span><strong>' + compactNumber(maxForce) + '</strong><small>N</small></div>'
+  );
+  if (fit) {
+    summaryCards.push(
+      '<div class="summary-card"><span>k από fit</span><strong>' + compactNumber(fit.slope) + '</strong><small>N/m κλίση της ευθείας</small></div>',
+      '<div class="summary-card"><span>R² fit</span><strong>' + compactNumber(fit.r2) + '</strong><small>όσο πιο κοντά στο 1 τόσο πιο γραμμικό</small></div>'
+    );
+    note.textContent = 'Αν το R² είναι κοντά στο 1 και η τομή είναι μικρή, το πείραμα στηρίζει καλά τη σχέση F = k·Δx.';
+  } else {
+    note.textContent = 'Χρειάζεσαι τουλάχιστον 2 σημεία με διαφορετική επιμήκυνση για να υπολογιστεί το k από fit.';
+  }
+  summary.innerHTML = summaryCards.join('');
+  drawHookeExperimentChart(hookeTrials, fit);
+}
+
+function renderBuoyancyExperiment() {
+  const panel = document.getElementById('buoyancyExperiment');
+  const summary = document.getElementById('buoyancySummary');
+  const status = document.getElementById('buoyancyStatus');
+  const body = document.getElementById('buoyancyBody');
+  const note = document.getElementById('buoyancyNote');
+  const protocol = document.getElementById('buoyancyProtocol');
+  const volumeInput = document.getElementById('buoyancyVolumeMl');
+  volumeInput.value = buoyancyVolumeMl.toFixed(0);
+
+  if (!isBuoyancyExperimentMode()) {
+    panel.hidden = true;
+    applyCollisionRailLayout();
+    return;
+  }
+
+  panel.hidden = false;
+  applyCollisionRailLayout();
+  const current = buoyancyCurrentMetrics();
+  const hasAir = isFinite(buoyancyAirForce);
+  const hasLiquid = isFinite(buoyancyLiquidForce);
+  const preview = buoyancyResult(buoyancyAirForce, buoyancyLiquidForce, buoyancyVolumeMl);
+
+  status.textContent = current
+    ? 'Τρέχον plateau: ' + compactNumber(current.apparentWeight) + ' N · σ ' + compactNumber(current.stdDev) + ' N'
+    : 'Επίλεξε με A-B ένα σταθερό plateau δύναμης';
+
+  protocol.innerHTML =
+    '<section class="experiment-study-card"><h5>Στόχος</h5><p>Να μετρήσουν οι μαθητές την άνωση ως απώλεια φαινόμενου βάρους και να τη συνδέσουν με το βάρος του εκτοπιζόμενου υγρού.</p></section>' +
+    '<section class="experiment-study-card"><h5>Στήσιμο</h5><p>Κρέμασε το σώμα στην κυψέλη φορτίου. Πρώτα μέτρα στον αέρα, μετά βύθισέ το πλήρως στο νερό χωρίς να ακουμπά στα τοιχώματα.</p></section>' +
+    '<section class="experiment-study-card"><h5>Βήματα</h5><ol><li>Κάνε tare με άδειο γάντζο ή βάση.</li><li>Επίλεξε σταθερό plateau στον αέρα και πάτησε “Μέτρηση στον αέρα”.</li><li>Βύθισε το σώμα πλήρως στο υγρό, περίμενε να ηρεμήσει και πάτησε “Μέτρηση στο υγρό”.</li><li>Γράψε τον όγκο του βυθισμένου σώματος σε mL και αποθήκευσε τη δοκιμή.</li></ol></section>' +
+    '<section class="experiment-study-card"><h5>Τι περιμένουμε</h5><p>Το φαινόμενο βάρος στο υγρό είναι μικρότερο. Η διαφορά Wαέρα - Wυγρό είναι η άνωση και για νερό πρέπει να πλησιάζει ρνερού·g·V.</p></section>';
+
+  body.innerHTML = buoyancyTrials.length
+    ? buoyancyTrials.map((trial, index) => {
+        return '<tr>' +
+          '<td>' + (index + 1) + '</td>' +
+          '<td>' + trial.volumeMl.toFixed(1) + '</td>' +
+          '<td>' + trial.weightAir.toFixed(4) + '</td>' +
+          '<td>' + trial.weightLiquid.toFixed(4) + '</td>' +
+          '<td>' + trial.buoyantForce.toFixed(4) + '</td>' +
+          '<td>' + trial.density.toFixed(0) + '</td>' +
+          '</tr>';
+      }).join('')
+    : '<tr><td colspan="6" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>';
+
+  const cards = [];
+  if (current) {
+    cards.push(
+      '<div class="summary-card"><span>Τρέχον plateau</span><strong>' + compactNumber(current.apparentWeight) + '</strong><small>N φαινόμενο βάρος</small></div>',
+      '<div class="summary-card"><span>Σταθερότητα</span><strong>' + compactNumber(current.stdDev) + '</strong><small>N τυπική απόκλιση</small></div>'
+    );
+  }
+  cards.push(
+    '<div class="summary-card"><span>W στον αέρα</span><strong>' + (hasAir ? compactNumber(Math.abs(buoyancyAirForce)) : '—') + '</strong><small>N αποθηκευμένο plateau</small></div>',
+    '<div class="summary-card"><span>W στο υγρό</span><strong>' + (hasLiquid ? compactNumber(Math.abs(buoyancyLiquidForce)) : '—') + '</strong><small>N αποθηκευμένο plateau</small></div>'
+  );
+  if (preview) {
+    cards.push(
+      '<div class="summary-card"><span>Άνωση</span><strong>' + compactNumber(preview.buoyantForce) + '</strong><small>N = Wαέρα - Wυγρό</small></div>',
+      '<div class="summary-card"><span>Απώλεια βάρους</span><strong>' + compactNumber(preview.lossPercent) + '</strong><small>% του βάρους στον αέρα</small></div>',
+      '<div class="summary-card"><span>Εκτίμηση ρ</span><strong>' + compactNumber(preview.density) + '</strong><small>kg/m³ από FΑ/(gV)</small></div>'
+    );
+  }
+  if (buoyancyTrials.length) {
+    const avgDensity = buoyancyTrials.reduce((sum, trial) => sum + trial.density, 0) / buoyancyTrials.length;
+    cards.push(
+      '<div class="summary-card"><span>Δοκιμές</span><strong>' + buoyancyTrials.length + '</strong><small>αποθηκευμένες μετρήσεις</small></div>',
+      '<div class="summary-card"><span>Μέση ρ</span><strong>' + compactNumber(avgDensity) + '</strong><small>kg/m³</small></div>'
+    );
+  }
+
+  summary.innerHTML = cards.length
+    ? cards.join('')
+    : '<div class="experiment-empty">Επίλεξε πρώτα σταθερό plateau στον αέρα και στο υγρό.</div>';
+  note.textContent = preview && preview.buoyantForce <= 0
+    ? 'Η άνωση βγήκε μηδενική ή αρνητική. Έλεγξε αν πάτησες ανάποδα τις μετρήσεις ή αν η φορά της δύναμης άλλαξε.'
+    : 'Για νερό, η εκτίμηση ρ πρέπει να είναι κοντά στα 1000 kg/m³ όταν ο όγκος έχει δοθεί σωστά.';
+}
+
+function renderCollisionExperiment() {
+  const panel = document.getElementById('collisionExperiment');
+  const body = document.getElementById('collisionBody');
+  const summary = document.getElementById('collisionSummary');
+  const status = document.getElementById('collisionStatus');
+  const note = document.getElementById('collisionNote');
+  const protocol = document.getElementById('collisionProtocol');
+
+  if (!isCollisionExperimentMode()) {
+    panel.hidden = true;
+    applyCollisionRailLayout();
+    drawCollisionExperimentChart([], null);
+    return;
+  }
+
+  panel.hidden = false;
+  applyCollisionRailLayout();
+  const current = collisionCurrentMetrics();
+  if (!current) {
+    status.textContent = 'Επίλεξε με A-B μόνο το διάστημα της κρούσης';
+  } else {
+    status.textContent =
+      'Έτοιμο για αποθήκευση: |Impulse| ' + compactNumber(Math.abs(current.signedArea)) + ' N·s · Fmax ' +
+      compactNumber(current.peakForce) + ' N';
+  }
+
+  const teacherQuestion = collisionTrials.length >= 2
+    ? 'Αν δύο δοκιμές έχουν παρόμοιο |Impulse| αλλά διαφορετικό Fmax, τι σημαίνει αυτό για τη διάρκεια επαφής;'
+    : 'Αν μια κρούση έχει πολύ ψηλή κορυφή αλλά κρατά πολύ λίγο, περιμένεις απαραίτητα και πολύ μεγάλο |Impulse|;';
+  protocol.innerHTML =
+    '<section class="experiment-study-card"><h5>Στόχος</h5><p>Να συνδέσουν οι μαθητές τη δύναμη της κρούσης με τη διάρκεια επαφής και να δουν ότι η ώθηση είναι το συνολικό αποτέλεσμα της αλληλεπίδρασης.</p></section>' +
+    '<section class="experiment-study-card"><h5>Στήσιμο</h5><p>Συσκευή στερεωμένη σε αμαξίδιο ή σώμα που συγκρούεται ελεγχόμενα σε στοπ. Η προβολή πρέπει να είναι “Δύναμη από F = m·a” με σωστή μάζα συστήματος.</p></section>' +
+    '<section class="experiment-study-card"><h5>Βήματα</h5><ol><li>Όρισε σωστά τη μάζα του συστήματος.</li><li>Κάνε μία κρούση και επέλεξε με A-B μόνο το spike της επαφής.</li><li>Διάβασε Fmax, διάρκεια και |Impulse|.</li><li>Γράψε την αρχική ταχύτητα v0 και αποθήκευσε τη δοκιμή.</li><li>Επανάλαβε με 2-3 διαφορετικές ταχύτητες.</li></ol></section>' +
+    '<section class="experiment-study-card"><h5>Τι περιμένουμε</h5><p>Για σώμα που σταματά, το |Impulse| πρέπει να αυξάνει περίπου μαζί με το v0. Η κορυφή Fmax μπορεί να αλλάζει έντονα χωρίς να αλλάζει το ίδιο πολύ η ώθηση, αν αλλάζει και ο χρόνος επαφής.</p></section>' +
+    '<section class="experiment-study-card"><h5>Ερώτηση τάξης</h5><p>' + teacherQuestion + '</p></section>';
+
+  if (!collisionTrials.length) {
+    body.innerHTML = '<tr><td colspan="7" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>';
+    if (current) {
+      summary.innerHTML = [
+        '<div class="summary-card"><span>Τρέχον |Impulse|</span><strong>' + compactNumber(Math.abs(current.signedArea)) + '</strong><small>N·s από το A-B</small></div>',
+        '<div class="summary-card"><span>Τρέχον Fmax</span><strong>' + compactNumber(Math.abs(current.peakForce)) + '</strong><small>N κορυφή κρούσης</small></div>',
+        '<div class="summary-card"><span>Μέση δύναμη</span><strong>' + compactNumber(current.meanForce) + '</strong><small>N μέσα στο διάστημα</small></div>',
+        '<div class="summary-card"><span>Διάρκεια</span><strong>' + compactNumber(current.duration) + '</strong><small>s για την κρούση</small></div>'
+      ].join('');
+    } else {
+      summary.innerHTML = '<div class="experiment-empty">Αποθήκευσε 2 ή περισσότερες δοκιμές για σύγκριση impulse vs velocity.</div>';
+    }
+    note.textContent = 'Χρησιμοποίησε ίδιο αμαξίδιο/μάζα και διαφορετικές αρχικές ταχύτητες για να ελέγξεις αν το |Impulse| μεγαλώνει ανάλογα με το v0.';
+    drawCollisionExperimentChart([], null);
+    return;
+  }
+
+  body.innerHTML = collisionTrials.map((trial, index) => {
+    return '<tr>' +
+      '<td>' + (index + 1) + '</td>' +
+      '<td>' + trial.velocity.toFixed(3) + '</td>' +
+      '<td>' + trial.impulse.toFixed(4) + '</td>' +
+      '<td>' + Math.abs(trial.impulse).toFixed(4) + '</td>' +
+      '<td>' + trial.peakForce.toFixed(3) + '</td>' +
+      '<td>' + trial.meanForce.toFixed(3) + '</td>' +
+      '<td>' + trial.duration.toFixed(4) + '</td>' +
+      '</tr>';
+  }).join('');
+
+  const fit = collisionFit(collisionTrials);
+  const avgImpulse = collisionTrials.reduce((sum, trial) => sum + Math.abs(trial.impulse), 0) / collisionTrials.length;
+  const avgVelocity = collisionTrials.reduce((sum, trial) => sum + trial.velocity, 0) / collisionTrials.length;
+  const maxForce = collisionTrials.reduce((best, trial) => Math.max(best, Math.abs(trial.peakForce)), 0);
+  const summaryCards = current ? [
+    '<div class="summary-card"><span>Τρέχον |Impulse|</span><strong>' + compactNumber(Math.abs(current.signedArea)) + '</strong><small>N·s από το A-B</small></div>',
+    '<div class="summary-card"><span>Τρέχον Fmax</span><strong>' + compactNumber(Math.abs(current.peakForce)) + '</strong><small>N κορυφή κρούσης</small></div>'
+  ] : [];
+  summaryCards.push(
+    '<div class="summary-card"><span>Δοκιμές</span><strong>' + collisionTrials.length + '</strong><small>Αποθηκευμένα runs</small></div>',
+    '<div class="summary-card"><span>Μέσο |Impulse|</span><strong>' + compactNumber(avgImpulse) + '</strong><small>N·s</small></div>',
+    '<div class="summary-card"><span>Μέση v0</span><strong>' + compactNumber(avgVelocity) + '</strong><small>m/s</small></div>',
+    '<div class="summary-card"><span>Μέγιστη κορυφή</span><strong>' + compactNumber(maxForce) + '</strong><small>N</small></div>'
+  );
+  if (fit) {
+    summaryCards.push(
+      '<div class="summary-card"><span>Κλίση |J|-v0</span><strong>' + compactNumber(fit.slope) + '</strong><small>θεωρητικά κοντά στη μάζα ' + compactNumber(collisionMassKg) + ' kg</small></div>',
+      '<div class="summary-card"><span>Τομή fit</span><strong>' + compactNumber(fit.intercept) + '</strong><small>N·s</small></div>'
+    );
+    note.textContent = 'Για σώμα που σταματά, περιμένουμε περίπου |Impulse| ≈ m·v0. Αν η κλίση είναι κοντά στη μάζα, το πείραμα βγαίνει συνεπές.';
+  } else {
+    note.textContent = 'Αποθήκευσε τουλάχιστον 2 δοκιμές με διαφορετικές ταχύτητες για να εμφανιστεί σύγκριση |Impulse| ως προς v0.';
+  }
+  summary.innerHTML = summaryCards.join('');
+  drawCollisionExperimentChart(collisionTrials, fit);
+}
+
 function setMode(mode) {
   fetch('/set-mode?mode=' + mode).catch(() => {});
   activeMode = mode;
+  activeLessonKey = null;
+  activeScenarioId = null;
   resetMeasurement();
   updateModeUi();
   updateReadouts(lastData);
@@ -1146,10 +3004,15 @@ function updateModeUi() {
     '</tr>';
   analysisSeriesIndex = Math.max(0, meta.series.findIndex(series => series.enabled));
   updateCalibrationUi();
+  updateDerivedControls();
   renderAnalysisSeries();
   renderLegend();
   updateTable();
   updateAnalysis();
+  renderHookeExperiment();
+  renderBuoyancyExperiment();
+  renderMotionExperiment();
+  renderCollisionExperiment();
   draw();
 }
 
@@ -1225,7 +3088,7 @@ function toggleSeries(index) {
 function updateReadouts(data) {
   const meta = currentMode();
   const cards = meta.series.map(series => {
-    const value = Number(data[series.key] || 0);
+    const value = dataValue(data, series.key);
     return '<div class="readout" style="--series-color:' + series.color + '">' +
       '<span>' + series.label + '</span>' +
       '<strong>' + value.toFixed(2) + '<small>' + series.unit + '</small></strong>' +
@@ -1239,7 +3102,7 @@ function updateReadouts(data) {
   document.getElementById('readouts').innerHTML = cards.join('');
 }
 
-function addRow(data) {
+function addRow(data, deferUpdate) {
   lastData = data;
   const mode = Number(data.mode);
   if (mode !== activeMode && modes[mode]) {
@@ -1247,24 +3110,31 @@ function addRow(data) {
     resetMeasurement();
     updateModeUi();
   }
-  updateReadouts(data);
   if (data.sampleRate) {
     document.getElementById('sampleRate').value = String(data.sampleRate);
   }
-  if (!running || !modes[activeMode]) return;
-
   const sampleId = Number(data.sampleId);
   const sampleMs = Number(data.sampleMs);
-  if (!Number.isFinite(sampleId) || sampleId === lastSampleId) return;
+  if (!Number.isFinite(sampleId) || sampleId <= lastSampleId) return;
   lastSampleId = sampleId;
+  updateReadouts(data);
+  if (!running || !modes[activeMode]) return;
   if (sampleEpochMs === null || sampleMs < sampleEpochMs) sampleEpochMs = sampleMs;
 
-  const meta = currentMode();
   rows.push({
     time: (sampleMs - sampleEpochMs) / 1000,
-    values: meta.series.map(series => Number(data[series.key] || 0))
+    sample: { ...data }
   });
   if (rows.length > maxSamples) rows.shift();
+  if (deferUpdate) return;
+  updateTable();
+  updateAnalysis();
+  draw();
+}
+
+function addRows(samples) {
+  if (!Array.isArray(samples) || !samples.length) return;
+  samples.forEach(sample => addRow(sample, true));
   updateTable();
   updateAnalysis();
   draw();
@@ -1276,7 +3146,7 @@ function updateTable() {
   document.getElementById('sampleCount').textContent = rows.length;
   document.getElementById('tableBody').innerHTML = latest.map(row => {
     return '<tr><td>' + row.time.toFixed(2) + '</td>' +
-      row.values.map(value => '<td>' + value.toFixed(3) + '</td>').join('') +
+      meta.series.map(series => '<td>' + rowValue(row, series).toFixed(3) + '</td>').join('') +
       '</tr>';
   }).join('');
 }
@@ -1331,6 +3201,33 @@ function setCustomView(start, end) {
   draw();
 }
 
+function clampYScale(min, max) {
+  const meta = currentMode();
+  const minimumSpan = Math.max(1e-9, (meta.minimumSpan || 1) / 100);
+  if (!isFinite(min) || !isFinite(max) || max <= min) {
+    const half = Math.max(minimumSpan / 2, 1);
+    return { min: -half, max: half };
+  }
+  const center = (min + max) / 2;
+  const span = Math.max(minimumSpan, max - min);
+  return { min: center - span / 2, max: center + span / 2 };
+}
+
+function setCustomYScale(min, max) {
+  customYScale = clampYScale(min, max);
+  hoverPoint = null;
+  tooltip.hidden = true;
+  updateZoomStatus();
+  draw();
+}
+
+function valueAtY(y) {
+  const geometry = chartGeometry;
+  const boundedY = Math.max(geometry.pad.top, Math.min(geometry.pad.top + geometry.plotH, y));
+  return geometry.scale.max - (boundedY - geometry.pad.top) *
+    (geometry.scale.max - geometry.scale.min) / geometry.plotH;
+}
+
 function zoomAt(centerTime, factor) {
   const view = getViewBounds();
   const span = view.end - view.start;
@@ -1341,8 +3238,18 @@ function zoomAt(centerTime, factor) {
   setCustomView(start, start + nextSpan);
 }
 
+function zoomYAt(centerValue, factor) {
+  const scale = chartGeometry ? chartGeometry.scale : yScale(visibleRows(), enabledSeries());
+  const span = scale.max - scale.min;
+  const nextSpan = Math.max((currentMode().minimumSpan || 1) / 100, span * factor);
+  const ratio = span > 0 ? (centerValue - scale.min) / span : 0.5;
+  const min = centerValue - nextSpan * ratio;
+  setCustomYScale(min, min + nextSpan);
+}
+
 function resetZoom(resumeLive) {
   customView = null;
+  customYScale = null;
   selection = null;
   hoverPoint = null;
   tooltip.hidden = true;
@@ -1355,16 +3262,61 @@ function resetZoom(resumeLive) {
 function updateZoomStatus() {
   const view = getViewBounds();
   const span = Math.max(0, view.end - view.start);
+  const yZoom = customYScale ? ' · Y Zoom' : '';
+  const smoothing = smoothingWindow > 1 ? ' · Smooth ' + smoothingWindow : '';
+  const curve = curveMode === 'smooth' ? ' · Smooth line' : '';
   document.getElementById('zoomStatus').textContent =
-    compactNumber(span) + ' s' + (customView ? ' · Zoom' : ' · Live');
+    compactNumber(span) + ' s' + (customView ? ' · Zoom' : ' · Live') + yZoom + smoothing + curve;
 }
 
-function analysisRows() {
-  const source = selection ? rows : visibleRows();
-  if (!selection) return source;
+function interpolatePointAtTime(time, series, sourceRows) {
+  const usableRows = sourceRows
+    .filter(row => row && row.sample && row.sample.mode === activeMode && isFinite(row.time))
+    .sort((first, second) => first.time - second.time);
+  if (!usableRows.length || !isFinite(time)) return null;
+  const firstRow = usableRows[0];
+  const lastRow = usableRows[usableRows.length - 1];
+  const boundedTime = Math.max(firstRow.time, Math.min(lastRow.time, time));
+
+  for (let index = 0; index < usableRows.length; index++) {
+    const row = usableRows[index];
+    if (Math.abs(row.time - boundedTime) < 1e-9) {
+      return { x: boundedTime, y: rowValue(row, series), interpolated: false };
+    }
+    const next = usableRows[index + 1];
+    if (!next || boundedTime > next.time) continue;
+    const firstValue = rowValue(row, series);
+    const secondValue = rowValue(next, series);
+    const span = next.time - row.time;
+    const ratio = span > 0 ? (boundedTime - row.time) / span : 0;
+    return {
+      x: boundedTime,
+      y: firstValue + (secondValue - firstValue) * ratio,
+      interpolated: true
+    };
+  }
+
+  return { x: lastRow.time, y: rowValue(lastRow, series), interpolated: false };
+}
+
+function analysisPoints(series) {
+  if (!selection) {
+    return visibleRows()
+      .filter(row => row.sample && row.sample.mode === activeMode)
+      .map(row => ({ x: row.time, y: rowValue(row, series), interpolated: false }))
+      .filter(point => isFinite(point.x) && isFinite(point.y));
+  }
   const start = Math.min(selection.start, selection.end);
   const end = Math.max(selection.start, selection.end);
-  return source.filter(row => row.time >= start && row.time <= end);
+  const source = rows
+    .filter(row => row.sample && row.sample.mode === activeMode && row.time >= start && row.time <= end)
+    .map(row => ({ x: row.time, y: rowValue(row, series), interpolated: false }));
+  const pointA = interpolatePointAtTime(start, series, rows);
+  const pointB = interpolatePointAtTime(end, series, rows);
+  const points = [pointA, ...source, pointB]
+    .filter(point => point && isFinite(point.x) && isFinite(point.y))
+    .sort((first, second) => first.x - second.x);
+  return points.filter((point, index) => index === 0 || Math.abs(point.x - points[index - 1].x) > 1e-9);
 }
 
 function solveLinearSystem(matrix, vector) {
@@ -1483,7 +3435,8 @@ function slopeUnit(series) {
 }
 
 function areaMeaning(series) {
-  if (series.key === 'force') return 'Ώθηση';
+  if (series.key === 'force' || series.key === 'fx' || series.key === 'fy' ||
+      series.key === 'fz' || series.key === 'fnet') return 'Ώθηση';
   if (series.key === 'ax' || series.key === 'ay' || series.key === 'az' ||
       series.key === 'acceleration') return 'Μεταβολή ταχύτητας';
   if (series.key === 'gx' || series.key === 'gy' || series.key === 'gz') return 'Γωνία περιστροφής';
@@ -1494,49 +3447,595 @@ function areaMeaning(series) {
 function slopeMeaning(series) {
   if (series.key === 'distance') return 'Μέση ταχύτητα (fit)';
   if (series.key === 'velocity') return 'Μέση επιτάχυνση (fit)';
-  if (series.key === 'force') return 'Ρυθμός μεταβολής δύναμης';
+  if (series.key === 'force' || series.key === 'fx' || series.key === 'fy' ||
+      series.key === 'fz' || series.key === 'fnet') return 'Ρυθμός μεταβολής δύναμης';
   return 'Κλίση γραμμικού fit';
 }
 
 function analysisExamples(series) {
   const examples = {
-    markerA: 'Τοποθέτησε το A στην αρχή του φαινομένου που εξετάζεις.',
-    markerB: 'Τοποθέτησε το B στο τέλος του ίδιου φαινομένου.',
-    duration: 'Μέτρησε τη διάρκεια μιας κρούσης, ταλάντωσης ή μετακίνησης.',
-    delta: 'Σύγκρινε την τελική με την αρχική τιμή του μεγέθους.',
-    mean: 'Βρες μια αντιπροσωπευτική τιμή όταν οι μετρήσεις έχουν μικρές διακυμάνσεις.',
-    stdDev: 'Μικρή σ σημαίνει σταθερές μετρήσεις· μεγάλη σ δείχνει διασπορά ή θόρυβο.',
-    minMax: 'Εντόπισε τις ακραίες τιμές, όπως τη μέγιστη δύναμη σε μια κρούση.',
-    absoluteArea: 'Χρήσιμο όταν θέλεις τη συνολική δράση χωρίς να αλληλοαναιρούνται θετικές και αρνητικές περιοχές.',
-    fit: 'Έλεγξε αν το θεωρητικό μοντέλο περιγράφει τα δεδομένα: R² κοντά στο 1 σημαίνει καλύτερη συμφωνία.'
+    markerA: {
+      why: 'Ορίζει με ακρίβεια από πού ξεκινά η ανάλυση, αντί να κρίνουμε με το μάτι.',
+      example: 'Τοποθέτησε το A στην αρχή της κρούσης ή της ταλάντωσης.'
+    },
+    markerB: {
+      why: 'Ορίζει πού τελειώνει το ίδιο φαινόμενο, ώστε όλοι να υπολογίζουν το ίδιο διάστημα.',
+      example: 'Τοποθέτησε το B όταν η κρούση έχει τελειώσει ή όταν ολοκληρωθεί μία περίοδος.'
+    },
+    duration: {
+      why: 'Ο χρόνος είναι η βάση για ρυθμούς μεταβολής, ταχύτητες, επιταχύνσεις και συγκρίσεις πειραμάτων.',
+      example: 'Μέτρησε πόσο διαρκεί μια κρούση, μία ταλάντωση ή μια μετακίνηση.'
+    },
+    delta: {
+      why: 'Δείχνει πόσο άλλαξε το φυσικό μέγεθος ανάμεσα σε δύο επιλεγμένες στιγμές.',
+      example: 'Σύγκρινε την τελική με την αρχική ταχύτητα ή θέση.'
+    },
+    mean: {
+      why: 'Μειώνει την επίδραση τυχαίου θορύβου και δίνει αντιπροσωπευτική τιμή για ένα σταθερό φαινόμενο.',
+      example: 'Βρες τη μέση δύναμη ή μέση επιτάχυνση σε ένα επιλεγμένο διάστημα.'
+    },
+    stdDev: {
+      why: 'Μετρά τη διασπορά των μετρήσεων και βοηθά να ξεχωρίσουμε σταθερό σήμα από θορυβώδες σήμα.',
+      example: 'Μικρή σ δείχνει σταθερές μετρήσεις· μεγάλη σ δείχνει θόρυβο ή πραγματική μεταβολή.'
+    },
+    minMax: {
+      why: 'Οι ακραίες τιμές συχνά αντιστοιχούν σε σημαντικές στιγμές του φαινομένου.',
+      example: 'Βρες τη μέγιστη δύναμη στην κρούση ή τη μέγιστη απομάκρυνση στην ταλάντωση.'
+    },
+    absoluteArea: {
+      why: 'Μετρά τη συνολική δράση του σήματος χωρίς οι θετικές και αρνητικές περιοχές να ακυρώνονται.',
+      example: 'Χρήσιμο όταν σε ενδιαφέρει η συνολική ένταση μιας ταλάντωσης ή δόνησης.'
+    },
+    fit: {
+      why: 'Συνδέει τα πειραματικά δεδομένα με μαθηματικό μοντέλο και επιτρέπει έλεγχο θεωρίας.',
+      example: 'R² κοντά στο 1 σημαίνει ότι το μοντέλο περιγράφει καλά τα δεδομένα.'
+    }
   };
 
   if (series.key === 'distance') {
-    examples.slope = 'Η κλίση σε γράφημα θέσης–χρόνου δίνει τη μέση ταχύτητα.';
-    examples.area = 'Το εμβαδό θέσης–χρόνου δεν έχει συνήθη άμεση φυσική ερμηνεία.';
+    examples.slope = {
+      why: 'Η κλίση δείχνει πόσο γρήγορα αλλάζει η θέση, δηλαδή την ταχύτητα.',
+      example: 'Σε γράφημα θέσης–χρόνου, η κλίση A–B δίνει τη μέση ταχύτητα.'
+    };
+    examples.area = {
+      why: 'Δεν έχει συνήθη άμεση φυσική ερμηνεία, άρα το χρησιμοποιούμε με προσοχή.',
+      example: 'Για θέση–χρόνο προτίμησε κλίση για ταχύτητα, όχι εμβαδό.'
+    };
   } else if (series.key === 'velocity') {
-    examples.slope = 'Η κλίση σε γράφημα ταχύτητας–χρόνου δίνει τη μέση επιτάχυνση.';
-    examples.area = 'Το εμβαδό κάτω από υ–t δίνει τη μετατόπιση.';
-  } else if (series.key === 'force') {
-    examples.slope = 'Δείχνει πόσο γρήγορα αυξάνεται ή μειώνεται η δύναμη.';
-    examples.area = 'Το εμβαδό κάτω από F–t δίνει την ώθηση σε μια κρούση.';
+    examples.slope = {
+      why: 'Η κλίση δείχνει πόσο γρήγορα αλλάζει η ταχύτητα, δηλαδή την επιτάχυνση.',
+      example: 'Σε γράφημα υ–t, η κλίση A–B δίνει τη μέση επιτάχυνση.'
+    };
+    examples.area = {
+      why: 'Η ολοκλήρωση της ταχύτητας στον χρόνο δίνει τη μετατόπιση.',
+      example: 'Το εμβαδό κάτω από υ–t δείχνει πόσα μέτρα μετακινήθηκε το σώμα.'
+    };
+  } else if (series.key === 'force' || series.key === 'fx' || series.key === 'fy' ||
+             series.key === 'fz' || series.key === 'fnet') {
+    examples.slope = {
+      why: 'Δείχνει πόσο απότομα αυξάνεται ή μειώνεται η δύναμη.',
+      example: 'Σε κρούση, μεγάλη κλίση σημαίνει απότομη μεταβολή της δύναμης.'
+    };
+    examples.area = {
+      why: 'Η ολοκλήρωση δύναμης–χρόνου δίνει την ώθηση, δηλαδή τη μεταβολή της ορμής.',
+      example: 'Το εμβαδό κάτω από F–t συγκρίνει δύο διαφορετικές κρούσεις.'
+    };
   } else if (series.key === 'gx' || series.key === 'gy' || series.key === 'gz') {
-    examples.slope = 'Δείχνει τον ρυθμό μεταβολής της γωνιακής ταχύτητας.';
-    examples.area = 'Το εμβαδό κάτω από ω–t δίνει τη γωνία περιστροφής.';
+    examples.slope = {
+      why: 'Δείχνει πόσο γρήγορα αλλάζει η γωνιακή ταχύτητα.',
+      example: 'Χρήσιμο όταν μια περιστροφή ξεκινά ή σταματά απότομα.'
+    };
+    examples.area = {
+      why: 'Η ολοκλήρωση της γωνιακής ταχύτητας δίνει τη γωνία περιστροφής.',
+      example: 'Αν γυρίσεις τη συσκευή περίπου 90°, το εμβαδό ω–t πρέπει να πλησιάζει 90°.'
+    };
   } else {
-    examples.slope = 'Δείχνει πόσο γρήγορα μεταβάλλεται η επιτάχυνση στο διάστημα A–B.';
-    examples.area = 'Το εμβαδό κάτω από a–t δίνει τη μεταβολή της ταχύτητας.';
+    examples.slope = {
+      why: 'Δείχνει πόσο γρήγορα μεταβάλλεται η επιτάχυνση στο επιλεγμένο διάστημα.',
+      example: 'Σε απότομο τράνταγμα, μεγάλη κλίση σημαίνει γρήγορη αλλαγή επιτάχυνσης.'
+    };
+    examples.area = {
+      why: 'Η ολοκλήρωση της επιτάχυνσης στον χρόνο δίνει τη μεταβολή της ταχύτητας.',
+      example: 'Το εμβαδό κάτω από a–t δείχνει πόσο άλλαξε η ταχύτητα.'
+    };
   }
   return examples;
+}
+
+function sensorLesson(meta, series) {
+  const lessons = {
+    0: {
+      tag: 'Μάθημα αισθητήρα',
+      title: accelDisplayMode === 'force' ? 'Δύναμη από επιταχυνσιόμετρο' : 'Επιταχυνσιόμετρο',
+      intro: accelDisplayMode === 'force'
+        ? 'Εδώ χρησιμοποιούμε το επιταχυνσιόμετρο για να εκτιμήσουμε δύναμη μέσω της σχέσης F = m·a, με τη μάζα που ορίζεις εσύ.'
+        : 'Το επιταχυνσιόμετρο μετρά πώς αλλάζει η κίνηση της συσκευής στον χρόνο. Είναι ιδανικό για κρούσεις, ταλαντώσεις, κεκλιμένα επίπεδα και μελέτη της βαρύτητας.',
+      why: accelDisplayMode === 'force'
+        ? 'Οι μαθητές βλέπουν πώς περνάμε από την επιτάχυνση στη δύναμη και πώς μια κρούση αποκτά άμεση ερμηνεία σε Newton.'
+        : 'Οι μαθητές βλέπουν ότι η επιτάχυνση δεν είναι μόνο τύπος στο τετράδιο αλλά πραγματικό, μετρήσιμο μέγεθος που αλλάζει από στιγμή σε στιγμή.',
+      experiment: accelDisplayMode === 'force'
+        ? 'Παράδειγμα: στερέωσε τη συσκευή σε αμαξίδιο σύγκρουσης, όρισε τη μάζα του συστήματος και παρατήρησε τη δύναμη κατά την πρόσκρουση.'
+        : 'Παράδειγμα: στερέωσε τη συσκευή σε αμαξίδιο ή σε εκκρεμές και μέτρησε πώς αλλάζει η επιτάχυνση κατά την κίνηση.',
+      graph: accelDisplayMode === 'force'
+        ? 'Στο γράφημα F-t κοιτάμε κορυφές δύναμης, διάρκεια κρούσης και συνολική ώθηση. Η μορφή της καμπύλης δείχνει πόσο απότομη ήταν η αλληλεπίδραση.'
+        : 'Στο γράφημα a-t κοιτάμε πότε εμφανίζονται κορυφές, πότε αλλάζει πρόσημο το σήμα και αν υπάρχει περιοδικότητα. Σε ήρεμη θέση συνήθως ένας άξονας κυριαρχείται από τη βαρύτητα.',
+      steps: [
+        'Ξεκίνα με ακίνητη συσκευή ώστε οι μαθητές να αναγνωρίσουν το baseline.',
+        accelDisplayMode === 'force'
+          ? 'Όρισε σωστά τη μάζα πριν ξεκινήσει η μέτρηση.'
+          : 'Ζήτησε πρόβλεψη για το πότε θα εμφανιστεί μέγιστη επιτάχυνση.',
+        'Κάνε επιλογή σε μία πλήρη ταλάντωση ή μόνο στο κομμάτι της κρούσης.',
+        accelDisplayMode === 'force'
+          ? 'Χρησιμοποίησε τη μέγιστη δύναμη και το εμβαδό για να συζητήσεις κορυφή και ώθηση.'
+          : 'Χρησιμοποίησε το εμβαδό για να συζητήσεις μεταβολή ταχύτητας.'
+      ],
+      takeaway: accelDisplayMode === 'force'
+        ? 'Ο στόχος είναι να συνδέσουν το σήμα της κρούσης με πραγματική δύναμη και όχι απλώς με “δυνατό τράνταγμα”.'
+        : 'Ο στόχος είναι να συνδέσουν οι μαθητές το σχήμα της καμπύλης με πραγματική κίνηση και όχι απλώς να διαβάσουν αριθμούς.'
+    },
+    1: {
+      tag: 'Μάθημα αισθητήρα',
+      title: 'Γυροσκόπιο',
+      intro: 'Το γυροσκόπιο μετρά τη γωνιακή ταχύτητα, δηλαδή πόσο γρήγορα στρίβει η συσκευή γύρω από κάθε άξονα.',
+      why: 'Βοηθά τους μαθητές να ξεχωρίσουν τη μεταφορική από την περιστροφική κίνηση και να δουν ότι και η περιστροφή περιγράφεται με ίδιες λογικές ανάλυσης.',
+      experiment: 'Παράδειγμα: γύρισε τη συσκευή περίπου 90° ή κάνε ελεγχόμενη περιστροφή πάνω σε περιστρεφόμενη βάση.',
+      graph: 'Στο γράφημα ω-t κοιτάμε τις κορυφές όταν ξεκινά και όταν σταματά η περιστροφή. Το εμβαδό κάτω από την καμπύλη συνδέεται με τη συνολική γωνία.',
+      steps: [
+        'Μηδένισε πρώτα το gyro με τη συσκευή ακίνητη.',
+        'Κάνε μία σύντομη και μία αργή περιστροφή για σύγκριση.',
+        'Επίλεξε μόνο το διάστημα όπου η περιστροφή όντως συμβαίνει.',
+        'Σύγκρινε το εμβαδό με την αναμενόμενη γωνία περιστροφής.'
+      ],
+      takeaway: 'Οι μαθητές μαθαίνουν ότι η περιστροφή αναλύεται με ρυθμούς, εμβαδά και μοντέλα όπως και κάθε άλλη κίνηση.'
+    },
+    2: {
+      tag: 'Μάθημα αισθητήρα',
+      title: 'Κυψέλη φορτίου',
+      intro: 'Η κυψέλη φορτίου μετρά δύναμη και είναι πολύ καλή για πειράματα κρούσης, πίεσης, ελαστικότητας και σύγκρισης δράσης σε διαφορετικές συνθήκες.',
+      why: 'Οι μαθητές βλέπουν ότι η δύναμη δεν είναι σταθερή ιδέα αλλά ποσότητα που μεταβάλλεται στον χρόνο και αφήνει καθαρό αποτύπωμα στη γραφική.',
+      experiment: 'Παράδειγμα: πίεσε σταδιακά την κυψέλη ή κάνε δύο κρούσεις με διαφορετική σκληρότητα και σύγκρινε κορυφές και ώθηση.',
+      graph: 'Στο γράφημα F-t παρατηρούμε τη μέγιστη δύναμη, τη διάρκεια επαφής και το εμβαδό, που δίνει την ώθηση.',
+      steps: [
+        'Κάνε tare πριν από κάθε σειρά μετρήσεων.',
+        'Σύγκρινε μικρή και μεγάλη εφαρμοζόμενη δύναμη.',
+        'Δες αν η μεγαλύτερη κορυφή συνοδεύεται από μικρότερη ή μεγαλύτερη διάρκεια.',
+        'Χρησιμοποίησε το εμβαδό για να μιλήσεις για μεταβολή ορμής.'
+      ],
+      takeaway: 'Η γραφική της δύναμης είναι πολύ καλή γέφυρα ανάμεσα στην παρατήρηση, στους Νόμους του Νεύτωνα και στην έννοια της ώθησης.'
+    },
+    4: {
+      tag: 'Μάθημα αισθητήρα',
+      title: series && series.key === 'velocity'
+        ? 'Υπερηχητικός αισθητήρας: Ταχύτητα'
+        : series && series.key === 'acceleration'
+          ? 'Υπερηχητικός αισθητήρας: Επιτάχυνση'
+          : 'Υπερηχητικός αισθητήρας: Απόσταση',
+      intro: series && series.key === 'velocity'
+        ? 'Εδώ ο υπερηχητικός αισθητήρας χρησιμοποιείται για να παρακολουθούμε πώς αλλάζει η ταχύτητα από τη μεταβολή της θέσης.'
+        : series && series.key === 'acceleration'
+          ? 'Εδώ μελετάμε την επιτάχυνση που προκύπτει από τη χρονική μεταβολή της ταχύτητας ή της θέσης.'
+          : 'Ο υπερηχητικός αισθητήρας μετρά απόσταση από στόχο και είναι ιδανικός για ευθύγραμμη κίνηση, ομαλή ή επιταχυνόμενη.',
+      why: series && series.key === 'velocity'
+        ? 'Οι μαθητές καταλαβαίνουν ότι η ταχύτητα δεν φαίνεται άμεσα, αλλά εξάγεται από την κλίση ή από την επεξεργασία της θέσης.'
+        : series && series.key === 'acceleration'
+          ? 'Δείχνει καθαρά ότι η επιτάχυνση είναι ο ρυθμός μεταβολής της ταχύτητας και όχι απλώς το να πηγαίνει κάτι γρήγορα.'
+          : 'Δίνει εξαιρετική εισαγωγή στη σύνδεση θέσης, κλίσης και κίνησης, επειδή οι μαθητές βλέπουν ένα σώμα να πλησιάζει ή να απομακρύνεται.',
+      experiment: series && series.key === 'velocity'
+        ? 'Παράδειγμα: κίνησε ένα αμαξίδιο σχεδόν ομαλά και έλεγξε αν η ταχύτητα μένει περίπου σταθερή.'
+        : series && series.key === 'acceleration'
+          ? 'Παράδειγμα: άφησε αμαξίδιο σε ελαφρά κλίση και δες αν προκύπτει περίπου σταθερή επιτάχυνση.'
+          : 'Παράδειγμα: μετακίνησε αμαξίδιο μπροστά από τον αισθητήρα και μέτρησε τη θέση του στον χρόνο.',
+      graph: series && series.key === 'velocity'
+        ? 'Στο γράφημα υ-t κοιτάμε αν η γραμμή είναι σχεδόν οριζόντια, αν αυξάνει ή αν μειώνεται. Το εμβαδό αντιστοιχεί σε μετατόπιση.'
+        : series && series.key === 'acceleration'
+          ? 'Στο γράφημα α-t ελέγχουμε αν η επιτάχυνση είναι περίπου σταθερή ή αλλάζει σε φάσεις. Το εμβαδό δίνει μεταβολή ταχύτητας.'
+          : 'Στο γράφημα x-t κοιτάμε αν η καμπύλη είναι ευθεία ή καμπύλη. Η κλίση της μας λέει για την ταχύτητα.',
+      steps: series && series.key === 'velocity'
+        ? [
+            'Διάλεξε το μέγεθος ταχύτητα από το πεδίο ανάλυσης.',
+            'Κάνε zoom σε τμήμα όπου η κίνηση είναι καθαρή.',
+            'Χρησιμοποίησε μέση τιμή και fit slope για να ελέγξεις αν η κίνηση είναι ομαλή.',
+            'Σύγκρινε διαφορετικές διαδρομές ή διαφορετικές κλίσεις τροχιάς.'
+          ]
+        : series && series.key === 'acceleration'
+          ? [
+              'Διάλεξε το μέγεθος επιτάχυνση.',
+              'Εντόπισε αν υπάρχουν τμήματα με περίπου σταθερή τιμή.',
+              'Χρησιμοποίησε μέση τιμή και τυπική απόκλιση για να εκτιμήσεις σταθερότητα.',
+              'Σύνδεσε το πρόσημο της επιτάχυνσης με το αν το σώμα επιταχύνεται ή επιβραδύνεται.'
+            ]
+          : [
+              'Ξεκίνα με το μέγεθος απόσταση.',
+              'Έλεγξε αν η θέση αλλάζει γραμμικά ή καμπύλα με τον χρόνο.',
+              'Χρησιμοποίησε την κλίση A-B ή το fit slope για μέση ταχύτητα.',
+              'Σύγκρινε δύο κινήσεις: ομαλή και επιταχυνόμενη.'
+            ],
+      takeaway: series && series.key === 'velocity'
+        ? 'Η ταχύτητα ερμηνεύεται καλύτερα όταν οι μαθητές τη συνδέσουν με την κλίση του x-t και τη μορφή του υ-t.'
+        : series && series.key === 'acceleration'
+          ? 'Η επιτάχυνση αποκτά νόημα όταν συνδεθεί ταυτόχρονα με το α-t και με το πώς αλλάζει η ταχύτητα.'
+          : 'Ο υπερηχητικός αισθητήρας είναι ίσως η πιο καθαρή σχολική γέφυρα ανάμεσα σε θέση, ταχύτητα και επιτάχυνση.'
+    }
+  };
+
+  return lessons[activeMode] || lessons[0];
+}
+
+function experimentScenarios(meta, series) {
+  const libraries = {
+    0: [
+      {
+        id: 'accel-pendulum',
+        title: 'Ταλάντωση εκκρεμούς',
+        goal: 'Να συνδέσουν οι μαθητές την περιοδική κίνηση με επαναλαμβανόμενο μοτίβο στη γραφική επιτάχυνσης.',
+        setup: 'Στερέωσε καλά τη συσκευή σε εκκρεμές ή σε σώμα που ταλαντώνεται με ασφάλεια.',
+        steps: [
+          'Άφησε το εκκρεμές να ταλαντωθεί χωρίς επιπλέον σπρώξιμο μετά την αρχική εκτροπή.',
+          'Κατέγραψε τουλάχιστον 3 έως 5 περιόδους.',
+          'Κάνε zoom σε μία πλήρη περίοδο και τοποθέτησε A και B στα ίδια σημεία της κίνησης.'
+        ],
+        analysis: 'Συζήτησε περιοδικότητα, πλάτος, μέση τιμή και τυπική απόκλιση. Οι κορυφές δείχνουν τα σημεία έντονης μεταβολής της κίνησης.',
+        teacher: 'Ρώτησε αν το σήμα μικραίνει με τον χρόνο και σύνδεσέ το με απόσβεση.'
+      },
+      {
+        id: 'accel-collision',
+        title: 'Κρούση και ώθηση από a-t',
+        goal: 'Να δουν οι μαθητές ότι μια πολύ σύντομη κρούση αφήνει έντονη αλλά μικρής διάρκειας κορυφή.',
+        setup: 'Στερέωσε τη συσκευή σε αμαξίδιο ή αντικείμενο που μπορεί να χτυπήσει ελεγχόμενα σε στοπ με ασφάλεια.',
+        steps: [
+          'Κάνε μία ήπια και μία πιο έντονη κρούση.',
+          'Κατέγραψε το χρονικό διάστημα της κρούσης με επιλογή A-B.',
+          'Σύγκρινε μέγιστο, διάρκεια και signed area ανάμεσα στις δύο περιπτώσεις.'
+        ],
+        analysis: 'Η διάρκεια δείχνει πόσο κράτησε η αλληλεπίδραση, ενώ το εμβαδό a-t συνδέεται με μεταβολή ταχύτητας.',
+        teacher: 'Βοήθησε τους μαθητές να ξεχωρίσουν “μεγάλη κορυφή” από “μεγάλο συνολικό αποτέλεσμα”.'
+      },
+      {
+        id: 'accel-incline',
+        title: 'Κίνηση σε κεκλιμένο επίπεδο',
+        goal: 'Να συνδέσουν οι μαθητές την επιτάχυνση με τη σταθερή επίδραση της βαρύτητας σε συγκεκριμένη διεύθυνση.',
+        setup: 'Τοποθέτησε τη συσκευή πάνω σε αμαξίδιο που κινείται σε ήπια κεκλιμένη επιφάνεια.',
+        steps: [
+          'Άφησε το αμαξίδιο να κινηθεί χωρίς αρχικό σπρώξιμο.',
+          'Επίλεξε το πιο καθαρό τμήμα της κίνησης.',
+          'Υπολόγισε μέση τιμή και std dev για να δεις πόσο σταθερή είναι η επιτάχυνση.'
+        ],
+        analysis: 'Αν η επιτάχυνση είναι περίπου σταθερή, το σήμα πρέπει να μένει κοντά σε μια μέση στάθμη με μικρές διακυμάνσεις.',
+        teacher: 'Σύνδεσέ το με το γιατί η ταχύτητα αυξάνει παρότι η δύναμη δεν “φαίνεται” άμεσα.'
+      }
+    ],
+    1: [
+      {
+        id: 'gyro-quarter-turn',
+        title: 'Περιστροφή 90 μοιρών',
+        goal: 'Να συνδέσουν τη γωνιακή ταχύτητα με τη συνολική γωνία περιστροφής.',
+        setup: 'Κράτησε τη συσκευή σταθερά και περιστρέψέ την περίπου κατά 90° γύρω από έναν άξονα.',
+        steps: [
+          'Μηδένισε πρώτα το gyro.',
+          'Κάνε μία αργή και μία γρήγορη περιστροφή.',
+          'Επίλεξε το διάστημα περιστροφής και δες το signed area.'
+        ],
+        analysis: 'Το εμβαδό ω-t δίνει εκτίμηση της συνολικής γωνίας. Σύγκρινε αν η αργή και η γρήγορη περιστροφή δίνουν παρόμοιο συνολικό αποτέλεσμα.',
+        teacher: 'Συζήτησε γιατί μπορεί δύο διαφορετικές κορυφές να δίνουν παρόμοια γωνία.'
+      },
+      {
+        id: 'gyro-start-stop',
+        title: 'Έναρξη και παύση περιστροφής',
+        goal: 'Να δουν οι μαθητές τις φάσεις επιτάχυνσης και επιβράδυνσης σε περιστροφική κίνηση.',
+        setup: 'Περιστρέφεις τη συσκευή για λίγα δευτερόλεπτα και έπειτα τη σταματάς ελεγχόμενα.',
+        steps: [
+          'Κατέγραψε όλο το συμβάν από ακινησία σε περιστροφή και πίσω.',
+          'Χώρισε με selection τη φάση έναρξης και τη φάση σταματήματος.',
+          'Σύγκρινε κλίση και διάρκεια στα δύο τμήματα.'
+        ],
+        analysis: 'Η απότομη αλλαγή της γωνιακής ταχύτητας φαίνεται στην κλίση και στις κορυφές του σήματος.',
+        teacher: 'Ζήτησε από τους μαθητές να περιγράψουν λεκτικά την κίνηση πριν δουν τους αριθμούς.'
+      }
+    ],
+    2: [
+      {
+        id: 'force-spring',
+        title: 'Συμπίεση ελατηρίου',
+        goal: 'Να δουν οι μαθητές πώς η δύναμη αυξάνει καθώς μεγαλώνει η παραμόρφωση.',
+        setup: 'Πίεσε σταδιακά ελατήριο ή ελαστικό σύστημα πάνω στην κυψέλη φορτίου.',
+        steps: [
+          'Κάνε tare πριν ξεκινήσεις.',
+          'Αύξησε αργά τη συμπίεση σε 2 ή 3 επίπεδα.',
+          'Σύγκρινε μέγιστη τιμή και μέση τιμή για κάθε επίπεδο.'
+        ],
+        analysis: 'Χρήσιμο για συζήτηση σχέσης δύναμης και παραμόρφωσης, ακόμη κι αν δεν έχεις ξεχωριστό αισθητήρα θέσης.',
+        teacher: 'Μπορείς να συνδέσεις ποιοτικά το αποτέλεσμα με τον νόμο του Hooke.'
+      },
+      {
+        id: 'force-collision',
+        title: 'Ώθηση σε κρούση',
+        goal: 'Να συνδέσουν οι μαθητές τη δύναμη, τη διάρκεια επαφής και την ώθηση.',
+        setup: 'Κάνε δύο κρούσεις διαφορετικής έντασης πάνω στην κυψέλη ή σε διάταξη που μεταφέρει δύναμη στην κυψέλη.',
+        steps: [
+          'Κατέγραψε το συμβάν για κάθε κρούση ξεχωριστά.',
+          'Επίλεξε το καθαρό διάστημα επαφής.',
+          'Σύγκρινε μέγιστη δύναμη, διάρκεια και signed area.'
+        ],
+        analysis: 'Το signed area στο F-t αντιστοιχεί στην ώθηση και επιτρέπει ποιοτική σύγκριση μεταβολής ορμής.',
+        teacher: 'Τόνισε ότι μεγαλύτερη μέγιστη δύναμη δεν σημαίνει απαραίτητα μεγαλύτερη ώθηση αν η διάρκεια είναι πολύ μικρή.'
+      },
+      {
+        id: 'force-buoyancy',
+        title: 'Άνωση',
+        goal: 'Να μετρήσουν οι μαθητές την άνωση ως διαφορά πραγματικού και φαινόμενου βάρους.',
+        setup: 'Κρέμασε σώμα στην κυψέλη φορτίου και βύθισέ το πλήρως σε νερό ή άλλο υγρό χωρίς να ακουμπά στο δοχείο.',
+        steps: [
+          'Κάνε tare με άδειο γάντζο.',
+          'Μέτρα σταθερό plateau στον αέρα.',
+          'Μέτρα νέο plateau με το σώμα πλήρως βυθισμένο.',
+          'Σύγκρινε Wαέρα, Wυγρό και τη διαφορά τους.'
+        ],
+        analysis: 'Η διαφορά Wαέρα - Wυγρό είναι η άνωση και συνδέεται με το βάρος του εκτοπιζόμενου υγρού.',
+        teacher: 'Ρώτησε γιατί το σώμα “χάνει” βάρος μέσα στο νερό χωρίς να αλλάζει η μάζα του.'
+      },
+      {
+        id: 'force-pressing',
+        title: 'Σταθερή πίεση και θόρυβος',
+        goal: 'Να μάθουν οι μαθητές να ξεχωρίζουν σταθερή μέτρηση από διακυμάνσεις και θόρυβο.',
+        setup: 'Άσκησε όσο γίνεται σταθερή πίεση στην κυψέλη για λίγα δευτερόλεπτα.',
+        steps: [
+          'Επίλεξε το πιο σταθερό κομμάτι του σήματος.',
+          'Δες μέση τιμή και τυπική απόκλιση.',
+          'Επανάλαβε με πιο ασταθές χέρι και σύγκρινε.'
+        ],
+        analysis: 'Η ίδια μέση τιμή με μεγαλύτερη std dev είναι εξαιρετικό παράδειγμα πειραματικής αβεβαιότητας.',
+        teacher: 'Αυτό είναι πολύ καλό σενάριο για να μιλήσεις για αξιοπιστία μετρήσεων.'
+      }
+    ],
+    4: series && series.key === 'velocity'
+      ? [
+          {
+            id: 'ultra-velocity-uniform',
+            title: 'Ομαλή κίνηση',
+            goal: 'Να δουν οι μαθητές ότι σε ομαλή κίνηση η ταχύτητα μένει περίπου σταθερή.',
+            setup: 'Κίνησε αμαξίδιο ή αντικείμενο μπροστά από τον αισθητήρα με όσο γίνεται σταθερό ρυθμό.',
+            steps: [
+              'Διάλεξε το μέγεθος ταχύτητα.',
+              'Κάνε zoom στο πιο καθαρό κομμάτι της διαδρομής.',
+              'Χρησιμοποίησε mean και fit slope για να ελέγξεις αν η ταχύτητα μένει σχεδόν σταθερή.'
+            ],
+            analysis: 'Σε ιδανική ομαλή κίνηση το υ-t είναι περίπου οριζόντιο. Οι μικρές αποκλίσεις βοηθούν να μιλήσεις για σφάλματα και μη ιδανικές συνθήκες.',
+            teacher: 'Σύγκρινε δύο ομάδες μαθητών για να δείξεις πόσο δύσκολο είναι να πετύχεις “τέλεια” ομαλή κίνηση.'
+          },
+          {
+            id: 'ultra-velocity-braking',
+            title: 'Επιβράδυνση',
+            goal: 'Να συνδέσουν οι μαθητές την αλλαγή ταχύτητας με την κλίση και τη μεταβολή πρόσημου αν υπάρξει αντιστροφή.',
+            setup: 'Κίνησε σώμα που επιβραδύνεται ομαλά μέχρι να σταματήσει.',
+            steps: [
+              'Επίλεξε το διάστημα από την αρχική ταχύτητα μέχρι κοντά στο μηδέν.',
+              'Δες το Δy και την κλίση A-B.',
+              'Αν το μοντέλο είναι κοντά σε ευθεία, δοκίμασε γραμμικό fit.'
+            ],
+            analysis: 'Η αρνητική κλίση στο υ-t είναι η πιο άμεση εικόνα της επιβράδυνσης.',
+            teacher: 'Ζήτησε από τους μαθητές να περιγράψουν αν η επιβράδυνση φαίνεται “σταθερή” πριν δουν το fit.'
+          }
+        ]
+      : series && series.key === 'acceleration'
+        ? [
+            {
+              id: 'ultra-accel-slope',
+              title: 'Σχεδόν σταθερή επιτάχυνση',
+              goal: 'Να ελέγξουν οι μαθητές αν ένα σώμα κινείται με περίπου σταθερή επιτάχυνση.',
+              setup: 'Χρησιμοποίησε αμαξίδιο σε ήπια κλίση ή κίνηση όπου η ταχύτητα αυξάνει σταδιακά.',
+              steps: [
+                'Διάλεξε το μέγεθος επιτάχυνση.',
+                'Βρες τμήμα με σχετικά ομαλή συμπεριφορά.',
+                'Χρησιμοποίησε μέση τιμή και std dev για σταθερότητα.'
+              ],
+              analysis: 'Αν η μέση τιμή παραμένει κοντά σε σταθερό επίπεδο και η std dev είναι μικρή, έχεις καλή ένδειξη περίπου σταθερής επιτάχυνσης.',
+              teacher: 'Σύνδεσέ το με το τι θα περίμεναν να δουν στο x-t και στο υ-t για το ίδιο φαινόμενο.'
+            }
+          ]
+        : [
+            {
+              id: 'ultra-distance-uniform',
+              title: 'Θέση σε ομαλή κίνηση',
+              goal: 'Να συνδέσουν οι μαθητές τη γραμμική μορφή του x-t με σταθερή ταχύτητα.',
+              setup: 'Κίνησε αμαξίδιο ομαλά μπροστά από τον αισθητήρα υπερήχων.',
+              steps: [
+                'Άφησε να καταγραφεί αρκετό τμήμα της διαδρομής.',
+                'Επίλεξε ένα ευθύγραμμο κομμάτι της καμπύλης.',
+                'Χρησιμοποίησε slope A-B ή fit slope για μέση ταχύτητα.'
+              ],
+              analysis: 'Αν το x-t μοιάζει με ευθεία, τότε η ταχύτητα είναι περίπου σταθερή. Η κλίση είναι το βασικό εργαλείο ερμηνείας.',
+              teacher: 'Ρώτησε ποια ομάδα πέτυχε την πιο σταθερή ταχύτητα και πώς φαίνεται αυτό στο γράφημα.'
+            },
+            {
+              id: 'ultra-distance-accelerated',
+              title: 'Θέση σε επιταχυνόμενη κίνηση',
+              goal: 'Να δουν οι μαθητές ότι όταν η ταχύτητα αλλάζει, το x-t παύει να είναι ευθεία.',
+              setup: 'Άφησε αμαξίδιο να κινηθεί σε κλίση ή με άλλη ρύθμιση που αλλάζει την ταχύτητα.',
+              steps: [
+                'Επίλεξε το μέγεθος απόσταση.',
+                'Παρατήρησε αν η καμπύλη λυγίζει αντί να μένει ευθεία.',
+                'Μετά άλλαξε σε velocity ή acceleration για να συσχετίσεις τα μεγέθη.'
+              ],
+              analysis: 'Εδώ έχει μεγάλη αξία η μετάβαση ανάμεσα σε θέση, ταχύτητα και επιτάχυνση για να χτιστεί ολοκληρωμένη εικόνα της κίνησης.',
+              teacher: 'Αυτό είναι εξαιρετικό σενάριο για να δείξεις ότι τα τρία γραφήματα περιγράφουν το ίδιο φαινόμενο από διαφορετική σκοπιά.'
+            }
+          ]
+  };
+
+  return libraries[activeMode] || [];
+}
+
+function lessonContent(key, series, result, examples) {
+  if (!result || !series) return null;
+  const commonSelection = selection
+    ? 'Το mini lesson βασίζεται στο επιλεγμένο διάστημα A-B.'
+    : 'Το mini lesson βασίζεται σε όλο το ορατό τμήμα της γραφικής.';
+  const lessons = {
+    markerA: {
+      title: 'Δείκτης A',
+      intro: 'Ο δείκτης A είναι το σημείο εκκίνησης της ανάλυσης. Από εδώ ξεκινούν οι υπολογισμοί για χρονική διάρκεια, μεταβολή και κλίση.',
+      why: examples.markerA.why,
+      experiment: examples.markerA.example,
+      graph: 'Στο γράφημα τοποθετούμε το A στην αρχή του φαινομένου που μας ενδιαφέρει: στην αρχή της κρούσης, της ανόδου ή μιας περιόδου.',
+      steps: [
+        'Κάνε zoom ώστε να φαίνεται καθαρά η αρχή του φαινομένου.',
+        'Βάλε το A στο πρώτο σημείο όπου το σήμα ξεφεύγει από το υπόβαθρο.',
+        'Έλεγξε αν το A αντιστοιχεί στο ίδιο φυσικό γεγονός σε όλες τις επαναλήψεις.'
+      ],
+      takeaway: commonSelection
+    },
+    markerB: {
+      title: 'Δείκτης B',
+      intro: 'Ο δείκτης B κλείνει το διάστημα ανάλυσης. Με αυτόν ορίζουμε πού σταματά το ίδιο φυσικό γεγονός.',
+      why: examples.markerB.why,
+      experiment: examples.markerB.example,
+      graph: 'Στο γράφημα το B μπαίνει στο τέλος της κρούσης, της ταλάντωσης ή του τμήματος όπου το μοντέλο ισχύει.',
+      steps: [
+        'Βρες πότε το σήμα επιστρέφει κοντά στο υπόβαθρο ή αλλάζει φάση.',
+        'Απόφυγε να βάλεις το B πολύ αργά, γιατί τότε μπαίνει άσχετος θόρυβος.',
+        'Χρησιμοποίησε το ίδιο κριτήριο τέλους σε όλα τα πειράματα.'
+      ],
+      takeaway: commonSelection
+    },
+    duration: {
+      title: 'Χρονική διάρκεια Δt',
+      intro: 'Η διάρκεια δείχνει πόσο κράτησε το επιλεγμένο φαινόμενο. Είναι βασική ποσότητα γιατί πολλές φυσικές σχέσεις είναι "κάτι ανά χρόνο".',
+      why: examples.duration.why,
+      experiment: examples.duration.example,
+      graph: 'Σε γράφημα χρόνου, η οριζόντια απόσταση ανάμεσα στα A και B είναι το Δt = ' + compactNumber(result.duration) + ' s.',
+      steps: [
+        'Επίλεξε μόνο το κομμάτι του φαινομένου που θέλεις να μελετήσεις.',
+        'Διάβασε το Δt και σύγκρινέ το με θεωρητικές προβλέψεις ή άλλες δοκιμές.',
+        'Αν κάνεις πολλά runs, έλεγξε αν η διάρκεια μένει περίπου σταθερή.'
+      ],
+      takeaway: 'Χωρίς σωστό Δt, οι υπολογισμοί για κλίση, μέση ταχύτητα ή επιτάχυνση βγαίνουν παραπλανητικοί.'
+    },
+    delta: {
+      title: 'Μεταβολή Δy',
+      intro: 'Η ποσότητα Δy δείχνει πόσο άλλαξε το φυσικό μέγεθος από την αρχή ως το τέλος του διαστήματος.',
+      why: examples.delta.why,
+      experiment: examples.delta.example,
+      graph: 'Κατακόρυφα συγκρίνουμε την τιμή στο A με την τιμή στο B. Εδώ η μεταβολή είναι ' + compactNumber(result.delta) + ' ' + series.unit + '.',
+      steps: [
+        'Δες αν το πρόσημο της μεταβολής έχει φυσικό νόημα.',
+        'Σύνδεσε τη μεταβολή με την ιστορία του πειράματος: αύξηση, μείωση ή αντιστροφή.',
+        'Χρησιμοποίησε τη μαζί με το Δt για να βγάλεις ρυθμό μεταβολής.'
+      ],
+      takeaway: 'Το Δy είναι ο πιο άμεσος τρόπος να περιγράψουμε τι άλλαξε στο φαινόμενο.'
+    },
+    slope: {
+      title: 'Κλίση',
+      intro: 'Η κλίση δείχνει πόσο γρήγορα αλλάζει το μέγεθος με τον χρόνο. Είναι από τα πιο σημαντικά εργαλεία στην πειραματική φυσική.',
+      why: examples.slope.why,
+      experiment: examples.slope.example,
+      graph: 'Όσο πιο απότομη είναι η γραμμή, τόσο μεγαλύτερη η κλίση. Στο επιλεγμένο διάστημα η κλίση A-B είναι ' + compactNumber(result.abSlope) + ' ' + slopeUnit(series) + '.',
+      steps: [
+        'Πρώτα ξεχώρισε αν κοιτάς στιγμιαία τάση ή μέση τάση στο διάστημα.',
+        'Χρησιμοποίησε την κλίση A-B για γρήγορη εκτίμηση και το fit για πιο σταθερό αποτέλεσμα.',
+        'Έλεγξε πάντα τις μονάδες: είναι αυτές που αποκαλύπτουν τη φυσική ερμηνεία.'
+      ],
+      takeaway: 'Σε πολλά σχολικά πειράματα, η φυσική ποσότητα που ψάχνουμε κρύβεται στην κλίση του γραφήματος.'
+    },
+    mean: {
+      title: 'Μέση τιμή',
+      intro: 'Η μέση τιμή δίνει μια αντιπροσωπευτική εικόνα του σήματος όταν δεν θέλουμε να βασιστούμε σε ένα μόνο σημείο.',
+      why: examples.mean.why,
+      experiment: examples.mean.example,
+      graph: 'Αν το σήμα ταλαντώνεται λίγο γύρω από μια σχεδόν σταθερή στάθμη, η μέση τιμή περιγράφει αυτό το "κέντρο".',
+      steps: [
+        'Διάλεξε διάστημα όπου το μέγεθος είναι περίπου ομοιογενές.',
+        'Σύγκρινε τη μέση τιμή με την αναμενόμενη θεωρητική τιμή.',
+        'Αν η μέση τιμή αλλάζει πολύ με μικρή μετακίνηση του διαστήματος, το φαινόμενο ίσως δεν είναι σταθερό.'
+      ],
+      takeaway: 'Η μέση τιμή βοηθά να ξεχωρίσουμε τη γενική τάση από τις μικρές τυχαίες διακυμάνσεις.'
+    },
+    stdDev: {
+      title: 'Τυπική απόκλιση',
+      intro: 'Η τυπική απόκλιση μάς λέει πόσο απλωμένες είναι οι μετρήσεις γύρω από τη μέση τιμή.',
+      why: examples.stdDev.why,
+      experiment: examples.stdDev.example,
+      graph: 'Αν η καμπύλη είναι "παχιά" ή τρέμει πολύ, συνήθως η τυπική απόκλιση μεγαλώνει.',
+      steps: [
+        'Δες πρώτα αν η μεγάλη διασπορά οφείλεται σε θόρυβο ή σε πραγματική φυσική μεταβολή.',
+        'Σύγκρινε την τυπική απόκλιση ανάμεσα σε δύο ρυθμίσεις του ίδιου πειράματος.',
+        'Χρησιμοποίησέ τη για να μιλήσεις με τους μαθητές για αβεβαιότητα και αξιοπιστία.'
+      ],
+      takeaway: 'Δεν αρκεί να ξέρουμε τη μέση τιμή· πρέπει να ξέρουμε και πόσο αξιόπιστα συγκεντρώνονται οι μετρήσεις γύρω της.'
+    },
+    minMax: {
+      title: 'Ελάχιστο και μέγιστο',
+      intro: 'Οι ακραίες τιμές δείχνουν τα όρια του φαινομένου και συχνά αντιστοιχούν στις πιο ενδιαφέρουσες στιγμές.',
+      why: examples.minMax.why,
+      experiment: examples.minMax.example,
+      graph: 'Στο γράφημα αναζητούμε κορυφές και κοιλάδες. Αυτές συχνά δείχνουν κρούση, αντιστροφή κίνησης ή ακραία απομάκρυνση.',
+      steps: [
+        'Κάνε zoom γύρω από τις κορυφές για να δεις αν είναι πραγματικές ή θόρυβος.',
+        'Σύγκρινε τη μέγιστη τιμή ανάμεσα σε επαναλήψεις του ίδιου πειράματος.',
+        'Σύνδεσε την ακραία τιμή με το αντίστοιχο φυσικό γεγονός.'
+      ],
+      takeaway: 'Οι κορυφές συχνά είναι πιο εύκολο να συζητηθούν παιδαγωγικά από πιο σύνθετους στατιστικούς δείκτες.'
+    },
+    area: {
+      title: areaMeaning(series),
+      intro: 'Το προσημασμένο εμβαδό είναι ολοκλήρωση του σήματος στον χρόνο. Μας δίνει μια ποσότητα που εξαρτάται από το νόημα του άξονα y.',
+      why: examples.area.why,
+      experiment: examples.area.example,
+      graph: 'Μετράμε όλη την επιφάνεια κάτω από την καμπύλη, κρατώντας θετικά και αρνητικά πρόσημα. Εδώ είναι ' + compactNumber(result.signedArea) + ' ' + areaUnit(series) + '.',
+      steps: [
+        'Έλεγξε πρώτα τι σημαίνει φυσικά το εμβαδό για το συγκεκριμένο γράφημα.',
+        'Παρατήρησε αν θετικές και αρνητικές περιοχές αλληλοαναιρούνται.',
+        'Χρησιμοποίησέ το όταν θέλεις συνολικό αποτέλεσμα σε ένα διάστημα, όχι μόνο στιγμιαίες τιμές.'
+      ],
+      takeaway: 'Το εμβαδό συνδέει τη γραφική παράσταση με μια νέα φυσική ποσότητα, όπως μετατόπιση, ώθηση ή μεταβολή ταχύτητας.'
+    },
+    absoluteArea: {
+      title: 'Απόλυτο εμβαδό',
+      intro: 'Το απόλυτο εμβαδό αθροίζει το μέτρο της δράσης του σήματος χωρίς ακυρώσεις από πρόσημα.',
+      why: examples.absoluteArea.why,
+      experiment: examples.absoluteArea.example,
+      graph: 'Ακόμη κι αν η καμπύλη περνά πάνω και κάτω από το μηδέν, εδώ μετράμε τη συνολική "ένταση" της μεταβολής.',
+      steps: [
+        'Χρησιμοποίησέ το όταν σε ενδιαφέρει πόσο έντονο ήταν συνολικά το φαινόμενο.',
+        'Σύγκρινέ το με το προσημασμένο εμβαδό για να δεις αν υπήρξαν πολλές εναλλαγές πρόσημου.',
+        'Σε ταλαντώσεις ή δονήσεις είναι συχνά πιο διδακτικό από το απλό εμβαδό.'
+      ],
+      takeaway: 'Είναι πολύ χρήσιμο όταν το σήμα αλλάζει συχνά κατεύθυνση αλλά εσύ θέλεις τη συνολική δραστηριότητα.'
+    },
+    fitSlope: {
+      title: slopeMeaning(series),
+      intro: 'Η κλίση από γραμμική παλινδρόμηση είναι πιο σταθερή από την απλή κλίση A-B, γιατί χρησιμοποιεί όλα τα σημεία του διαστήματος.',
+      why: examples.slope.why,
+      experiment: examples.slope.example,
+      graph: 'Η ευθεία fit προσπαθεί να περάσει όσο γίνεται καλύτερα από όλα τα δεδομένα. Η κλίση της εδώ είναι ' + (result.linear ? compactNumber(result.linear.coefficients[1]) + ' ' + slopeUnit(series) : '—') + '.',
+      steps: [
+        'Επίλεξε διάστημα που μοιάζει περίπου γραμμικό.',
+        'Σύγκρινε την κλίση fit με την κλίση A-B για να δεις πόσο επηρεάζει ο θόρυβος.',
+        'Αν τα σημεία δεν ακολουθούν ευθεία, μην εμπιστεύεσαι τυφλά το γραμμικό μοντέλο.'
+      ],
+      takeaway: 'Η παλινδρόμηση μάς μαθαίνει να εξάγουμε νόμο από δεδομένα, όχι απλώς να διαβάζουμε δύο σημεία.'
+    },
+    fit: {
+      title: result.fit ? (result.fit.degree === 2 ? 'Παραβολικό fit' : 'Γραμμικό fit') : 'Fit καμπύλης',
+      intro: 'Το fit προσπαθεί να βρει μαθηματικό μοντέλο που περιγράφει τα πειραματικά δεδομένα όσο καλύτερα γίνεται.',
+      why: examples.fit.why,
+      experiment: examples.fit.example,
+      graph: 'Το μοντέλο σχεδιάζεται πάνω στα δεδομένα. Ελέγχουμε αν ακολουθεί το σχήμα της καμπύλης χωρίς να "ξεγελιέται" από θόρυβο.',
+      steps: [
+        'Διάλεξε αν ταιριάζει καλύτερα γραμμικό ή παραβολικό μοντέλο.',
+        'Δες το R²: όσο πιο κοντά στο 1, τόσο καλύτερα περιγράφονται τα δεδομένα.',
+        'Δες και το RMSE: μικρότερο σημαίνει μικρότερο μέσο σφάλμα πρόβλεψης.',
+        'Συζήτησε αν το μοντέλο έχει φυσικό νόημα, όχι μόνο καλό αριθμητικό σκορ.'
+      ],
+      takeaway: 'Το fit είναι η γέφυρα ανάμεσα στο πείραμα και στη θεωρητική εξίσωση.'
+    }
+  };
+  return lessons[key] || null;
 }
 
 function calculateAnalysis() {
   const meta = currentMode();
   const series = meta.series[analysisSeriesIndex] || meta.series[0];
-  const index = meta.series.indexOf(series);
-  const points = analysisRows()
-    .map(row => ({ x: row.time, y: row.values[index] }))
-    .filter(point => isFinite(point.x) && isFinite(point.y));
+  const points = analysisPoints(series);
   if (points.length < 2) return { series, points };
 
   const duration = points[points.length - 1].x - points[0].x;
@@ -1581,12 +4080,95 @@ function calculateAnalysis() {
   };
 }
 
-function resultCard(label, value, detail, example, wide) {
-  return '<div class="result-card' + (wide ? ' wide' : '') + '">' +
+function resultCard(key, label, value, detail, wide) {
+  const isActive = activeLessonKey === key;
+  return '<button type="button" class="result-card' + (wide ? ' wide' : '') + (isActive ? ' active' : '') +
+    '" data-lesson-key="' + key + '" aria-pressed="' + (isActive ? 'true' : 'false') + '">' +
     '<span>' + label + '</span><strong>' + value + '</strong>' +
     (detail ? '<small>' + detail + '</small>' : '') +
-    (example ? '<div class="result-example"><b>Παράδειγμα:</b> ' + example + '</div>' : '') +
-    '</div>';
+    '<em>Mini lesson</em>' +
+    '</button>';
+}
+
+function renderLessonPanel() {
+  const panel = document.getElementById('lessonPanel');
+  const result = analysisCache && analysisCache.series ? analysisCache : null;
+  const modeMeta = currentMode();
+  const fallbackSeries = modeMeta.series[analysisSeriesIndex] || modeMeta.series[0];
+  const series = result ? result.series : fallbackSeries;
+  const scenarios = experimentScenarios(modeMeta, series);
+  if (!scenarios.some(scenario => scenario.id === activeScenarioId)) {
+    activeScenarioId = scenarios.length ? scenarios[0].id : null;
+  }
+  const activeScenario = scenarios.find(scenario => scenario.id === activeScenarioId) || null;
+  const lesson = activeLessonKey && result
+    ? lessonContent(activeLessonKey, series, result, analysisExamples(series))
+    : sensorLesson(modeMeta, series);
+  if (!lesson) {
+    panel.innerHTML = '<div class="lesson-empty">Το μάθημα δεν είναι διαθέσιμο ακόμη.</div>';
+    return;
+  }
+
+  const steps = (lesson.steps || []).map(step => '<li>' + step + '</li>').join('');
+  const scenarioTabs = scenarios.map(scenario => {
+    const activeClass = scenario.id === activeScenarioId ? ' active' : '';
+    return '<button type="button" class="scenario-tab' + activeClass + '" data-scenario-id="' + scenario.id + '">' +
+      scenario.title + '</button>';
+  }).join('');
+  const scenarioSteps = activeScenario
+    ? activeScenario.steps.map(step => '<li>' + step + '</li>').join('')
+    : '';
+  const scenarioHtml = activeScenario
+    ? '<div class="scenario-panel">' +
+        '<h5>Έτοιμα σχολικά σενάρια</h5>' +
+        '<div class="scenario-tabs">' + scenarioTabs + '</div>' +
+        '<div class="scenario-card">' +
+          '<div class="scenario-head">' +
+            '<h4>' + activeScenario.title + '</h4>' +
+            '<p>' + activeScenario.goal + '</p>' +
+          '</div>' +
+          '<div class="scenario-grid">' +
+            '<section class="scenario-block"><h6>Στήσιμο</h6><p>' + activeScenario.setup + '</p></section>' +
+            '<section class="scenario-block"><h6>Τι να παρατηρήσουν</h6><p>' + activeScenario.analysis + '</p></section>' +
+            '<section class="scenario-block full"><h6>Βήματα πειράματος</h6><ol class="scenario-list">' + scenarioSteps + '</ol></section>' +
+            '<section class="scenario-block full"><h6>Σημείωση καθηγητή</h6><p>' + activeScenario.teacher + '</p></section>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    : '';
+  panel.innerHTML =
+    '<div class="lesson-head">' +
+      '<div>' +
+        '<span class="lesson-tag">' + (lesson.tag || 'Mini lesson') + '</span>' +
+        '<h4>' + lesson.title + '</h4>' +
+        '<p>' + lesson.intro + '</p>' +
+      '</div>' +
+      (activeLessonKey
+        ? '<button type="button" class="lesson-close" id="lessonClose" aria-label="Επιστροφή στο μάθημα αισθητήρα">×</button>'
+        : '') +
+    '</div>' +
+    '<div class="lesson-body">' +
+      '<section class="lesson-section"><h5>Γιατί το κάνουμε</h5><p>' + lesson.why + '</p></section>' +
+      '<section class="lesson-section"><h5>Παράδειγμα πειράματος</h5><p>' + lesson.experiment + '</p></section>' +
+      '<section class="lesson-section full"><h5>Πώς διαβάζουμε το γράφημα</h5><p>' + lesson.graph + '</p></section>' +
+      '<section class="lesson-section full"><h5>Τρόπος ανάλυσης</h5><ol class="lesson-steps">' + steps + '</ol></section>' +
+      '<section class="lesson-section full"><h5>Τι να κρατήσουν οι μαθητές</h5><p>' + lesson.takeaway + '</p></section>' +
+    '</div>' + scenarioHtml;
+
+  const closeButton = document.getElementById('lessonClose');
+  if (closeButton) {
+    closeButton.addEventListener('click', () => {
+      activeLessonKey = null;
+      updateAnalysis();
+    });
+  }
+
+  panel.querySelectorAll('[data-scenario-id]').forEach(button => {
+    button.addEventListener('click', () => {
+      activeScenarioId = button.dataset.scenarioId;
+      renderLessonPanel();
+    });
+  });
 }
 
 function updateAnalysis() {
@@ -1603,50 +4185,72 @@ function updateAnalysis() {
   const container = document.getElementById('analysisResults');
   if (!analysisCache || analysisCache.points.length < 2) {
     container.innerHTML = '<div class="analysis-empty">Αναμονή για τουλάχιστον δύο δείγματα...</div>';
+    renderLessonPanel();
+    renderHookeExperiment();
+    renderBuoyancyExperiment();
+    renderMotionExperiment();
+    renderCollisionExperiment();
     return;
   }
 
   const result = analysisCache;
   const series = result.series;
-  const examples = analysisExamples(series);
   const fitName = result.fit
     ? (result.fit.degree === 2 ? 'Παραβολικό fit' : 'Γραμμικό fit')
     : 'Fit';
+  const availableLessons = {
+    markerA: true,
+    markerB: true,
+    duration: true,
+    delta: true,
+    slope: true,
+    mean: true,
+    stdDev: true,
+    minMax: true,
+    area: true,
+    absoluteArea: true,
+    fitSlope: true,
+    fit: true
+  };
+  if (activeLessonKey && !availableLessons[activeLessonKey]) activeLessonKey = null;
   container.innerHTML =
-    resultCard('Δείκτης A',
+    resultCard('markerA', 'Δείκτης A',
       't = ' + compactNumber(result.pointA.x) + ' s',
-      'y = ' + compactNumber(result.pointA.y) + ' ' + series.unit,
-      examples.markerA) +
-    resultCard('Δείκτης B',
+      'y = ' + compactNumber(result.pointA.y) + ' ' + series.unit) +
+    resultCard('markerB', 'Δείκτης B',
       't = ' + compactNumber(result.pointB.x) + ' s',
-      'y = ' + compactNumber(result.pointB.y) + ' ' + series.unit,
-      examples.markerB) +
-    resultCard('Δt (A–B)', compactNumber(result.duration) + ' s',
-      result.points.length + ' δείγματα', examples.duration) +
-    resultCard('Δy (A–B)', compactNumber(result.delta) + ' ' + series.unit,
-      'yB − yA', examples.delta) +
-    resultCard('Κλίση A–B', compactNumber(result.abSlope) + ' ' + slopeUnit(series),
-      'Δy / Δt', examples.slope) +
-    resultCard('Μέση τιμή', compactNumber(result.mean) + ' ' + series.unit,
-      '', examples.mean) +
-    resultCard('Τυπική απόκλιση', compactNumber(result.stdDev) + ' ' + series.unit,
-      'Δειγματική σ', examples.stdDev) +
-    resultCard('Ελάχιστο / Μέγιστο',
+      'y = ' + compactNumber(result.pointB.y) + ' ' + series.unit) +
+    resultCard('duration', 'Δt (A–B)', compactNumber(result.duration) + ' s',
+      result.points.length + ' σημεία ανάλυσης') +
+    resultCard('delta', 'Δy (A–B)', compactNumber(result.delta) + ' ' + series.unit,
+      'yB − yA') +
+    resultCard('slope', 'Κλίση A–B', compactNumber(result.abSlope) + ' ' + slopeUnit(series),
+      'Δy / Δt') +
+    resultCard('mean', 'Μέση τιμή', compactNumber(result.mean) + ' ' + series.unit,
+      '') +
+    resultCard('stdDev', 'Τυπική απόκλιση', compactNumber(result.stdDev) + ' ' + series.unit,
+      'Δειγματική σ') +
+    resultCard('minMax', 'Ελάχιστο / Μέγιστο',
       compactNumber(result.min) + ' / ' + compactNumber(result.max) + ' ' + series.unit,
-      '', examples.minMax) +
-    resultCard(areaMeaning(series), compactNumber(result.signedArea) + ' ' + areaUnit(series),
-      'Προσημασμένη ολοκλήρωση', examples.area) +
-    resultCard('Απόλυτο εμβαδό', compactNumber(result.absoluteArea) + ' ' + areaUnit(series),
-      'Συνολικό εμβαδό |y|', examples.absoluteArea) +
-    resultCard(slopeMeaning(series),
+      '') +
+    resultCard('area', areaMeaning(series), compactNumber(result.signedArea) + ' ' + areaUnit(series),
+      'Προσημασμένη ολοκλήρωση') +
+    resultCard('absoluteArea', 'Απόλυτο εμβαδό', compactNumber(result.absoluteArea) + ' ' + areaUnit(series),
+      'Συνολικό εμβαδό |y|') +
+    resultCard('fitSlope', slopeMeaning(series),
       result.linear ? compactNumber(result.linear.coefficients[1]) + ' ' + slopeUnit(series) : '—',
-      'Από γραμμική παλινδρόμηση', examples.slope) +
-    resultCard(fitName, fitEquation(result.fit),
+      'Από γραμμική παλινδρόμηση') +
+    resultCard('fit', fitName, fitEquation(result.fit),
       result.fit
         ? 'R² = ' + compactNumber(result.fit.r2) +
           ' · RMSE = ' + compactNumber(result.fit.rmse) + ' ' + series.unit
         : 'Η καμπύλη fit είναι απενεργοποιημένη',
-      examples.fit, true);
+      true);
+  renderLessonPanel();
+  renderHookeExperiment();
+  renderBuoyancyExperiment();
+  renderMotionExperiment();
+  renderCollisionExperiment();
 }
 
 function niceNumber(value, round) {
@@ -1670,11 +4274,10 @@ function niceNumber(value, round) {
 
 function yScale(dataRows, selectedSeries) {
   const meta = currentMode();
-  const seriesIndexes = selectedSeries.map(series => meta.series.indexOf(series));
   const values = [];
   dataRows.forEach(row => {
-    seriesIndexes.forEach(index => {
-      const value = row.values[index];
+    selectedSeries.forEach(series => {
+      const value = rowValue(row, series);
       if (isFinite(value)) values.push(value);
     });
   });
@@ -1706,15 +4309,21 @@ function yScale(dataRows, selectedSeries) {
   const step = niceNumber((max - min) / 6, true);
   const niceMin = Math.floor(min / step) * step;
   const niceMax = Math.ceil(max / step) * step;
+  if (customYScale) {
+    const manual = clampYScale(customYScale.min, customYScale.max);
+    const manualStep = niceNumber((manual.max - manual.min) / 6, true);
+    return { min: manual.min, max: manual.max, step: manualStep };
+  }
   return { min: niceMin, max: niceMax === niceMin ? niceMin + step : niceMax, step };
 }
 
-function axisLabel(selectedSeries) {
+function axisLabel(selectedSeries, scaleInfo) {
   const meta = currentMode();
   const units = [...new Set(selectedSeries.map(series => series.unit))];
   if (units.length === 1) {
-    if (selectedSeries.length === 1) return selectedSeries[0].label + ' (' + units[0] + ')';
-    return meta.yLabel;
+    const display = displayUnit(units[0], scaleInfo);
+    if (selectedSeries.length === 1) return selectedSeries[0].label + ' (' + display + ')';
+    return meta.yLabel.replace('(' + units[0] + ')', '(' + display + ')');
   }
   return 'Τιμή';
 }
@@ -1726,6 +4335,8 @@ function resizeCanvas() {
   canvas.height = Math.max(300, Math.round(rect.height * ratio));
   ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
   draw();
+  drawHookeExperimentChart(isHookeExperimentMode() ? hookeTrials : [], hookeFit(hookeTrials));
+  drawCollisionExperimentChart(isCollisionExperimentMode() ? collisionTrials : [], collisionFit(collisionTrials));
 }
 
 function draw() {
@@ -1748,8 +4359,10 @@ function draw() {
   const xMin = view.start;
   const xMax = view.end;
   const viewSpan = Math.max(0.5, xMax - xMin);
+  const timeScale = selectedTimeScale(viewSpan);
+  const valueScale = selectedValueScale(selectedSeries, scale);
 
-  chartGeometry = { pad, plotW, plotH, xMin, xMax, scale, dataRows, selectedSeries };
+  chartGeometry = { pad, plotW, plotH, xMin, xMax, scale, dataRows, selectedSeries, timeScale, valueScale };
 
   ctx.save();
   ctx.font = '12px system-ui';
@@ -1769,7 +4382,11 @@ function draw() {
     if (major) {
       ctx.fillStyle = '#526474';
       ctx.textAlign = 'right';
-      ctx.fillText(formatValue(value, scale.max - scale.min), pad.left - 10, y);
+      ctx.fillText(
+        formatValue(value / valueScale.multiplier, (scale.max - scale.min) / valueScale.multiplier),
+        pad.left - 10,
+        y
+      );
     }
   }
 
@@ -1786,7 +4403,7 @@ function draw() {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     const xDigits = xStep < 1 ? 2 : (xStep < 10 ? 1 : 0);
-    ctx.fillText(value.toFixed(xDigits), x, pad.top + plotH + 9);
+    ctx.fillText((value / timeScale.multiplier).toFixed(xDigits), x, pad.top + plotH + 9);
   }
 
   ctx.strokeStyle = '#657685';
@@ -1797,14 +4414,14 @@ function draw() {
   ctx.font = '600 13px system-ui';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'bottom';
-  ctx.fillText('Χρόνος (s)', pad.left + plotW / 2, height - 7);
+  ctx.fillText('Χρόνος (' + timeScale.unit + ')', pad.left + plotW / 2, height - 7);
 
   ctx.save();
   ctx.translate(16, pad.top + plotH / 2);
   ctx.rotate(-Math.PI / 2);
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
-  ctx.fillText(axisLabel(selectedSeries), 0, 0);
+  ctx.fillText(axisLabel(selectedSeries, valueScale), 0, 0);
   ctx.restore();
 
   if (!dataRows.length) {
@@ -1864,25 +4481,19 @@ function draw() {
   }
 
   selectedSeries.forEach(series => {
-    const seriesIndex = currentMode().series.indexOf(series);
     ctx.strokeStyle = series.color;
     ctx.lineWidth = 2.4;
     ctx.lineJoin = 'round';
     ctx.lineCap = 'round';
-    ctx.beginPath();
-    let started = false;
+    const points = [];
     dataRows.forEach(row => {
-      const value = row.values[seriesIndex];
+      const value = rowValue(row, series);
       if (!isFinite(value)) return;
       const x = pad.left + (row.time - xMin) * plotW / (xMax - xMin);
       const y = pad.top + (scale.max - value) * plotH / (scale.max - scale.min);
-      if (!started) {
-        ctx.moveTo(x, y);
-        started = true;
-      } else {
-        ctx.lineTo(x, y);
-      }
+      points.push({ x, y });
     });
+    drawDataPath(points);
     ctx.stroke();
   });
 
@@ -1957,8 +4568,7 @@ function draw() {
     ctx.setLineDash([]);
 
     selectedSeries.forEach(series => {
-      const seriesIndex = currentMode().series.indexOf(series);
-      const value = nearest.values[seriesIndex];
+      const value = rowValue(nearest, series);
       const y = pad.top + (scale.max - value) * plotH / (scale.max - scale.min);
       ctx.fillStyle = '#fff';
       ctx.strokeStyle = series.color;
@@ -1976,11 +4586,14 @@ function draw() {
 
 function showTooltip(row, x, y, selectedSeries) {
   const meta = currentMode();
-  tooltip.innerHTML = '<strong>t = ' + row.time.toFixed(2) + ' s</strong>' +
+  const geometry = chartGeometry || {};
+  const timeScale = geometry.timeScale || { unit: 's', multiplier: 1 };
+  const valueScale = geometry.valueScale || { prefix: '', multiplier: 1 };
+  tooltip.innerHTML = '<strong>t = ' + (row.time / timeScale.multiplier).toFixed(2) + ' ' + timeScale.unit + '</strong>' +
     selectedSeries.map(series => {
-      const index = meta.series.indexOf(series);
+      const value = rowValue(row, series);
       return '<span style="color:' + series.color + '">●</span> ' +
-        series.short + ' = ' + row.values[index].toFixed(3) + ' ' + series.unit;
+        series.short + ' = ' + (value / valueScale.multiplier).toFixed(3) + ' ' + displayUnit(series.unit, valueScale);
     }).join('<br>');
   tooltip.hidden = false;
   const wrap = document.getElementById('plotWrap').getBoundingClientRect();
@@ -2012,6 +4625,13 @@ function pointInsidePlot(point) {
     point.y >= pad.top && point.y <= pad.top + chartGeometry.plotH;
 }
 
+function pointInsideYZoomZone(point) {
+  if (!chartGeometry) return false;
+  const pad = chartGeometry.pad;
+  return point.x >= pad.left - 58 && point.x <= pad.left + chartGeometry.plotW &&
+    point.y >= pad.top && point.y <= pad.top + chartGeometry.plotH;
+}
+
 function timeAtX(x) {
   const geometry = chartGeometry;
   const boundedX = Math.max(geometry.pad.left, Math.min(geometry.pad.left + geometry.plotW, x));
@@ -2039,9 +4659,9 @@ function setChartTool(tool) {
     button.classList.toggle('active', button.dataset.chartTool === tool);
   });
   const hints = {
-    inspect: 'Μετακίνησε για ακριβείς τιμές ή σύρε για επιλογή διαστήματος.',
+    inspect: 'Μετακίνησε πάνω στη γραφική για ακριβείς τιμές χωρίς να αλλάζεις το A/B.',
     select: 'Σύρε πάνω στη γραφική για να επιλέξεις το διάστημα ανάλυσης.',
-    pan: 'Σύρε οριζόντια για μετακίνηση. Ροδέλα ή pinch για zoom.'
+    pan: 'Σύρε για μετακίνηση σε χρόνο και τιμή. Ροδέλα για χρόνο, Shift + ροδέλα για κάθετο zoom.'
   };
   document.getElementById('chartHint').textContent = hints[tool];
   canvas.style.cursor = tool === 'select' ? 'crosshair' : (tool === 'pan' ? 'grab' : 'default');
@@ -2091,18 +4711,26 @@ function startChartInteraction(event) {
   }
 
   event.preventDefault();
-  setRunning(false);
   hoverPoint = null;
   tooltip.hidden = true;
 
-  if (chartTool === 'select' || chartTool === 'inspect') {
+  if (chartTool === 'inspect') {
+    inspectChart(event);
+    return;
+  }
+
+  setRunning(false);
+
+  if (chartTool === 'select') {
     selecting = true;
     selectionAnchor = timeAtX(point.x);
     selection = { start: selectionAnchor, end: selectionAnchor };
   } else if (chartTool === 'pan') {
     panning = true;
     panStartX = point.x;
+    panStartY = point.y;
     panStartView = getViewBounds();
+    panStartYScale = { min: chartGeometry.scale.min, max: chartGeometry.scale.max };
     canvas.style.cursor = 'grabbing';
   }
 
@@ -2137,7 +4765,17 @@ function moveChartInteraction(event) {
   } else if (panning && panStartView) {
     const span = panStartView.end - panStartView.start;
     const shift = (panStartX - point.x) * span / chartGeometry.plotW;
-    setCustomView(panStartView.start + shift, panStartView.end + shift);
+    customView = clampView(panStartView.start + shift, panStartView.end + shift);
+    if (panStartYScale) {
+      const ySpan = panStartYScale.max - panStartYScale.min;
+      const yShift = (point.y - panStartY) * ySpan / chartGeometry.plotH;
+      customYScale = clampYScale(panStartYScale.min + yShift, panStartYScale.max + yShift);
+    }
+    hoverPoint = null;
+    tooltip.hidden = true;
+    updateAnalysis();
+    updateZoomStatus();
+    draw();
   }
 }
 
@@ -2146,16 +4784,17 @@ function finishChartInteraction(event) {
     activePointers.delete(event.pointerId);
     if (activePointers.size < 2) pinchState = null;
   }
-  const hadInteraction = selecting || panning;
+  const wasSelecting = selecting;
   selecting = false;
   panning = false;
   panStartView = null;
+  panStartYScale = null;
   if (chartTool === 'pan') canvas.style.cursor = 'grab';
   if (canvas.releasePointerCapture && canvas.hasPointerCapture && event.pointerId !== undefined &&
       canvas.hasPointerCapture(event.pointerId)) {
     canvas.releasePointerCapture(event.pointerId);
   }
-  if (hadInteraction && selection && Math.abs(selection.end - selection.start) < 0.05) {
+  if (wasSelecting && selection && Math.abs(selection.end - selection.start) < 0.05) {
     selection = null;
   }
   updateAnalysis();
@@ -2165,10 +4804,15 @@ function finishChartInteraction(event) {
 function handleWheel(event) {
   if (!chartGeometry || !rows.length) return;
   const point = pointerPosition(event);
-  if (!pointInsidePlot(point)) return;
+  if (!pointInsidePlot(point) && !pointInsideYZoomZone(point)) return;
   event.preventDefault();
   const factor = event.deltaY > 0 ? 1.22 : 0.82;
-  zoomAt(timeAtX(point.x), factor);
+  const yAxisWheel = event.shiftKey || point.x < chartGeometry.pad.left;
+  if (yAxisWheel) {
+    zoomYAt(valueAtY(point.y), factor);
+  } else {
+    zoomAt(timeAtX(point.x), factor);
+  }
 }
 
 modeButtons.forEach(button => {
@@ -2223,11 +4867,72 @@ document.getElementById('timeWindow').addEventListener('change', event => {
 
 document.getElementById('autoScale').addEventListener('change', event => {
   autoScale = event.target.checked;
+  if (autoScale) customYScale = null;
+  updateZoomStatus();
+  draw();
+});
+
+document.getElementById('accelView').value = accelDisplayMode;
+document.getElementById('collisionMass').value = collisionMassKg.toFixed(2);
+document.getElementById('timeScale').value = timeScaleMode;
+document.getElementById('valueScale').value = valueScaleMode;
+document.getElementById('smoothingWindow').value = String(smoothingWindow);
+document.getElementById('curveMode').value = curveMode;
+document.getElementById('buoyancyVolumeMl').value = buoyancyVolumeMl.toFixed(0);
+
+document.getElementById('accelView').addEventListener('change', event => {
+  accelDisplayMode = event.target.value === 'force' ? 'force' : 'accel';
+  localStorage.setItem('palladio-accel-view', accelDisplayMode);
+  activeLessonKey = null;
+  customYScale = null;
+  updateModeUi();
+  updateReadouts(lastData);
+});
+
+document.getElementById('collisionMass').addEventListener('change', event => {
+  const nextMass = Math.max(0.001, Number(event.target.value) || collisionMassKg);
+  collisionMassKg = nextMass;
+  event.target.value = collisionMassKg.toFixed(2);
+  localStorage.setItem('palladio-collision-mass', String(collisionMassKg));
+  updateModeUi();
+  updateReadouts(lastData);
+});
+
+document.getElementById('timeScale').addEventListener('change', event => {
+  timeScaleMode = event.target.value;
+  localStorage.setItem('palladio-time-scale', timeScaleMode);
+  draw();
+});
+
+document.getElementById('valueScale').addEventListener('change', event => {
+  valueScaleMode = event.target.value;
+  localStorage.setItem('palladio-value-scale', valueScaleMode);
+  draw();
+});
+
+document.getElementById('smoothingWindow').addEventListener('change', event => {
+  const nextWindow = Number(event.target.value);
+  smoothingWindow = [1, 3, 5, 9, 15, 21].includes(nextWindow) ? nextWindow : 1;
+  event.target.value = String(smoothingWindow);
+  localStorage.setItem('palladio-smoothing-window', String(smoothingWindow));
+  updateZoomStatus();
+  updateTable();
+  updateAnalysis();
+  draw();
+});
+
+document.getElementById('curveMode').addEventListener('change', event => {
+  curveMode = event.target.value === 'straight' ? 'straight' : 'smooth';
+  event.target.value = curveMode;
+  localStorage.setItem('palladio-curve-mode', curveMode);
   draw();
 });
 
 document.getElementById('analysisSeries').addEventListener('change', event => {
   analysisSeriesIndex = Number(event.target.value);
+  activeLessonKey = null;
+  activeScenarioId = null;
+  customYScale = null;
   const meta = currentMode();
   if (activeMode === 4) {
     meta.series.forEach((series, index) => {
@@ -2253,6 +4958,20 @@ document.getElementById('clearSelection').addEventListener('click', () => {
   draw();
 });
 
+document.getElementById('analysisResults').addEventListener('click', event => {
+  const card = event.target.closest('[data-lesson-key]');
+  if (!card) return;
+  const key = card.dataset.lessonKey;
+  activeLessonKey = activeLessonKey === key ? null : key;
+  updateAnalysis();
+});
+
+document.getElementById('forceExperimentTabs').addEventListener('click', event => {
+  const button = event.target.closest('[data-force-experiment]');
+  if (!button) return;
+  setActiveForceExperiment(button.dataset.forceExperiment);
+});
+
 document.getElementById('zoomIn').addEventListener('click', () => {
   const view = getViewBounds();
   zoomAt((view.start + view.end) / 2, 0.65);
@@ -2270,7 +4989,7 @@ document.getElementById('export').addEventListener('click', () => {
   const headers = ['time_s', ...meta.series.map(series => series.key + '_' + series.unit.replaceAll('/', '_per_'))];
   const csvRows = [
     headers,
-    ...rows.map(row => [row.time.toFixed(3), ...row.values.map(value => value.toFixed(5))])
+    ...rows.map(row => [row.time.toFixed(3), ...meta.series.map(series => rawRowValue(row, series).toFixed(5))])
   ];
   const csv = csvRows.map(row => row.join(',')).join('\n');
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
@@ -2281,6 +5000,252 @@ document.getElementById('export').addEventListener('click', () => {
   link.click();
   URL.revokeObjectURL(url);
 });
+
+document.getElementById('hookeExtensionCm').addEventListener('change', event => {
+  hookeExtensionCm = Math.max(0, Number(event.target.value) || 0);
+  localStorage.setItem('palladio-hooke-extension-cm', String(hookeExtensionCm));
+  event.target.value = hookeExtensionCm.toFixed(1);
+});
+
+document.getElementById('saveHookeTrial').addEventListener('click', () => {
+  const current = hookeCurrentMetrics();
+  const extensionCm = Math.max(0, Number(document.getElementById('hookeExtensionCm').value) || 0);
+  if (!current) {
+    showToast('Πρώτα επίλεξε με A-B ένα σταθερό plateau δύναμης.', true);
+    return;
+  }
+  if (extensionCm <= 0) {
+    showToast('Δώσε επιμήκυνση Δx μεγαλύτερη από 0 cm.', true);
+    return;
+  }
+  const extensionM = extensionCm / 100;
+  hookeExtensionCm = extensionCm;
+  localStorage.setItem('palladio-hooke-extension-cm', String(hookeExtensionCm));
+  hookeTrials.push({
+    extensionCm,
+    extensionM,
+    forceMean: current.meanForce,
+    forceMax: current.peakForce,
+    stdDev: current.stdDev,
+    duration: current.duration,
+    kEstimate: current.meanForce / extensionM
+  });
+  saveHookeTrials();
+  renderHookeExperiment();
+  showToast('Αποθηκεύτηκε δοκιμή Hooke: Δx = ' + extensionCm.toFixed(1) + ' cm');
+});
+
+document.getElementById('clearHookeTrials').addEventListener('click', () => {
+  hookeTrials = [];
+  saveHookeTrials();
+  renderHookeExperiment();
+  showToast('Οι δοκιμές Hooke διαγράφηκαν.');
+});
+
+document.getElementById('exportHookeTrials').addEventListener('click', () => {
+  if (!hookeTrials.length) {
+    showToast('Δεν υπάρχουν δοκιμές Hooke για εξαγωγή.', true);
+    return;
+  }
+  const csvRows = [
+    ['trial', 'extension_cm', 'extension_m', 'force_mean_N', 'force_max_N', 'force_stddev_N', 'duration_s', 'k_estimate_N_per_m'],
+    ...hookeTrials.map((trial, index) => [
+      String(index + 1),
+      trial.extensionCm.toFixed(3),
+      trial.extensionM.toFixed(5),
+      trial.forceMean.toFixed(6),
+      trial.forceMax.toFixed(6),
+      trial.stdDev.toFixed(6),
+      trial.duration.toFixed(6),
+      trial.kEstimate.toFixed(6)
+    ])
+  ];
+  const csv = csvRows.map(row => row.join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'palladio-hooke-law.csv';
+  link.click();
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById('buoyancyVolumeMl').addEventListener('change', event => {
+  buoyancyVolumeMl = Math.max(0, Number(event.target.value) || 0);
+  localStorage.setItem('palladio-buoyancy-volume-ml', String(buoyancyVolumeMl));
+  event.target.value = buoyancyVolumeMl.toFixed(0);
+  renderBuoyancyExperiment();
+});
+
+document.getElementById('captureBuoyancyAir').addEventListener('click', () => {
+  const current = buoyancyCurrentMetrics();
+  if (!current) {
+    showToast('Πρώτα επίλεξε με A-B σταθερό plateau στον αέρα.', true);
+    return;
+  }
+  buoyancyAirForce = current.meanForce;
+  saveBuoyancyCapture();
+  renderBuoyancyExperiment();
+  showToast('Κρατήθηκε μέτρηση στον αέρα: ' + compactNumber(current.apparentWeight) + ' N');
+});
+
+document.getElementById('captureBuoyancyLiquid').addEventListener('click', () => {
+  const current = buoyancyCurrentMetrics();
+  if (!current) {
+    showToast('Πρώτα επίλεξε με A-B σταθερό plateau μέσα στο υγρό.', true);
+    return;
+  }
+  buoyancyLiquidForce = current.meanForce;
+  saveBuoyancyCapture();
+  renderBuoyancyExperiment();
+  showToast('Κρατήθηκε μέτρηση στο υγρό: ' + compactNumber(current.apparentWeight) + ' N');
+});
+
+document.getElementById('saveBuoyancyTrial').addEventListener('click', () => {
+  const volumeMl = Math.max(0, Number(document.getElementById('buoyancyVolumeMl').value) || 0);
+  const result = buoyancyResult(buoyancyAirForce, buoyancyLiquidForce, volumeMl);
+  if (!result) {
+    showToast('Χρειάζονται μέτρηση στον αέρα, μέτρηση στο υγρό και όγκος μεγαλύτερος από 0 mL.', true);
+    return;
+  }
+  if (result.buoyantForce <= 0) {
+    showToast('Η άνωση πρέπει να βγει θετική. Έλεγξε τη σειρά των μετρήσεων.', true);
+    return;
+  }
+  buoyancyVolumeMl = volumeMl;
+  localStorage.setItem('palladio-buoyancy-volume-ml', String(buoyancyVolumeMl));
+  buoyancyTrials.push({
+    volumeMl,
+    volumeM3: result.volumeM3,
+    weightAir: result.weightAir,
+    weightLiquid: result.weightLiquid,
+    buoyantForce: result.buoyantForce,
+    lossPercent: result.lossPercent,
+    density: result.density
+  });
+  saveBuoyancyTrials();
+  renderBuoyancyExperiment();
+  showToast('Αποθηκεύτηκε δοκιμή άνωσης: FΑ = ' + compactNumber(result.buoyantForce) + ' N');
+});
+
+document.getElementById('clearBuoyancyTrials').addEventListener('click', () => {
+  buoyancyTrials = [];
+  saveBuoyancyTrials();
+  renderBuoyancyExperiment();
+  showToast('Οι δοκιμές άνωσης διαγράφηκαν.');
+});
+
+document.getElementById('exportBuoyancyTrials').addEventListener('click', () => {
+  if (!buoyancyTrials.length) {
+    showToast('Δεν υπάρχουν δοκιμές άνωσης για εξαγωγή.', true);
+    return;
+  }
+  const csvRows = [
+    ['trial', 'volume_ml', 'volume_m3', 'weight_air_N', 'weight_liquid_N', 'buoyant_force_N', 'loss_percent', 'density_kg_per_m3'],
+    ...buoyancyTrials.map((trial, index) => [
+      String(index + 1),
+      trial.volumeMl.toFixed(3),
+      trial.volumeM3.toExponential(6),
+      trial.weightAir.toFixed(6),
+      trial.weightLiquid.toFixed(6),
+      trial.buoyantForce.toFixed(6),
+      trial.lossPercent.toFixed(3),
+      trial.density.toFixed(3)
+    ])
+  ];
+  const csv = csvRows.map(row => row.join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'palladio-buoyancy.csv';
+  link.click();
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById('saveCollisionTrial').addEventListener('click', () => {
+  const current = collisionCurrentMetrics();
+  const velocity = Math.max(0, Number(document.getElementById('collisionVelocity').value) || 0);
+  if (!current) {
+    showToast('Πρώτα επίλεξε την κρούση με A-B στη δύναμη.', true);
+    return;
+  }
+  if (velocity <= 0) {
+    showToast('Δώσε αρχική ταχύτητα v0 μεγαλύτερη από 0.', true);
+    return;
+  }
+  collisionTrials.push({
+    velocity,
+    impulse: current.signedArea,
+    peakForce: current.peakForce,
+    meanForce: current.meanForce,
+    duration: current.duration,
+    sampleCount: current.sampleCount
+  });
+  saveCollisionTrials();
+  renderCollisionExperiment();
+  showToast('Αποθηκεύτηκε δοκιμή: v0 = ' + velocity.toFixed(2) + ' m/s');
+});
+
+document.getElementById('clearCollisionTrials').addEventListener('click', () => {
+  collisionTrials = [];
+  saveCollisionTrials();
+  renderCollisionExperiment();
+  showToast('Οι αποθηκευμένες δοκιμές κρούσης διαγράφηκαν.');
+});
+
+document.getElementById('exportCollisionTrials').addEventListener('click', () => {
+  if (!collisionTrials.length) {
+    showToast('Δεν υπάρχουν δοκιμές για εξαγωγή.', true);
+    return;
+  }
+  const csvRows = [
+    ['trial', 'v0_m_per_s', 'impulse_Ns', 'abs_impulse_Ns', 'peak_force_N', 'mean_force_N', 'duration_s', 'mass_kg'],
+    ...collisionTrials.map((trial, index) => [
+      String(index + 1),
+      trial.velocity.toFixed(5),
+      trial.impulse.toFixed(6),
+      Math.abs(trial.impulse).toFixed(6),
+      trial.peakForce.toFixed(6),
+      trial.meanForce.toFixed(6),
+      trial.duration.toFixed(6),
+      collisionMassKg.toFixed(5)
+    ])
+  ];
+  const csv = csvRows.map(row => row.join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'palladio-impulse-vs-velocity.csv';
+  link.click();
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById('collisionPanelToggle').addEventListener('click', () => {
+  setCollisionRailCollapsed(!collisionRailCollapsed);
+});
+
+document.getElementById('motionPanelToggle').addEventListener('click', () => {
+  setCollisionRailCollapsed(!collisionRailCollapsed);
+});
+
+document.getElementById('hookePanelToggle').addEventListener('click', () => {
+  setCollisionRailCollapsed(!collisionRailCollapsed);
+});
+
+document.getElementById('buoyancyPanelToggle').addEventListener('click', () => {
+  setCollisionRailCollapsed(!collisionRailCollapsed);
+});
+
+document.getElementById('collisionRailOpen').addEventListener('click', () => {
+  setCollisionRailCollapsed(false);
+});
+
+railResizer.addEventListener('pointerdown', startRailResize);
+window.addEventListener('pointermove', moveRailResize);
+window.addEventListener('pointerup', stopRailResize);
+window.addEventListener('pointercancel', stopRailResize);
 
 canvas.addEventListener('pointerdown', startChartInteraction);
 canvas.addEventListener('pointermove', moveChartInteraction);
@@ -2296,15 +5261,27 @@ canvas.addEventListener('mouseleave', () => {
 
 async function poll() {
   try {
-    const response = await fetch('/data', { cache: 'no-store' });
+    const response = await fetch('/samples?since=' + lastSampleId, { cache: 'no-store' });
     if (!response.ok) throw new Error('HTTP ' + response.status);
-    const data = await response.json();
-    document.getElementById('network').textContent = data.ap + ' · ' + data.ip;
+    const batch = await response.json();
+    document.getElementById('network').textContent = batch.ap + ' · ' + batch.ip;
     statusDot.classList.remove('offline');
-    addRow(data);
+    if (batch.sampleRate) {
+      document.getElementById('sampleRate').value = String(batch.sampleRate);
+    }
+    addRows(batch.samples);
   } catch (error) {
-    document.getElementById('network').textContent = 'Αναμονή για το M5Stick';
-    statusDot.classList.add('offline');
+    try {
+      const response = await fetch('/data', { cache: 'no-store' });
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      const data = await response.json();
+      document.getElementById('network').textContent = data.ap + ' · ' + data.ip;
+      statusDot.classList.remove('offline');
+      addRow(data);
+    } catch (fallbackError) {
+      document.getElementById('network').textContent = 'Αναμονή για το M5Stick';
+      statusDot.classList.add('offline');
+    }
   } finally {
     setTimeout(poll, 30);
   }
@@ -2315,6 +5292,7 @@ updateModeUi();
 updateReadouts({});
 setChartTool('select');
 updateZoomStatus();
+applyCollisionRailLayout();
 resizeCanvas();
 poll();
 </script>
