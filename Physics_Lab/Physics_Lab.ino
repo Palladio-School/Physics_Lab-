@@ -163,11 +163,25 @@ void sendUdpPacket(const char* payload, int port) {
   udp.endPacket();
 }
 
+void addCorsHeaders() {
+  server.sendHeader("Access-Control-Allow-Origin", "*");
+  server.sendHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+  server.sendHeader("Access-Control-Allow-Headers", "Content-Type");
+  server.sendHeader("Access-Control-Allow-Private-Network", "true");
+}
+
+void handleOptions() {
+  addCorsHeaders();
+  server.send(204);
+}
+
 void handleRoot() {
+  addCorsHeaders();
   server.send_P(200, "text/html", DASHBOARD_HTML);
 }
 
 void handleLogo() {
+  addCorsHeaders();
   server.send_P(
     200,
     "image/png",
@@ -177,6 +191,7 @@ void handleLogo() {
 }
 
 void handleData() {
+  addCorsHeaders();
   char json[640];
   snprintf(
     json,
@@ -238,6 +253,7 @@ void sendSampleJson(const SampleRecord& record, bool comma) {
 }
 
 void handleSamples() {
+  addCorsHeaders();
   unsigned long since = 0;
   bool includeAll = true;
   if (server.hasArg("since")) {
@@ -339,13 +355,20 @@ void handleCalibrate() {
 }
 
 void startWebServer() {
-  server.on("/", handleRoot);
-  server.on("/logo.png", handleLogo);
-  server.on("/data", handleData);
-  server.on("/samples", handleSamples);
-  server.on("/set-mode", handleSetMode);
-  server.on("/settings", handleSettings);
-  server.on("/calibrate", handleCalibrate);
+  server.on("/", HTTP_GET, handleRoot);
+  server.on("/", HTTP_OPTIONS, handleOptions);
+  server.on("/logo.png", HTTP_GET, handleLogo);
+  server.on("/logo.png", HTTP_OPTIONS, handleOptions);
+  server.on("/data", HTTP_GET, handleData);
+  server.on("/data", HTTP_OPTIONS, handleOptions);
+  server.on("/samples", HTTP_GET, handleSamples);
+  server.on("/samples", HTTP_OPTIONS, handleOptions);
+  server.on("/set-mode", HTTP_GET, handleSetMode);
+  server.on("/set-mode", HTTP_OPTIONS, handleOptions);
+  server.on("/settings", HTTP_GET, handleSettings);
+  server.on("/settings", HTTP_OPTIONS, handleOptions);
+  server.on("/calibrate", HTTP_GET, handleCalibrate);
+  server.on("/calibrate", HTTP_OPTIONS, handleOptions);
   server.begin();
 }
 
