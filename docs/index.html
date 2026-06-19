@@ -150,6 +150,78 @@ button:focus-visible, select:focus-visible {
   gap: 8px;
   flex-wrap: wrap;
 }
+.student-flow {
+  padding: 14px 16px;
+  border: 1px solid #d5e4ef;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #ffffff, #f8fbff);
+  box-shadow: var(--shadow);
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+}
+.student-prompt strong {
+  display: block;
+  color: #17345d;
+  font-size: 18px;
+}
+.student-prompt span {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.student-steps {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.student-step {
+  padding: 7px 10px;
+  border: 1px solid #d5e1ea;
+  border-radius: 999px;
+  background: #fff;
+  color: #52657a;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.student-step.active {
+  border-color: #9fc7ff;
+  background: var(--blue-soft);
+  color: var(--blue-dark);
+}
+.advanced-settings {
+  max-width: 100%;
+}
+.advanced-settings summary {
+  min-height: 40px;
+  padding: 9px 12px;
+  border: 1px solid #cbd6e2;
+  border-radius: 9px;
+  background: #fff;
+  color: var(--ink);
+  font-weight: 800;
+  cursor: pointer;
+  list-style: none;
+}
+.advanced-settings summary::-webkit-details-marker { display: none; }
+.advanced-settings[open] summary {
+  border-color: #9fb5d0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.advanced-settings .settings {
+  padding: 10px;
+  border: 1px solid #cbd6e2;
+  border-top: 0;
+  border-radius: 0 0 9px 9px;
+  background: #f7f9fb;
+}
 .primary {
   border-color: var(--blue);
   background: var(--blue);
@@ -284,6 +356,22 @@ input[type="number"] {
   justify-content: flex-end;
   gap: 9px;
   flex-wrap: wrap;
+}
+.split-chart-field {
+  min-height: 34px;
+  padding: 0 9px;
+  border: 1px solid #d4dee8;
+  border-radius: 9px;
+  background: #fff;
+}
+.split-chart-field select {
+  min-height: 30px;
+  border: 0;
+  padding-left: 4px;
+}
+.split-chart-field[hidden],
+.split-chart-toggle[hidden] {
+  display: none;
 }
 .tool-group {
   padding: 3px;
@@ -561,6 +649,19 @@ canvas {
   flex-wrap: wrap;
 }
 .analysis-tools .field { min-height: 40px; }
+.analysis-advanced {
+  border-bottom: 1px solid #e2e8ed;
+  background: #f7f9fb;
+}
+.analysis-advanced summary {
+  padding: 11px 16px;
+  color: var(--blue-dark);
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  list-style: none;
+}
+.analysis-advanced summary::-webkit-details-marker { display: none; }
 .selection-status {
   padding: 7px 10px;
   border-radius: 999px;
@@ -583,26 +684,11 @@ canvas {
   border-radius: 11px;
   background: linear-gradient(145deg, #fff, #fafcff);
   text-align: left;
-  cursor: pointer;
   font: inherit;
-  transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
   appearance: none;
 }
 .result-card.wide { grid-column: span 2; }
-.result-card:hover {
-  border-color: #bed4f6;
-  box-shadow: 0 10px 24px rgba(38, 84, 163, 0.10);
-  transform: translateY(-1px);
-}
-.result-card.active {
-  border-color: #7eb0ff;
-  background: linear-gradient(145deg, #f8fbff, #eef5ff);
-  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.16);
-}
-.result-card:focus-visible {
-  outline: 3px solid rgba(59, 130, 246, 0.24);
-  outline-offset: 2px;
-}
+.analysis-advanced:not([open]) ~ .results-grid .result-card.advanced { display: none; }
 .result-card span {
   display: block;
   color: var(--muted);
@@ -625,18 +711,6 @@ canvas {
   margin-top: 3px;
   color: var(--muted);
   font-size: 12px;
-}
-.result-card em {
-  display: inline-flex;
-  align-items: center;
-  margin-top: 9px;
-  padding: 5px 8px;
-  border-radius: 999px;
-  background: #edf4ff;
-  color: #2457b8;
-  font-size: 11px;
-  font-style: normal;
-  font-weight: 800;
 }
 .lesson-panel {
   margin: 0 12px 14px;
@@ -911,6 +985,126 @@ canvas {
   height: auto;
   overflow: visible;
 }
+.free-body-diagram.buoyancy-illustration {
+  padding: 0;
+  overflow: hidden;
+}
+.free-body-diagram.buoyancy-illustration img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.free-body-diagram.buoyancy-illustration > svg {
+  display: none;
+}
+.buoyancy-image-wrap {
+  position: relative;
+}
+.buoyancy-force-overlay {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.buoyancy-force-overlay .force-vector {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 6;
+  filter: drop-shadow(0 1px 2px rgba(15, 23, 42, 0.2));
+}
+.buoyancy-force-overlay .force-vector.tension { stroke: #2563eb; }
+.buoyancy-force-overlay .force-vector.weight { stroke: #ef7d11; }
+.buoyancy-force-overlay .force-vector.buoyancy { stroke: #0f9f8f; }
+.buoyancy-force-overlay .force-label-bg {
+  fill: rgba(255,255,255,0.88);
+  stroke: rgba(148,163,184,0.42);
+  stroke-width: 1.5;
+}
+.buoyancy-force-overlay text {
+  font-size: 30px;
+  font-weight: 900;
+  paint-order: stroke;
+  stroke: rgba(255,255,255,0.72);
+  stroke-width: 4;
+}
+.buoyancy-force-overlay .tension-label { fill: #1d4ed8; }
+.buoyancy-force-overlay .weight-label { fill: #c75b00; }
+.buoyancy-force-overlay .buoyancy-label { fill: #087f73; }
+.buoyancy-image-note {
+  padding: 9px 12px 11px;
+  border-top: 1px solid #dce7f1;
+  background: #f8fbff;
+  color: #52667d;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+.heat-illustration {
+  margin: 0 16px 12px;
+  border: 1px solid #dce7f1;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ffffff, #f7fbff);
+  overflow: hidden;
+}
+.heat-illustration img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.heat-image-note {
+  padding: 9px 12px 11px;
+  border-top: 1px solid #dce7f1;
+  background: #f8fbff;
+  color: #52667d;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+.hooke-illustration {
+  margin: 0 16px 12px;
+  border: 1px solid #dce7f1;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ffffff, #f7fbff);
+  overflow: hidden;
+}
+.hooke-illustration img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.hooke-image-note {
+  padding: 9px 12px 11px;
+  border-top: 1px solid #dce7f1;
+  background: #f8fbff;
+  color: #52667d;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+.motion-illustration {
+  margin: 0 16px 12px;
+  border: 1px solid #dce7f1;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ffffff, #f7fbff);
+  overflow: hidden;
+}
+.motion-illustration img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.motion-image-note {
+  padding: 9px 12px 11px;
+  border-top: 1px solid #dce7f1;
+  background: #f8fbff;
+  color: #52667d;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+}
 .free-body-diagram text {
   fill: #26384a;
   font-family: inherit;
@@ -938,13 +1132,80 @@ canvas {
 .free-body-diagram .arrow.weight { stroke: #ef7d11; }
 .free-body-diagram .arrow.tension { stroke: #2563eb; }
 .free-body-diagram .arrow.buoyancy { stroke: #0f9f8f; }
+.free-body-diagram .stand {
+  fill: none;
+  stroke: #687989;
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.free-body-diagram .stand-light {
+  fill: none;
+  stroke: #9aaabc;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.free-body-diagram .base {
+  fill: #d8dee8;
+  stroke: #8b9aae;
+  stroke-width: 2;
+}
+.free-body-diagram .dynamometer {
+  fill: #fff;
+  stroke: #2563eb;
+  stroke-width: 2;
+}
+.free-body-diagram .glass {
+  fill: rgba(255, 255, 255, 0.62);
+  stroke: rgba(79, 99, 120, 0.55);
+  stroke-width: 2;
+}
 .free-body-diagram .liquid {
-  fill: rgba(14, 165, 233, 0.12);
-  stroke: rgba(14, 116, 144, 0.24);
+  fill: rgba(14, 165, 233, 0.2);
+  stroke: rgba(14, 116, 144, 0.28);
 }
 .free-body-diagram .body {
-  fill: #fff;
+  fill: #f8fbff;
   stroke: #73869a;
+  stroke-width: 2;
+}
+.free-body-diagram .shadow {
+  fill: rgba(38, 56, 74, 0.08);
+}
+.free-body-diagram .small-label {
+  fill: #5a6c7d;
+  font-size: 10px;
+  font-weight: 800;
+}
+.free-body-diagram .balance-beam {
+  fill: none;
+  stroke: #4e5965;
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+.free-body-diagram .balance-pan {
+  fill: #6f7983;
+  stroke: #3f4750;
+  stroke-width: 2;
+}
+.free-body-diagram .balance-stand {
+  fill: #777f88;
+  stroke: #434b54;
+  stroke-width: 2;
+}
+.free-body-diagram .cup-line {
+  fill: rgba(255,255,255,0.5);
+  stroke: #5f7285;
+  stroke-width: 2;
+}
+.free-body-diagram .water-fill {
+  fill: rgba(125, 211, 252, 0.38);
+  stroke: rgba(2, 132, 199, 0.32);
+  stroke-width: 1.5;
+}
+.free-body-diagram .hand {
+  fill: #d9956d;
+  stroke: #9a5b3c;
   stroke-width: 2;
 }
 .experiment-toggle {
@@ -1191,15 +1452,18 @@ tbody tr:last-child td { border-bottom: 0; }
   overflow-y: auto;
 }
 .topbar {
+  flex: 0 0 auto;
   min-height: 0;
-  padding: 0 6px;
+  padding: 0 6px 2px;
   background: none;
-  display: block;
+  display: grid;
+  justify-items: center;
+  text-align: center;
 }
 .brand-mark {
-  width: 62px;
-  height: 62px;
-  margin-bottom: 13px;
+  width: 84px;
+  height: 84px;
+  margin-bottom: 14px;
   border: 2px solid rgba(255,255,255,0.22);
   border-radius: 50%;
   background: #fff;
@@ -1208,7 +1472,8 @@ tbody tr:last-child td { border-bottom: 0; }
   object-fit: cover;
 }
 .brand h1 {
-  font-size: 20px;
+  margin: 0;
+  font-size: 22px;
   line-height: 1.2;
 }
 .brand span {
@@ -1226,7 +1491,7 @@ tbody tr:last-child td { border-bottom: 0; }
   text-transform: uppercase;
 }
 .modebar {
-  padding: 0;
+  padding: 0 6px 7px;
   border: 0;
   background: none;
   display: grid;
@@ -1268,23 +1533,130 @@ tbody tr:last-child td { border-bottom: 0; }
   background: #60a5fa;
   box-shadow: 0 0 0 4px rgba(96,165,250,0.13);
 }
+.sensor-group .modebar { margin-top: -2px; }
+.class-experiments {
+  display: grid;
+  gap: 8px;
+}
+.class-group {
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.035);
+  overflow: hidden;
+}
+.class-group summary {
+  min-height: 44px;
+  padding: 0 12px;
+  color: #dce7f7;
+  font-size: 13px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  cursor: pointer;
+  list-style: none;
+}
+.class-group summary::-webkit-details-marker { display: none; }
+.class-group summary::after {
+  content: "⌄";
+  color: #7e91aa;
+  font-size: 14px;
+  transition: transform 140ms ease;
+}
+.class-group[open] summary::after { transform: rotate(180deg); }
+.experiment-menu {
+  padding: 0 6px 7px;
+  display: grid;
+  gap: 5px;
+}
+.experiment-menu button {
+  min-height: 40px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: #aebbd0;
+  padding: 7px 10px;
+  text-align: left;
+  line-height: 1.25;
+}
+.experiment-menu button:hover {
+  border-color: rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+  box-shadow: none;
+}
+.experiment-menu button.active {
+  border-color: rgba(45, 212, 191, 0.32);
+  background: rgba(20, 184, 166, 0.14);
+  color: #fff;
+  box-shadow: inset 3px 0 0 #2dd4bf;
+}
+.experiment-menu button small {
+  display: block;
+  margin-top: 3px;
+  color: #75879f;
+  font-size: 10px;
+  font-weight: 800;
+}
+.experiment-menu button.active small { color: #bdece6; }
 .lab-sidebar .readouts {
   padding: 0;
   border: 0;
   border-radius: 0;
   background: none;
   box-shadow: none;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 7px;
+  display: block;
 }
 .lab-sidebar .readout {
   min-width: 0;
-  min-height: 72px;
-  padding: 10px 11px;
+  min-height: 64px;
+  padding: 11px 12px;
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 10px;
   background: rgba(255,255,255,0.045);
+}
+.lab-sidebar .battery-readout {
+  min-height: 54px;
+  padding: 10px 11px;
+  display: flex;
+  gap: 11px;
+  align-items: center;
+  border-color: rgba(148, 163, 184, 0.18);
+  background: rgba(255,255,255,0.055);
+}
+.battery-icon {
+  flex: 0 0 auto;
+  position: relative;
+  width: 34px;
+  height: 19px;
+  border: 2px solid #9dafc2;
+  border-radius: 5px;
+}
+.battery-icon::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  right: -6px;
+  width: 4px;
+  height: 7px;
+  border-radius: 0 3px 3px 0;
+  background: #8ea5bd;
+}
+.battery-fill {
+  position: absolute;
+  inset: 2px;
+  width: var(--battery-level, 0%);
+  max-width: calc(100% - 4px);
+  border-radius: 3px;
+  background: #59d37d;
+}
+.battery-copy {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transform: translateY(-1px);
 }
 .lab-sidebar .readout::before {
   inset: auto 10px 0;
@@ -1305,6 +1677,25 @@ tbody tr:last-child td { border-bottom: 0; }
   color: #8495ac;
   font-size: 10px;
 }
+.lab-sidebar .battery-readout::before { display: none; }
+.lab-sidebar .battery-readout span:not(.battery-icon):not(.battery-fill) {
+  color: #8ea0b8;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+.lab-sidebar .battery-readout strong {
+  margin: 0;
+  color: #fff;
+  font-size: 22px;
+  line-height: 1;
+}
+.lab-sidebar .battery-readout small {
+  margin-left: 3px;
+  color: #91a3bb;
+  font-size: 12px;
+}
 .connection {
   margin-top: auto;
   padding: 10px 12px;
@@ -1323,7 +1714,7 @@ tbody tr:last-child td { border-bottom: 0; }
   align-content: start;
 }
 .workspace-grid {
-  --rail-width: 360px;
+  --rail-width: min(360px, 32vw);
   display: grid;
   grid-template-columns: minmax(0, 1fr) 12px minmax(300px, var(--rail-width));
   gap: 18px;
@@ -1526,9 +1917,64 @@ tbody tr:last-child td { border-bottom: 0; }
 .table-panel[open] summary { border-bottom: 1px solid var(--line); }
 .table-title { display: none; }
 
-@media (max-width: 1020px) {
+@media (max-width: 1320px) {
+  .app-shell { grid-template-columns: 250px minmax(0, 1fr); }
+  .lab-sidebar {
+    padding: 16px 10px 12px;
+    gap: 10px;
+  }
+  .topbar {
+    min-height: 112px;
+    padding-bottom: 0;
+  }
+  .brand-mark {
+    width: 58px;
+    height: 58px;
+    margin-bottom: 7px;
+  }
+  .brand h1 {
+    font-size: 17px;
+    line-height: 1.15;
+  }
+  .side-label {
+    padding-inline: 6px;
+    font-size: 9px;
+  }
+  .class-group summary {
+    min-height: 38px;
+    padding-inline: 10px;
+    font-size: 12px;
+  }
+  .experiment-menu button {
+    min-height: 34px;
+    padding: 6px 9px;
+    font-size: 12px;
+  }
+  .experiment-menu button small {
+    font-size: 9px;
+  }
+  .workspace {
+    padding: 16px 14px 26px;
+  }
+  .workspace-grid {
+    --rail-width: min(420px, 36vw);
+    gap: 14px;
+  }
+  .plot-wrap {
+    height: clamp(360px, 52vh, 600px);
+  }
+}
+
+@media (max-width: 1180px) {
   .app-shell { grid-template-columns: 230px minmax(0, 1fr); }
   .lab-sidebar { padding-inline: 12px; }
+  .topbar { min-height: 104px; }
+  .brand-mark {
+    width: 52px;
+    height: 52px;
+    margin-bottom: 6px;
+  }
+  .brand h1 { font-size: 16px; }
   .lab-sidebar .readouts { grid-template-columns: 1fr; }
   .plot-wrap { height: 54vh; }
   .static-gauge-body { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1539,7 +1985,8 @@ tbody tr:last-child td { border-bottom: 0; }
   .workspace-rail .experiment-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .workspace-grid.rail-collapsed { grid-template-columns: 1fr; }
 }
-@media (max-width: 760px) {
+
+@media (max-width: 900px) {
   .app-shell { display: block; }
   .lab-sidebar {
     position: static;
@@ -1552,6 +1999,7 @@ tbody tr:last-child td { border-bottom: 0; }
   .topbar {
     display: flex;
     align-items: center;
+    flex-direction: row;
     gap: 12px;
   }
   .brand-mark {
@@ -1561,28 +2009,28 @@ tbody tr:last-child td { border-bottom: 0; }
     margin: 0;
   }
   .brand span { display: none; }
+  .topbar { justify-items: start; text-align: left; }
   .modebar {
-    display: flex;
-    overflow-x: auto;
+    display: grid;
+    overflow: visible;
   }
   .modebar button {
-    flex: 0 0 auto;
     min-height: 40px;
   }
   .lab-sidebar .side-label,
-  .lab-sidebar .readouts { display: none; }
+  .lab-sidebar .readouts { display: block; }
   .connection {
-    position: absolute;
-    top: 16px;
-    right: 15px;
-    width: auto;
-    max-width: 48%;
+    position: static;
+    width: 100%;
+    max-width: none;
     margin: 0;
   }
   .workspace { padding: 18px 10px 28px; }
   .workspace-heading { padding: 0 4px; }
+  .student-flow { grid-template-columns: 1fr; }
+  .student-steps { justify-content: flex-start; }
   .instrument-bar { align-items: stretch; }
-  .controls, .settings { width: 100%; }
+  .controls, .settings, .advanced-settings { width: 100%; }
   .controls button { flex: 1; }
   .chart-actions {
     width: 100%;
@@ -1597,6 +2045,9 @@ tbody tr:last-child td { border-bottom: 0; }
   .connection { display: none; }
   .workspace-heading { align-items: flex-start; flex-direction: column; }
   .workspace-heading h2 { font-size: 28px; }
+  .student-flow { padding: 12px; }
+  .student-step { flex: 1; text-align: center; }
+  .advanced-settings .settings { align-items: stretch; flex-direction: column; }
   .plot-wrap { height: 52vh; min-height: 350px; margin: 0 6px; }
   .tool-group { max-width: 100%; }
   .tool-group button { padding-inline: 8px; }
@@ -1614,20 +2065,76 @@ tbody tr:last-child td { border-bottom: 0; }
     <header class="topbar">
       <img class="brand-mark" src="assets/palladio-logo.png" alt="Λογότυπο Palladio">
       <div class="brand">
-        <h1>Palladio Lab</h1>
-        <span>Ζωντανό εργαστήριο φυσικών επιστημών</span>
+        <h1>Palladio Physics Lab</h1>
       </div>
     </header>
 
-    <div class="side-label">Αισθητήρες</div>
-    <nav class="modebar" aria-label="Επιλογή αισθητήρα">
-      <button data-mode="0">Επιτάχυνση</button>
-      <button data-mode="1">Γυροσκόπιο</button>
-      <button data-mode="2">Δύναμη</button>
-      <button data-mode="4">Υπερηχητική κίνηση</button>
-    </nav>
+    <div class="side-label">Πειράματα</div>
+    <section class="class-experiments" aria-label="Επιλογή σχολικού πειράματος">
+      <details class="class-group">
+        <summary>Πειράματα Α Γυμνασίου</summary>
+        <div class="experiment-menu">
+          <button data-experiment="a-motion" type="button">
+            Απόσταση και χρόνος
+            <small>Αισθητήρας υπερήχων</small>
+          </button>
+          <button data-experiment="a-speed" type="button">
+            Μέση ταχύτητα
+            <small>Αισθητήρας υπερήχων</small>
+          </button>
+          <button data-experiment="a-weight" type="button">
+            Βάρος και δύναμη
+            <small>Αισθητήρας δύναμης</small>
+          </button>
+          <button data-experiment="a-shake" type="button">
+            Απότομη κίνηση και επιτάχυνση
+            <small>Επιταχυνσιόμετρο</small>
+          </button>
+        </div>
+      </details>
+      <details class="class-group">
+        <summary>Πειράματα Β Γυμνασίου</summary>
+        <div class="experiment-menu">
+          <button data-experiment="b-uniform-motion" type="button">
+            Ευθύγραμμη ομαλή κίνηση
+            <small>Θέση - χρόνος</small>
+          </button>
+          <button data-experiment="b-accelerated-motion" type="button">
+            Επιταχυνόμενη κίνηση
+            <small>Ταχύτητα - επιτάχυνση</small>
+          </button>
+          <button data-experiment="b-hooke" type="button">
+            Νόμος του Hooke
+            <small>Δύναμη και επιμήκυνση</small>
+          </button>
+          <button data-experiment="b-buoyancy" type="button">
+            Άνωση
+            <small>Φαινόμενο βάρος</small>
+          </button>
+          <button data-experiment="b-heat" type="button">
+            Θερμότητα
+            <small>Δύο θερμόμετρα</small>
+          </button>
+          <button data-experiment="b-rotation" type="button">
+            Περιστροφή
+            <small>Γωνιακή ταχύτητα</small>
+          </button>
+        </div>
+      </details>
+    </section>
 
-    <div class="side-label">Ζωντανές τιμές</div>
+    <details class="class-group sensor-group">
+      <summary>Αισθητήρες / τεχνική επιλογή</summary>
+      <nav class="modebar" aria-label="Επιλογή αισθητήρα">
+        <button data-mode="0">Επιτάχυνση</button>
+        <button data-mode="1">Γυροσκόπιο</button>
+        <button data-mode="2">Δύναμη</button>
+        <button data-mode="4">Κίνηση με υπερήχους</button>
+        <button data-mode="5">Θερμότητα</button>
+      </nav>
+    </details>
+
+    <div class="side-label">Μπαταρία</div>
     <section class="readouts" id="readouts" aria-label="Τρέχουσες τιμές"></section>
 
     <div class="connection">
@@ -1639,92 +2146,113 @@ tbody tr:last-child td { border-bottom: 0; }
   <main class="workspace">
     <header class="workspace-heading">
       <div>
-        <h2>Πείραμα σε εξέλιξη</h2>
-        <p>Καταγραφή, οπτικοποίηση και ανάλυση δεδομένων σε πραγματικό χρόνο</p>
+        <h2>Εργαστήριο μέτρησης</h2>
+        <p>Διάλεξε πείραμα από την τάξη σου, πάτα Έναρξη και παρατήρησε τι αλλάζει στο γράφημα.</p>
       </div>
-      <span class="live-chip" id="sessionStatus">● LIVE DATA</span>
+      <span class="live-chip paused" id="sessionStatus">● ΕΤΟΙΜΟ</span>
     </header>
+
+    <section class="student-flow" aria-label="Ροή πειράματος">
+      <div class="student-prompt">
+        <strong id="studentPromptTitle">Ξεκίνα με μια καθαρή μέτρηση</strong>
+        <span id="studentPromptText">Πάτα Έναρξη, κάνε το πείραμα και μετά επίλεξε με το ποντίκι το ενδιαφέρον μέρος της γραφικής.</span>
+      </div>
+      <div class="student-steps" aria-label="Βήματα εργαστηρίου">
+        <span class="student-step active" id="stepMeasure">1. Μέτρηση</span>
+        <span class="student-step" id="stepObserve">2. Παρατήρηση</span>
+        <span class="student-step" id="stepConclude">3. Συμπέρασμα</span>
+      </div>
+    </section>
 
     <section class="instrument-bar" aria-label="Εργαλεία καταγραφής">
       <div class="controls">
-        <button id="toggle" class="primary recording">Παύση</button>
+        <button id="toggle" class="primary">Έναρξη</button>
         <button id="clear">Νέα μέτρηση</button>
-        <button id="export">Εξαγωγή CSV</button>
+        <button id="export">Αποθήκευση CSV</button>
         <button id="calibrate" class="calibrate-button">Μηδενισμός accel</button>
       </div>
-      <div class="settings">
-        <label class="field">
-          Δειγματοληψία
-          <select id="sampleRate">
-            <option value="5">5 Hz</option>
-            <option value="10" selected>10 Hz</option>
-            <option value="20">20 Hz</option>
-            <option value="50">50 Hz</option>
-            <option value="100">100 Hz</option>
-          </select>
-        </label>
-        <label class="field">
-          Εξομάλυνση
-          <select id="smoothingWindow">
-            <option value="1" selected>Raw</option>
-            <option value="3">3 δείγματα</option>
-            <option value="5">5 δείγματα</option>
-            <option value="9">9 δείγματα</option>
-            <option value="15">15 δείγματα</option>
-            <option value="21">21 δείγματα</option>
-          </select>
-        </label>
-        <label class="field">
-          Γραμμή
-          <select id="curveMode">
-            <option value="smooth" selected>Ομαλή</option>
-            <option value="straight">Ευθεία</option>
-          </select>
-        </label>
-        <label class="field" id="accelViewField" hidden>
-          Προβολή
-          <select id="accelView">
-            <option value="accel">Επιτάχυνση</option>
-            <option value="force">Δύναμη από F = m·a</option>
-          </select>
-        </label>
-        <label class="field" id="collisionMassField" hidden>
-          Μάζα
-          <input id="collisionMass" type="number" min="0.001" step="0.01" value="0.20">
-          <small>kg</small>
-        </label>
-        <label class="field">
-          Παράθυρο
-          <select id="timeWindow">
-            <option value="10">10 s</option>
-            <option value="30" selected>30 s</option>
-            <option value="60">60 s</option>
-          </select>
-        </label>
-        <label class="field">
-          Χρόνος
-          <select id="timeScale">
-            <option value="auto" selected>Auto</option>
-            <option value="s">s</option>
-            <option value="ms">ms</option>
-            <option value="us">μs</option>
-          </select>
-        </label>
-        <label class="field">
-          Τιμές
-          <select id="valueScale">
-            <option value="auto" selected>Auto</option>
-            <option value="base">Βασική μονάδα</option>
-            <option value="milli">milli</option>
-            <option value="micro">micro</option>
-            <option value="kilo">kilo</option>
-          </select>
-        </label>
-        <label class="check">
-          <input id="autoScale" type="checkbox" checked>
-          Αυτόματη κλίμακα
-        </label>
-      </div>
+      <details class="advanced-settings">
+        <summary>Περισσότερα εργαλεία</summary>
+        <div class="settings">
+          <label class="field">
+            Ρυθμός
+            <select id="sampleRate">
+              <option value="1">1 Hz</option>
+              <option value="2">2 Hz</option>
+              <option value="5">5 Hz</option>
+              <option value="10" selected>10 Hz</option>
+              <option value="20">20 Hz</option>
+              <option value="50">50 Hz</option>
+              <option value="100">100 Hz</option>
+            </select>
+          </label>
+          <label class="field">
+            Εξομάλυνση
+            <select id="smoothingWindow">
+              <option value="1" selected>Χωρίς</option>
+              <option value="3">3 δείγματα</option>
+              <option value="5">5 δείγματα</option>
+              <option value="9">9 δείγματα</option>
+              <option value="15">15 δείγματα</option>
+              <option value="21">21 δείγματα</option>
+            </select>
+          </label>
+          <label class="field">
+            Γραμμή
+            <select id="curveMode">
+              <option value="smooth" selected>Ομαλή</option>
+              <option value="straight">Ευθεία</option>
+            </select>
+          </label>
+          <label class="field" id="accelViewField" hidden>
+            Προβολή
+            <select id="accelView">
+              <option value="accel">Επιτάχυνση</option>
+              <option value="force">Δύναμη από F = m·a</option>
+            </select>
+          </label>
+          <label class="field" id="collisionMassField" hidden>
+            Μάζα
+            <input id="collisionMass" type="number" min="0.001" step="0.01" value="0.20">
+            <small>kg</small>
+          </label>
+          <label class="field">
+            Χρόνος στο γράφημα
+            <select id="timeWindow">
+              <option value="10">10 s</option>
+              <option value="30" selected>30 s</option>
+              <option value="60">60 s</option>
+              <option value="300">5 min</option>
+              <option value="600">10 min</option>
+              <option value="1200">20 min</option>
+              <option value="1800">30 min</option>
+            </select>
+          </label>
+          <label class="field">
+            Μονάδα χρόνου
+            <select id="timeScale">
+              <option value="auto" selected>Αυτόματα</option>
+              <option value="s">s</option>
+              <option value="ms">ms</option>
+              <option value="us">μs</option>
+            </select>
+          </label>
+          <label class="field">
+            Μονάδα τιμών
+            <select id="valueScale">
+              <option value="auto" selected>Αυτόματα</option>
+              <option value="base">Βασική μονάδα</option>
+              <option value="milli">milli</option>
+              <option value="micro">micro</option>
+              <option value="kilo">kilo</option>
+            </select>
+          </label>
+          <label class="check">
+            <input id="autoScale" type="checkbox" checked>
+            Αυτόματη κλίμακα
+          </label>
+        </div>
+      </details>
     </section>
 
     <div class="workspace-grid">
@@ -1736,9 +2264,17 @@ tbody tr:last-child td { border-bottom: 0; }
               <p id="chartSubtitle">Επιτάχυνση ως προς τον χρόνο</p>
             </div>
             <div class="chart-actions">
+              <label class="check split-chart-toggle" id="splitChartToggleWrap" hidden>
+                <input id="splitChartToggle" type="checkbox">
+                Split View
+              </label>
+              <label class="field split-chart-field" id="splitChartField" hidden>
+                Δίπλα
+                <select id="splitSeriesSelect"></select>
+              </label>
               <div class="tool-group" aria-label="Λειτουργία δείκτη">
-                <button data-chart-tool="inspect" title="Ανάγνωση τιμών">Δείκτης</button>
-                <button class="active" data-chart-tool="select" title="Επιλογή διαστήματος">Επιλογή</button>
+                <button data-chart-tool="inspect" title="Ανάγνωση τιμών">Τιμή</button>
+                <button class="active" data-chart-tool="select" title="Επιλογή διαστήματος">Επίλεξε κομμάτι</button>
                 <button data-chart-tool="pan" title="Μετακίνηση γραφήματος">Μετακίνηση</button>
               </div>
               <div class="tool-group" aria-label="Μεγέθυνση γραφήματος">
@@ -1756,7 +2292,7 @@ tbody tr:last-child td { border-bottom: 0; }
           </div>
           <div class="chart-foot">
             <span><strong id="sampleCount">0</strong> δείγματα</span>
-            <span id="chartHint">Σύρε πάνω στη γραφική για επιλογή διαστήματος. Ροδέλα ή pinch για zoom.</span>
+            <span id="chartHint">Σύρε πάνω στη γραφική για να επιλέξεις το κομμάτι που θέλεις να μελετήσεις.</span>
           </div>
         </section>
 
@@ -1800,32 +2336,32 @@ tbody tr:last-child td { border-bottom: 0; }
         <section class="analysis-panel">
           <div class="analysis-head">
             <div>
-              <h3>Ανάλυση γραφικής παράστασης</h3>
-              <p>Επίλεξε ένα διάστημα για fit, ολοκλήρωση και στατιστικά.</p>
+              <h3>Τι δείχνει το γράφημα;</h3>
+              <p>Διάλεξε ένα κομμάτι της γραφικής και δες τις βασικές τιμές του.</p>
             </div>
             <span class="selection-status" id="selectionStatus">Ολόκληρο το ορατό διάστημα</span>
           </div>
-          <div class="analysis-tools">
-            <label class="field">
-              Μέγεθος
-              <select id="analysisSeries"></select>
-            </label>
-            <label class="field">
-              Προσαρμογή
-              <select id="fitType">
-                <option value="linear">Γραμμική y = αt + β</option>
-                <option value="quadratic">Παραβολική y = αt² + βt + γ</option>
-                <option value="best">Καλύτερη από γραμμική / παραβολική</option>
-                <option value="none">Χωρίς καμπύλη fit</option>
-              </select>
-            </label>
-            <button id="clearSelection">Καθαρισμός επιλογής</button>
-          </div>
+          <details class="analysis-advanced">
+            <summary>Περισσότερη ανάλυση</summary>
+            <div class="analysis-tools">
+              <label class="field">
+                Μέγεθος
+                <select id="analysisSeries"></select>
+              </label>
+              <label class="field">
+                Γραμμή τάσης
+                <select id="fitType">
+                  <option value="linear">Ευθεία γραμμή</option>
+                  <option value="quadratic">Καμπύλη παραβολής</option>
+                  <option value="best">Καλύτερη επιλογή</option>
+                  <option value="none">Χωρίς γραμμή τάσης</option>
+                </select>
+              </label>
+              <button id="clearSelection">Καθαρισμός επιλογής</button>
+            </div>
+          </details>
           <div class="results-grid" id="analysisResults">
             <div class="analysis-empty">Αναμονή για αρκετά δείγματα...</div>
-          </div>
-          <div class="lesson-panel" id="lessonPanel">
-            <div class="lesson-empty">Φορτώνεται το μάθημα του αισθητήρα...</div>
           </div>
         </section>
 
@@ -1859,6 +2395,10 @@ tbody tr:last-child td { border-bottom: 0; }
               <span class="experiment-status" id="hookeStatus">Περίμενε επιλογή A-B σε σταθερό τμήμα δύναμης</span>
               <button class="experiment-toggle" id="hookePanelToggle" type="button">Κλείσιμο panel</button>
             </div>
+          </div>
+          <div class="hooke-illustration">
+            <img src="assets/hooke-setup-illustration.png" alt="Σχολική εικονογράφηση πειράματος νόμου του Hooke με ορθοστάτη, κίτρινο κουτί αισθητήρα, M5Stick, ελατήριο και βαρίδι">
+            <div class="hooke-image-note">Το ελατήριο κρεμιέται από τον αισθητήρα δύναμης. Για κάθε βαρίδι μετράς τη δύναμη και την επιμήκυνση Δx.</div>
           </div>
           <div class="experiment-tools">
             <label class="field">
@@ -1910,19 +2450,101 @@ tbody tr:last-child td { border-bottom: 0; }
             Η πιο καθαρή μέτρηση βγαίνει όταν το ελατήριο έχει ηρεμήσει και το A-B καλύπτει μόνο το σταθερό τμήμα.
           </div>
         </section>
+        <section class="experiment-panel" id="weightExperiment" hidden>
+          <div class="experiment-head">
+            <div>
+              <h3>Βάρος και μάζα</h3>
+              <p>Μέτρα το βάρος σωμάτων με γνωστή μάζα και σύγκρινε την πειραματική τιμή με τη σχέση w = m·g.</p>
+            </div>
+            <div class="experiment-head-actions">
+              <span class="experiment-status" id="weightStatus">Περίμενε σταθερό plateau βάρους</span>
+              <button class="experiment-toggle" id="weightPanelToggle" type="button">Κλείσιμο panel</button>
+            </div>
+          </div>
+          <div class="experiment-tools">
+            <label class="field">
+              Μάζα
+              <input id="weightMassG" type="number" step="1" min="0" value="100">
+              <small>g</small>
+            </label>
+            <button id="captureWeightTrial">Μέτρηση βάρους</button>
+            <button id="saveWeightTrial">Αποθήκευση δοκιμής</button>
+            <button id="clearWeightTrials">Καθαρισμός δοκιμών</button>
+            <button id="exportWeightTrials">Εξαγωγή CSV</button>
+          </div>
+          <div class="experiment-summary" id="weightSummary">
+            <div class="experiment-empty">Επίλεξε με A-B ένα σταθερό τμήμα δύναμης και γράψε τη μάζα του σώματος.</div>
+          </div>
+          <div class="experiment-study">
+            <div class="experiment-study-grid" id="weightProtocol"></div>
+          </div>
+          <div class="table-title">Αποθηκευμένες δοκιμές w = m·g</div>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>m (g)</th>
+                <th>m (kg)</th>
+                <th>wπ (N)</th>
+                <th>wθ = mg (N)</th>
+                <th>gπ = w/m (m/s²)</th>
+                <th>Σφάλμα (%)</th>
+              </tr>
+            </thead>
+            <tbody id="weightBody">
+              <tr><td colspan="7" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>
+            </tbody>
+          </table>
+          <div class="experiment-note" id="weightNote">
+            Χρησιμοποίησε σταθερό σώμα που κρέμεται ελεύθερα, χωρίς να ακουμπά στον πάγκο ή στο καλώδιο.
+          </div>
+        </section>
         <section class="experiment-panel" id="buoyancyExperiment" hidden>
           <div class="experiment-head">
             <div>
               <h3>Άνωση</h3>
-              <p>Μέτρα το βάρος του σώματος στον αέρα και το φαινόμενο βάρος μέσα στο υγρό. Η διαφορά τους είναι η άνωση.</p>
+              <p>Μέτρα το βάρος στον αέρα και το φαινόμενο βάρος στο υγρό. Σύγκρινε την πειραματική άνωση με την τιμή από την αρχή του Αρχιμήδη.</p>
             </div>
             <div class="experiment-head-actions">
               <span class="experiment-status" id="buoyancyStatus">Περίμενε δύο σταθερά plateau δύναμης</span>
               <button class="experiment-toggle" id="buoyancyPanelToggle" type="button">Κλείσιμο panel</button>
             </div>
           </div>
-          <div class="free-body-diagram" aria-label="Διάγραμμα ελεύθερου σώματος για την άνωση">
-            <svg viewBox="0 0 560 230" role="img">
+          <div class="free-body-diagram buoyancy-illustration" aria-label="Δύο μετρήσεις άνωσης με δυναμόμετρο: σώμα στον αέρα και σώμα βυθισμένο σε νερό">
+            <div class="buoyancy-image-wrap">
+              <img src="assets/buoyancy-dynamometer-illustration.png" alt="Σχολική εικονογράφηση πειράματος άνωσης με δυναμόμετρο, σώμα στον αέρα και το ίδιο σώμα βυθισμένο σε ποτήρι νερού">
+              <svg class="buoyancy-force-overlay" viewBox="0 0 1568 1003" aria-hidden="true" focusable="false">
+                <defs>
+                  <marker id="buoyancyArrowBlueImg" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"></path>
+                  </marker>
+                  <marker id="buoyancyArrowOrangeImg" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#ef7d11"></path>
+                  </marker>
+                  <marker id="buoyancyArrowTealImg" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#0f9f8f"></path>
+                  </marker>
+                </defs>
+                <line class="force-vector tension" x1="455" y1="760" x2="455" y2="670" marker-end="url(#buoyancyArrowBlueImg)"></line>
+                <line class="force-vector weight" x1="455" y1="760" x2="455" y2="850" marker-end="url(#buoyancyArrowOrangeImg)"></line>
+                <rect class="force-label-bg" x="482" y="680" width="48" height="44" rx="20"></rect>
+                <text class="tension-label" x="500" y="712">T</text>
+                <rect class="force-label-bg" x="482" y="812" width="56" height="44" rx="20"></rect>
+                <text class="weight-label" x="500" y="844">w</text>
+
+                <line class="force-vector tension" x1="1210" y1="792" x2="1210" y2="695" marker-end="url(#buoyancyArrowBlueImg)"></line>
+                <line class="force-vector buoyancy" x1="1210" y1="792" x2="1210" y2="725" marker-end="url(#buoyancyArrowTealImg)"></line>
+                <line class="force-vector weight" x1="1210" y1="792" x2="1210" y2="890" marker-end="url(#buoyancyArrowOrangeImg)"></line>
+                <rect class="force-label-bg" x="1234" y="682" width="48" height="44" rx="20"></rect>
+                <text class="tension-label" x="1252" y="714">T</text>
+                <rect class="force-label-bg" x="1138" y="726" width="48" height="44" rx="20"></rect>
+                <text class="buoyancy-label" x="1156" y="758">A</text>
+                <rect class="force-label-bg" x="1228" y="852" width="56" height="44" rx="20"></rect>
+                <text class="weight-label" x="1246" y="884">w</text>
+              </svg>
+            </div>
+            <div class="buoyancy-image-note">Αριστερά: το δυναμόμετρο μετρά το βάρος στον αέρα. Δεξιά: μέσα στο νερό εμφανίζεται άνωση προς τα πάνω, άρα το δυναμόμετρο δείχνει μικρότερο φαινόμενο βάρος.</div>
+            <svg viewBox="0 0 720 430" role="img">
               <defs>
                 <marker id="arrowBlue" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
                   <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"></path>
@@ -1933,33 +2555,89 @@ tbody tr:last-child td { border-bottom: 0; }
                 <marker id="arrowTeal" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
                   <path d="M 0 0 L 10 5 L 0 10 z" fill="#0f9f8f"></path>
                 </marker>
+                <linearGradient id="waterBuoyancy" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0" stop-color="#7dd3fc" stop-opacity="0.62"></stop>
+                  <stop offset="1" stop-color="#0ea5e9" stop-opacity="0.26"></stop>
+                </linearGradient>
+                <linearGradient id="bodyBuoyancy" x1="0" x2="1" y1="0" y2="1">
+                  <stop offset="0" stop-color="#f8fbff"></stop>
+                  <stop offset="1" stop-color="#cbd5e1"></stop>
+                </linearGradient>
+                <linearGradient id="glassShade" x1="0" x2="1" y1="0" y2="1">
+                  <stop offset="0" stop-color="#ffffff" stop-opacity="0.82"></stop>
+                  <stop offset="1" stop-color="#d9e7f1" stop-opacity="0.5"></stop>
+                </linearGradient>
               </defs>
-              <text class="diagram-title" x="72" y="22">Στον αέρα</text>
-              <text class="diagram-title" x="350" y="22">Μέσα στο υγρό</text>
-              <line class="arrow tension" x1="118" y1="96" x2="118" y2="46" marker-end="url(#arrowBlue)"></line>
-              <line class="arrow weight" x1="118" y1="136" x2="118" y2="192" marker-end="url(#arrowOrange)"></line>
-              <rect class="body" x="94" y="96" width="48" height="40" rx="8"></rect>
-              <line x1="118" y1="42" x2="118" y2="96" stroke="#8798aa" stroke-width="2"></line>
-              <text class="diagram-label" x="132" y="66">T = Wαέρα</text>
-              <text class="diagram-label" x="132" y="178">W = mg</text>
-              <text class="diagram-note" x="58" y="216">Η ένδειξη είναι περίπου το βάρος.</text>
+              <rect x="18" y="18" width="684" height="184" rx="22" fill="#ffffff" stroke="#dbe8f5"></rect>
+              <rect x="18" y="228" width="684" height="184" rx="22" fill="#ffffff" stroke="#dbe8f5"></rect>
+              <text class="diagram-title" x="42" y="44">1. Πριν: η ζυγαριά ισορροπεί</text>
+              <text class="diagram-title" x="42" y="254">2. Μετά: το δάχτυλο δέχεται άνωση</text>
+              <text class="diagram-note" x="430" y="44">ίδια ποτήρια - ίδιο νερό</text>
+              <text class="diagram-note" x="430" y="254">η ζυγαριά δείχνει μεγαλύτερη δύναμη</text>
 
-              <rect class="liquid" x="316" y="82" width="170" height="96" rx="12"></rect>
-              <path d="M 318 96 C 338 88 358 104 378 96 S 418 88 438 96 S 470 104 484 96" fill="none" stroke="#39a7d8" stroke-width="3" stroke-linecap="round"></path>
-              <line class="arrow tension" x1="400" y1="108" x2="400" y2="54" marker-end="url(#arrowBlue)"></line>
-              <line class="arrow buoyancy" x1="400" y1="138" x2="400" y2="96" marker-end="url(#arrowTeal)"></line>
-              <line class="arrow weight" x1="400" y1="138" x2="400" y2="198" marker-end="url(#arrowOrange)"></line>
-              <rect class="body" x="376" y="108" width="48" height="40" rx="8"></rect>
-              <line x1="400" y1="50" x2="400" y2="108" stroke="#8798aa" stroke-width="2"></line>
-              <text class="diagram-label" x="414" y="66">T = Wυγρού</text>
-              <text class="diagram-label" x="414" y="112">FA</text>
-              <text class="diagram-label" x="414" y="186">W = mg</text>
-              <text class="diagram-note" x="320" y="216">Άνωση: FA = Wαέρα - Wυγρού</text>
+              <g transform="translate(64 54)">
+                <ellipse class="shadow" cx="296" cy="132" rx="240" ry="10"></ellipse>
+                <path class="balance-beam" d="M 74 102 L 296 102 L 518 102"></path>
+                <path class="balance-stand" d="M 276 102 L 246 150 H 346 L 316 102 Z"></path>
+                <circle cx="296" cy="105" r="12" fill="#9aa2aa" stroke="#434b54" stroke-width="2"></circle>
+                <circle cx="296" cy="105" r="3" fill="#334155"></circle>
+                <rect class="balance-pan" x="30" y="96" width="92" height="8" rx="3"></rect>
+                <rect class="balance-pan" x="470" y="96" width="92" height="8" rx="3"></rect>
+                <line x1="54" y1="104" x2="98" y2="116" stroke="#4e5965" stroke-width="3"></line>
+                <line x1="494" y1="104" x2="538" y2="116" stroke="#4e5965" stroke-width="3"></line>
+
+                <g transform="translate(36 10)">
+                  <path class="cup-line" d="M 8 8 L 18 86 Q 50 96 82 86 L 92 8" fill="url(#glassShade)"></path>
+                  <ellipse class="cup-line" cx="50" cy="8" rx="42" ry="8"></ellipse>
+                  <path class="water-fill" d="M 17 46 Q 50 54 83 46 L 78 82 Q 50 90 22 82 Z"></path>
+                  <path d="M 17 46 C 34 39 50 52 67 46 S 82 42 83 46" fill="none" stroke="#68bde3" stroke-width="2"></path>
+                </g>
+                <g transform="translate(476 10)">
+                  <path class="cup-line" d="M 8 8 L 18 86 Q 50 96 82 86 L 92 8" fill="url(#glassShade)"></path>
+                  <ellipse class="cup-line" cx="50" cy="8" rx="42" ry="8"></ellipse>
+                  <path class="water-fill" d="M 17 46 Q 50 54 83 46 L 78 82 Q 50 90 22 82 Z"></path>
+                  <path d="M 17 46 C 34 39 50 52 67 46 S 82 42 83 46" fill="none" stroke="#68bde3" stroke-width="2"></path>
+                </g>
+              </g>
+
+              <g transform="translate(64 264)">
+                <ellipse class="shadow" cx="296" cy="132" rx="240" ry="10"></ellipse>
+                <g transform="rotate(-4 296 102)">
+                  <path class="balance-beam" d="M 74 102 L 296 102 L 518 102"></path>
+                  <rect class="balance-pan" x="30" y="96" width="92" height="8" rx="3"></rect>
+                  <rect class="balance-pan" x="470" y="96" width="92" height="8" rx="3"></rect>
+                  <line x1="54" y1="104" x2="98" y2="116" stroke="#4e5965" stroke-width="3"></line>
+                  <line x1="494" y1="104" x2="538" y2="116" stroke="#4e5965" stroke-width="3"></line>
+
+                  <g transform="translate(36 12)">
+                    <path class="cup-line" d="M 8 8 L 18 86 Q 50 96 82 86 L 92 8" fill="url(#glassShade)"></path>
+                    <ellipse class="cup-line" cx="50" cy="8" rx="42" ry="8"></ellipse>
+                    <path class="water-fill" d="M 17 48 Q 50 58 83 48 L 78 82 Q 50 90 22 82 Z"></path>
+                    <path d="M 17 48 C 34 38 50 58 67 48 S 82 42 83 48" fill="none" stroke="#68bde3" stroke-width="2"></path>
+                  </g>
+                  <g transform="translate(476 0)">
+                    <path class="cup-line" d="M 8 8 L 18 86 Q 50 96 82 86 L 92 8" fill="url(#glassShade)"></path>
+                    <ellipse class="cup-line" cx="50" cy="8" rx="42" ry="8"></ellipse>
+                    <path class="water-fill" d="M 17 46 Q 50 54 83 46 L 78 82 Q 50 90 22 82 Z"></path>
+                    <path d="M 17 46 C 34 39 50 52 67 46 S 82 42 83 46" fill="none" stroke="#68bde3" stroke-width="2"></path>
+                  </g>
+                </g>
+                <path class="balance-stand" d="M 276 102 L 246 150 H 346 L 316 102 Z"></path>
+                <circle cx="296" cy="105" r="12" fill="#9aa2aa" stroke="#434b54" stroke-width="2"></circle>
+                <circle cx="296" cy="105" r="3" fill="#334155"></circle>
+
+                <path class="hand" d="M 22 -18 C 28 -30 54 -27 58 -12 L 60 34 C 60 48 38 50 36 35 L 31 6 C 26 10 20 8 18 2 C 15 -7 17 -14 22 -18 Z"></path>
+                <path class="hand" d="M 42 30 C 52 30 58 38 56 50 L 50 84 C 48 98 27 96 28 81 L 31 47 C 32 37 34 31 42 30 Z"></path>
+                <line class="arrow weight" x1="56" y1="64" x2="56" y2="106" marker-end="url(#arrowOrange)"></line>
+                <text class="diagram-label" x="68" y="94">δύναμη στο νερό</text>
+                <line class="arrow buoyancy" x1="92" y1="104" x2="92" y2="62" marker-end="url(#arrowTeal)"></line>
+                <text class="diagram-label" x="104" y="74">άνωση στο δάχτυλο</text>
+              </g>
             </svg>
           </div>
           <div class="experiment-tools">
             <label class="field">
-              Όγκος
+              Όγκος βυθισμένου σώματος
               <input id="buoyancyVolumeMl" type="number" step="1" min="0" value="100">
               <small>mL</small>
             </label>
@@ -1983,28 +2661,33 @@ tbody tr:last-child td { border-bottom: 0; }
                 <th>V (mL)</th>
                 <th>Wαέρα (N)</th>
                 <th>Wυγρό (N)</th>
-                <th>Άνωση (N)</th>
-                <th>ρ (kg/m³)</th>
+                <th>Aπ (N)</th>
+                <th>Aθ νερού (N)</th>
+                <th>Σφάλμα (%)</th>
               </tr>
             </thead>
             <tbody id="buoyancyBody">
-              <tr><td colspan="6" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>
+              <tr><td colspan="7" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>
             </tbody>
           </table>
           <div class="experiment-note" id="buoyancyNote">
-            Το σώμα πρέπει να είναι πλήρως βυθισμένο, χωρίς να ακουμπά στον πυθμένα ή στα τοιχώματα.
+            Αρχή του Αρχιμήδη: η άνωση ισούται με το βάρος του υγρού που εκτοπίζεται από το βυθισμένο μέρος του σώματος.
           </div>
         </section>
         <section class="experiment-panel" id="motionExperiment" hidden>
           <div class="experiment-head">
             <div>
               <h3>Ευθύγραμμη ομαλή κίνηση</h3>
-              <p>Πρώτο σχολικό πείραμα με τον υπερηχητικό αισθητήρα: έλεγχος αν η θέση αλλάζει γραμμικά και αν η ταχύτητα μένει περίπου σταθερή.</p>
+              <p>Πρώτο σχολικό πείραμα με τον αισθητήρα υπερήχων: έλεγχος αν η θέση αλλάζει γραμμικά και αν η ταχύτητα μένει περίπου σταθερή.</p>
             </div>
             <div class="experiment-head-actions">
               <span class="experiment-status" id="motionStatus">Περίμενε καθαρή μέτρηση κίνησης</span>
               <button class="experiment-toggle" id="motionPanelToggle" type="button">Κλείσιμο panel</button>
             </div>
+          </div>
+          <div class="motion-illustration">
+            <img src="assets/uniform-motion-illustration.png" alt="Σχολική εικονογράφηση πειράματος ευθύγραμμης ομαλής κίνησης με αισθητήρα υπερήχων και αμαξίδιο">
+            <div class="motion-image-note">Ο αισθητήρας υπερήχων μετρά την απόσταση από το αμαξίδιο. Στην ευθύγραμμη ομαλή κίνηση οι ίσοι χρόνοι αντιστοιχούν σε ίσες μετατοπίσεις.</div>
           </div>
           <div class="experiment-summary" id="motionSummary">
             <div class="experiment-empty">Κάνε μία μέτρηση με αμαξίδιο ή σώμα που κινείται μπροστά από τον αισθητήρα.</div>
@@ -2078,6 +2761,31 @@ tbody tr:last-child td { border-bottom: 0; }
             Βάλε τη συσκευή στην προβολή δύναμης, επίλεξε το spike της κρούσης και αποθήκευσε πολλές δοκιμές για σύγκριση.
           </div>
         </section>
+        <section class="experiment-panel" id="heatExperiment" hidden>
+          <div class="experiment-head">
+            <div>
+              <h3>Θερμική ισορροπία</h3>
+              <p>Παρακολούθησε δύο DS18B20 αισθητήρες σε κρύο και ζεστό νερό και δες αν οι θερμοκρασίες πλησιάζουν με τον χρόνο.</p>
+            </div>
+            <div class="experiment-head-actions">
+              <span class="experiment-status" id="heatStatus">Αναμονή για μετρήσεις θερμοκρασίας</span>
+              <button class="experiment-toggle" id="heatPanelToggle" type="button">Κλείσιμο panel</button>
+            </div>
+          </div>
+          <div class="heat-illustration">
+            <img src="assets/heat-ds18b20-illustration.png" alt="Σχολική εικονογράφηση πειράματος θερμικής ισορροπίας με δύο ποτήρια νερού και δύο αισθητήρες DS18B20">
+            <div class="heat-image-note">Αριστερά: αισθητήρας στο κρύο νερό. Δεξιά: αισθητήρας στο ζεστό νερό. Στόχος είναι να παρατηρήσεις πώς αλλάζουν οι δύο θερμοκρασίες και η διαφορά ΔT.</div>
+          </div>
+          <div class="experiment-summary" id="heatSummary">
+            <div class="experiment-empty">Πάτα Έναρξη και περίμενε να εμφανιστούν οι δύο θερμοκρασίες.</div>
+          </div>
+          <div class="experiment-study">
+            <div class="experiment-study-grid" id="heatProtocol"></div>
+          </div>
+          <div class="experiment-note" id="heatNote">
+            Για καθαρή καμπύλη θερμικής ισορροπίας χρησιμοποίησε μεγάλη διάρκεια, π.χ. 10 λεπτά ή περισσότερο.
+          </div>
+        </section>
       </aside>
     </div>
   </main>
@@ -2094,8 +2802,8 @@ function apiUrl(path) {
   return deviceBaseUrl + (path.startsWith('/') ? path : '/' + path);
 }
 
-const maxSamples = 1200;
-let running = true;
+const maxSamples = 6000;
+let running = false;
 let rows = [];
 let activeMode = 0;
 let startTime = performance.now();
@@ -2110,8 +2818,7 @@ let selectionAnchor = 0;
 let analysisSeriesIndex = 0;
 let fitType = 'linear';
 let analysisCache = null;
-let activeLessonKey = null;
-let activeScenarioId = null;
+let activeExperimentId = localStorage.getItem('palladio-active-experiment') || '';
 let customView = null;
 let customYScale = null;
 let chartTool = 'select';
@@ -2124,6 +2831,8 @@ let accelDisplayMode = localStorage.getItem('palladio-accel-view') || 'accel';
 let collisionMassKg = Math.max(0.001, Number(localStorage.getItem('palladio-collision-mass') || '0.20'));
 let timeScaleMode = localStorage.getItem('palladio-time-scale') || 'auto';
 let valueScaleMode = localStorage.getItem('palladio-value-scale') || 'auto';
+let splitChart = localStorage.getItem('palladio-split-chart') === '1';
+let splitSeriesIndex = Math.max(0, Number(localStorage.getItem('palladio-split-series-index') || '1'));
 let smoothingWindow = Math.max(1, Number(localStorage.getItem('palladio-smoothing-window') || '1'));
 if (![1, 3, 5, 9, 15, 21].includes(smoothingWindow)) smoothingWindow = 1;
 let curveMode = localStorage.getItem('palladio-curve-mode') || 'smooth';
@@ -2131,8 +2840,10 @@ if (curveMode !== 'smooth' && curveMode !== 'straight') curveMode = 'smooth';
 let collisionRailWidth = Math.min(520, Math.max(300, Number(localStorage.getItem('palladio-collision-rail-width') || '360')));
 let collisionRailCollapsed = localStorage.getItem('palladio-collision-rail-collapsed') === '1';
 let activeForceExperiment = localStorage.getItem('palladio-force-experiment') || 'hooke';
-if (activeForceExperiment !== 'hooke' && activeForceExperiment !== 'buoyancy') activeForceExperiment = 'hooke';
+if (!['hooke', 'buoyancy', 'weight'].includes(activeForceExperiment)) activeForceExperiment = 'hooke';
 let hookeExtensionCm = Math.max(0, Number(localStorage.getItem('palladio-hooke-extension-cm') || '1.0'));
+let weightMassG = Math.max(0, Number(localStorage.getItem('palladio-weight-mass-g') || '100'));
+let weightCapturedForce = Number(localStorage.getItem('palladio-weight-force') || 'NaN');
 let buoyancyVolumeMl = Math.max(0, Number(localStorage.getItem('palladio-buoyancy-volume-ml') || '100'));
 let buoyancyAirForce = Number(localStorage.getItem('palladio-buoyancy-air-force') || 'NaN');
 let buoyancyLiquidForce = Number(localStorage.getItem('palladio-buoyancy-liquid-force') || 'NaN');
@@ -2147,6 +2858,14 @@ let collisionTrials = (() => {
 let hookeTrials = (() => {
   try {
     const saved = JSON.parse(localStorage.getItem('palladio-hooke-trials') || '[]');
+    return Array.isArray(saved) ? saved : [];
+  } catch (error) {
+    return [];
+  }
+})();
+let weightTrials = (() => {
+  try {
+    const saved = JSON.parse(localStorage.getItem('palladio-weight-trials') || '[]');
     return Array.isArray(saved) ? saved : [];
   } catch (error) {
     return [];
@@ -2178,6 +2897,7 @@ const railResizer = document.getElementById('collisionRailResizer');
 const tooltip = document.getElementById('tooltip');
 const statusDot = document.getElementById('statusDot');
 const modeButtons = [...document.querySelectorAll('[data-mode]')];
+const experimentButtons = [...document.querySelectorAll('[data-experiment]')];
 
 const modes = {
   0: {
@@ -2232,7 +2952,7 @@ const modes = {
     ]
   },
   4: {
-    title: 'Υπερηχητική κίνηση',
+    title: 'Κίνηση με αισθητήρα υπερήχων',
     subtitle: 'Επίλεξε ένα φυσικό μέγεθος για σωστή κλίμακα και μονάδα',
     yLabel: '',
     symmetric: false,
@@ -2242,8 +2962,102 @@ const modes = {
       { key: 'velocity', label: 'Ταχύτητα', short: 'υ', unit: 'm/s', color: '#1769aa', enabled: false },
       { key: 'acceleration', label: 'Επιτάχυνση', short: 'α', unit: 'm/s²', color: '#2d9d57', enabled: false }
     ]
+  },
+  5: {
+    title: 'Θερμότητα',
+    subtitle: 'Δύο αισθητήρες θερμοκρασίας DS18B20 ως προς τον χρόνο',
+    yLabel: 'Θερμοκρασία (°C)',
+    symmetric: false,
+    minimumSpan: 5,
+    series: [
+      { key: 'temp1', label: 'Θερμόμετρο 1', short: 'T1', unit: '°C', color: '#d63c3c', enabled: true },
+      { key: 'temp2', label: 'Θερμόμετρο 2', short: 'T2', unit: '°C', color: '#1769aa', enabled: true },
+      { key: 'tempDelta', label: 'Διαφορά ΔT', short: 'ΔT', unit: '°C', color: '#2d9d57', enabled: false }
+    ]
   }
 };
+
+const experimentCatalog = {
+  'a-motion': {
+    mode: 4,
+    title: 'Απόσταση και χρόνος',
+    ready: 'Βάλε ένα αντικείμενο μπροστά στον αισθητήρα υπερήχων. Πάτα Έναρξη και μετακίνησέ το αργά.',
+    running: 'Παρατήρησε αν η απόσταση μεγαλώνει ή μικραίνει όσο περνά ο χρόνος.',
+    selected: 'Στο κομμάτι που διάλεξες, δες πόσο άλλαξε η απόσταση και πόσο χρόνο χρειάστηκε.'
+  },
+  'a-speed': {
+    mode: 4,
+    title: 'Μέση ταχύτητα',
+    ready: 'Κίνησε το αντικείμενο όσο πιο ομαλά μπορείς μπροστά από τον αισθητήρα.',
+    running: 'Αν η γραμμή θέσης είναι σχεδόν ευθεία, η ταχύτητα είναι πιο σταθερή.',
+    selected: 'Η κλίση στο επιλεγμένο κομμάτι δείχνει τη μέση ταχύτητα.'
+  },
+  'a-weight': {
+    mode: 2,
+    forceExperiment: 'weight',
+    title: 'Βάρος και δύναμη',
+    ready: 'Κάνε μηδενισμό δύναμης, κρέμασε σώμα γνωστής μάζας και μέτρα το βάρος του.',
+    running: 'Ψάξε ένα ήρεμο οριζόντιο τμήμα, όπου το βάρος μένει σχεδόν σταθερό.',
+    selected: 'Γράψε τη μάζα και σύγκρινε το πειραματικό βάρος με τη θεωρητική τιμή w = m·g.'
+  },
+  'a-shake': {
+    mode: 0,
+    title: 'Απότομη κίνηση και επιτάχυνση',
+    ready: 'Κράτησε τη συσκευή σταθερά, πάτα Έναρξη και κάνε μια μικρή απότομη κίνηση.',
+    running: 'Παρατήρησε τις κορυφές: εκεί η επιτάχυνση αλλάζει πιο έντονα.',
+    selected: 'Σύγκρινε την αρχή και το τέλος της απότομης κίνησης.'
+  },
+  'b-uniform-motion': {
+    mode: 4,
+    title: 'Ευθύγραμμη ομαλή κίνηση',
+    ready: 'Κίνησε ένα αμαξίδιο ή αντικείμενο σε ευθεία γραμμή με όσο γίνεται σταθερή ταχύτητα.',
+    running: 'Στόχος είναι να δεις μια γραμμή θέσης-χρόνου που μοιάζει με ευθεία.',
+    selected: 'Η κλίση της ευθείας δίνει την ταχύτητα της κίνησης.'
+  },
+  'b-accelerated-motion': {
+    mode: 4,
+    title: 'Επιταχυνόμενη κίνηση',
+    ready: 'Άφησε το αντικείμενο να κινηθεί έτσι ώστε να αλλάζει η ταχύτητά του, π.χ. σε μικρή κλίση.',
+    running: 'Αν η γραμμή θέσης καμπυλώνει, η ταχύτητα δεν μένει σταθερή.',
+    selected: 'Δες αν η κλίση μεγαλώνει ή μικραίνει στο επιλεγμένο κομμάτι.'
+  },
+  'b-hooke': {
+    mode: 2,
+    forceExperiment: 'hooke',
+    title: 'Νόμος του Hooke',
+    ready: 'Κρέμασε μάζες στο ελατήριο, διάλεξε σταθερό τμήμα δύναμης και γράψε την επιμήκυνση.',
+    running: 'Περίμενε η δύναμη να σταθεροποιηθεί πριν αποθηκεύσεις δοκιμή.',
+    selected: 'Αποθήκευσε ζεύγη δύναμης και επιμήκυνσης για να δεις αν βγαίνει ευθεία σχέση.'
+  },
+  'b-buoyancy': {
+    mode: 2,
+    forceExperiment: 'buoyancy',
+    title: 'Άνωση',
+    ready: 'Μέτρησε πρώτα το βάρος στον αέρα και μετά το φαινόμενο βάρος μέσα στο υγρό.',
+    running: 'Περίμενε κάθε μέτρηση να γίνει ήρεμη πριν την κρατήσεις.',
+    selected: 'Η διαφορά των δύο δυνάμεων δείχνει την άνωση.'
+  },
+  'b-heat': {
+    mode: 5,
+    title: 'Θερμότητα',
+    ready: 'Βάλε το θερμόμετρο 1 στο ζεστό σώμα ή νερό και το θερμόμετρο 2 στο δεύτερο σημείο σύγκρισης. Η διάρκεια θα μπει στα 10 λεπτά.',
+    running: 'Παρατήρησε αν οι δύο θερμοκρασίες πλησιάζουν ή απομακρύνονται με τον χρόνο.',
+    selected: 'Στο επιλεγμένο κομμάτι σύγκρινε T1, T2 και τη διαφορά ΔT.'
+  },
+  'b-rotation': {
+    mode: 1,
+    title: 'Περιστροφή',
+    ready: 'Μηδένισε το γυροσκόπιο με τη συσκευή ακίνητη και μετά κάνε μια αργή περιστροφή.',
+    running: 'Παρατήρησε πότε η γωνιακή ταχύτητα γίνεται μεγαλύτερη.',
+    selected: 'Το επιλεγμένο κομμάτι δείχνει πόσο γρήγορα έγινε η περιστροφή.'
+  }
+};
+if (!experimentCatalog[activeExperimentId]) activeExperimentId = '';
+if (activeExperimentId) {
+  const initialExperiment = experimentCatalog[activeExperimentId];
+  activeMode = initialExperiment.mode;
+  if (initialExperiment.forceExperiment) activeForceExperiment = initialExperiment.forceExperiment;
+}
 
 function currentMode() {
   const meta = modes[activeMode] || modes[0];
@@ -2261,6 +3075,77 @@ function currentMode() {
 function enabledSeries() {
   const enabled = currentMode().series.filter(series => series.enabled);
   return enabled.length ? enabled : [currentMode().series[0]];
+}
+
+function splitChartAvailable() {
+  const meta = currentMode();
+  return activeMode === 4 && meta.series.length > 1;
+}
+
+function splitChartActive() {
+  return splitChart && splitChartAvailable();
+}
+
+function primaryChartSeries() {
+  return enabledSeries()[0] || currentMode().series[0];
+}
+
+function secondaryChartSeries() {
+  const meta = currentMode();
+  const primary = primaryChartSeries();
+  if (!meta.series.length) return primary;
+  let index = Math.max(0, Math.min(meta.series.length - 1, splitSeriesIndex));
+  if (meta.series[index] === primary) {
+    index = meta.series.findIndex(series => series !== primary);
+    if (index < 0) index = 0;
+  }
+  splitSeriesIndex = index;
+  return meta.series[index] || primary;
+}
+
+function splitChartPanels(width, height, xMin, xMax, timeScale, dataRows) {
+  const horizontal = width >= 860;
+  const outerPad = { left: width < 520 ? 58 : 70, right: 22, top: 18, bottom: 54 };
+  const gap = horizontal ? 86 : 34;
+  const availableW = Math.max(1, width - outerPad.left - outerPad.right);
+  const availableH = Math.max(1, height - outerPad.top - outerPad.bottom);
+  const primary = primaryChartSeries();
+  const secondary = secondaryChartSeries();
+  const panelW = horizontal ? Math.max(1, (availableW - gap) / 2) : availableW;
+  const panelH = horizontal ? availableH : Math.max(1, (availableH - gap) / 2);
+  return [
+    {
+      key: 'primary',
+      title: primary.label + ' - χρόνος',
+      pad: { left: outerPad.left, top: outerPad.top, right: width - outerPad.left - panelW, bottom: height - outerPad.top - panelH },
+      plotW: panelW,
+      plotH: panelH,
+      series: [primary],
+      scale: yScale(dataRows, [primary], false),
+      xMin,
+      xMax,
+      timeScale,
+      valueScale: selectedValueScale([primary], yScale(dataRows, [primary], false))
+    },
+    {
+      key: 'secondary',
+      title: secondary.label + ' - χρόνος',
+      pad: {
+        left: horizontal ? outerPad.left + panelW + gap : outerPad.left,
+        top: horizontal ? outerPad.top : outerPad.top + panelH + gap,
+        right: horizontal ? outerPad.right : width - outerPad.left - panelW,
+        bottom: horizontal ? height - outerPad.top - panelH : outerPad.bottom
+      },
+      plotW: panelW,
+      plotH: panelH,
+      series: [secondary],
+      scale: yScale(dataRows, [secondary], false),
+      xMin,
+      xMax,
+      timeScale,
+      valueScale: selectedValueScale([secondary], yScale(dataRows, [secondary], false))
+    }
+  ];
 }
 
 function dataValue(sample, key) {
@@ -2381,7 +3266,22 @@ function resetMeasurement() {
   updateStaticGauge();
   updateAnalysis();
   updateZoomStatus();
+  setRunning(running);
   draw();
+}
+
+function clearModeViewState() {
+  hoverPoint = null;
+  selection = null;
+  selecting = false;
+  analysisCache = null;
+  customView = null;
+  customYScale = null;
+  panning = false;
+  panStartYScale = null;
+  activePointers.clear();
+  pinchState = null;
+  tooltip.hidden = true;
 }
 
 function updateDerivedControls() {
@@ -2404,6 +3304,14 @@ function saveHookeTrials() {
   localStorage.setItem('palladio-hooke-trials', JSON.stringify(hookeTrials));
 }
 
+function saveWeightTrials() {
+  localStorage.setItem('palladio-weight-trials', JSON.stringify(weightTrials));
+}
+
+function saveWeightCapture() {
+  localStorage.setItem('palladio-weight-force', String(weightCapturedForce));
+}
+
 function saveBuoyancyTrials() {
   localStorage.setItem('palladio-buoyancy-trials', JSON.stringify(buoyancyTrials));
 }
@@ -2421,6 +3329,10 @@ function isHookeExperimentMode() {
   return activeMode === 2 && activeForceExperiment === 'hooke';
 }
 
+function isWeightExperimentMode() {
+  return activeMode === 2 && activeForceExperiment === 'weight';
+}
+
 function isBuoyancyExperimentMode() {
   return activeMode === 2 && activeForceExperiment === 'buoyancy';
 }
@@ -2433,21 +3345,39 @@ function isMotionExperimentMode() {
   return activeMode === 4;
 }
 
+function isHeatExperimentMode() {
+  return activeMode === 5 && activeExperimentId === 'b-heat';
+}
+
 function isRightRailMode() {
-  return isCollisionExperimentMode() || isMotionExperimentMode() || isForceExperimentMode();
+  return isCollisionExperimentMode() || isMotionExperimentMode() || isForceExperimentMode() || isHeatExperimentMode();
 }
 
 function rightRailExperimentTitle() {
-  if (isForceExperimentMode()) return 'Νόμος του Hook / Άνωση';
   if (isHookeExperimentMode()) return 'Νόμος του Hooke';
+  if (isWeightExperimentMode()) return 'Βάρος και μάζα';
   if (isBuoyancyExperimentMode()) return 'Άνωση';
+  if (isForceExperimentMode()) return 'Πείραμα δύναμης';
+  if (isHeatExperimentMode()) return 'Θερμική ισορροπία';
   if (isMotionExperimentMode()) return 'Ευθύγραμμη ομαλή κίνηση';
   if (isCollisionExperimentMode()) return '3ος Νόμος Newton: Κρούση και ώθηση';
   return 'Πείραμα';
 }
 
+function railMaxWidth() {
+  const width = window.innerWidth || document.documentElement.clientWidth || 1440;
+  if (width <= 1180) return width;
+  if (width <= 1320) return 420;
+  return 520;
+}
+
+function preferredRailWidthForExperiment() {
+  if (activeForceExperiment === 'buoyancy') return Math.min(500, railMaxWidth());
+  return Math.min(360, railMaxWidth());
+}
+
 function clampRailWidth(value) {
-  return Math.min(520, Math.max(300, Number(value) || 360));
+  return Math.min(railMaxWidth(), Math.max(300, Number(value) || 360));
 }
 
 function applyCollisionRailLayout() {
@@ -2458,7 +3388,7 @@ function applyCollisionRailLayout() {
   workspaceGrid.classList.toggle('rail-collapsed', isRightRailMode() && collisionRailCollapsed);
   const forceTabs = document.getElementById('forceExperimentTabs');
   if (forceTabs) {
-    forceTabs.hidden = !isForceExperimentMode();
+    forceTabs.hidden = true;
     forceTabs.querySelectorAll('[data-force-experiment]').forEach(button => {
       const active = button.dataset.forceExperiment === activeForceExperiment;
       button.classList.toggle('active', active);
@@ -2472,7 +3402,7 @@ function applyCollisionRailLayout() {
     railOpen.setAttribute('aria-label', 'Άνοιγμα πειράματος: ' + title);
     railOpen.title = title;
   }
-  ['collisionPanelToggle', 'motionPanelToggle', 'hookePanelToggle', 'buoyancyPanelToggle'].forEach(id => {
+  ['collisionPanelToggle', 'motionPanelToggle', 'hookePanelToggle', 'weightPanelToggle', 'buoyancyPanelToggle', 'heatPanelToggle'].forEach(id => {
     const toggle = document.getElementById(id);
     if (toggle) toggle.textContent = collisionRailCollapsed ? 'Άνοιγμα panel' : 'Κλείσιμο panel';
   });
@@ -2486,10 +3416,16 @@ function setCollisionRailCollapsed(next) {
 }
 
 function setActiveForceExperiment(next) {
-  activeForceExperiment = next === 'buoyancy' ? 'buoyancy' : 'hooke';
+  activeForceExperiment = next === 'buoyancy' ? 'buoyancy' : (next === 'weight' ? 'weight' : 'hooke');
   localStorage.setItem('palladio-force-experiment', activeForceExperiment);
+  const preferredWidth = preferredRailWidthForExperiment();
+  if (collisionRailWidth < preferredWidth) {
+    collisionRailWidth = preferredWidth;
+    localStorage.setItem('palladio-collision-rail-width', String(collisionRailWidth));
+  }
   applyCollisionRailLayout();
   renderHookeExperiment();
+  renderWeightExperiment();
   renderBuoyancyExperiment();
   updateAnalysis();
   draw();
@@ -2553,6 +3489,33 @@ function hookeCurrentMetrics() {
   };
 }
 
+function weightCurrentMetrics() {
+  if (!isWeightExperimentMode() || !analysisCache || analysisCache.points.length < 2 || !selection) return null;
+  const points = analysisCache.points;
+  const peakForce = points.reduce((best, point) => {
+    return Math.abs(point.y) > Math.abs(best) ? point.y : best;
+  }, points[0].y);
+  return {
+    duration: analysisCache.duration,
+    meanForce: analysisCache.mean,
+    weight: Math.abs(analysisCache.mean),
+    peakForce,
+    stdDev: analysisCache.stdDev,
+    sampleCount: points.length
+  };
+}
+
+function weightResult(forceValue, massG) {
+  if (!isFinite(forceValue) || massG <= 0) return null;
+  const measuredWeight = Math.abs(forceValue);
+  const massKg = massG / 1000;
+  const theoreticalWeight = massKg * 9.81;
+  const experimentalG = measuredWeight / massKg;
+  const difference = measuredWeight - theoreticalWeight;
+  const errorPercent = theoreticalWeight > 0 ? Math.abs(difference / theoreticalWeight) * 100 : 0;
+  return { massG, massKg, measuredWeight, theoreticalWeight, experimentalG, difference, errorPercent };
+}
+
 function buoyancyCurrentMetrics() {
   if (!isBuoyancyExperimentMode() || !analysisCache || analysisCache.points.length < 2 || !selection) return null;
   const points = analysisCache.points;
@@ -2575,9 +3538,23 @@ function buoyancyResult(airForce, liquidForce, volumeMl) {
   const weightLiquid = Math.abs(liquidForce);
   const buoyantForce = weightAir - weightLiquid;
   const volumeM3 = volumeMl / 1000000;
+  const waterDensity = 1000;
+  const theoreticalBuoyancy = waterDensity * 9.81 * volumeM3;
+  const difference = buoyantForce - theoreticalBuoyancy;
+  const errorPercent = theoreticalBuoyancy > 0 ? Math.abs(difference / theoreticalBuoyancy) * 100 : 0;
   const density = buoyantForce > 0 ? buoyantForce / (9.81 * volumeM3) : 0;
   const lossPercent = weightAir > 0 ? (buoyantForce / weightAir) * 100 : 0;
-  return { weightAir, weightLiquid, buoyantForce, volumeM3, density, lossPercent };
+  return {
+    weightAir,
+    weightLiquid,
+    buoyantForce,
+    volumeM3,
+    theoreticalBuoyancy,
+    difference,
+    errorPercent,
+    density,
+    lossPercent
+  };
 }
 
 function hookeFit(trials) {
@@ -2720,7 +3697,7 @@ function renderMotionExperiment() {
 
   protocol.innerHTML =
     '<section class="experiment-study-card"><h5>Στόχος</h5><p>Να ελέγξουν οι μαθητές αν ένα σώμα κινείται με περίπου σταθερή ταχύτητα και να συνδέσουν τα γραφήματα x-t, υ-t και α-t.</p></section>' +
-    '<section class="experiment-study-card"><h5>Στήσιμο</h5><p>Υπερηχητικός αισθητήρας απέναντι από αμαξίδιο ή σώμα που κινείται σε ευθεία, χωρίς εμπόδια και με αρκετά καθαρή ανακλώμενη επιφάνεια.</p></section>' +
+    '<section class="experiment-study-card"><h5>Στήσιμο</h5><p>Αισθητήρας υπερήχων απέναντι από αμαξίδιο ή σώμα που κινείται σε ευθεία, χωρίς εμπόδια και με αρκετά καθαρή ανακλώμενη επιφάνεια.</p></section>' +
     '<section class="experiment-study-card"><h5>Βήματα</h5><ol>' + steps.map(step => '<li>' + step + '</li>').join('') + '</ol></section>' +
     '<section class="experiment-study-card"><h5>Τι περιμένουμε</h5><p>' + expected + '</p></section>' +
     '<section class="experiment-study-card"><h5>Σημείωση καθηγητή</h5><p>' + teacher + '</p></section>';
@@ -3071,6 +4048,85 @@ function renderHookeExperiment() {
   drawHookeExperimentChart(hookeTrials, fit);
 }
 
+function renderWeightExperiment() {
+  const panel = document.getElementById('weightExperiment');
+  const summary = document.getElementById('weightSummary');
+  const status = document.getElementById('weightStatus');
+  const body = document.getElementById('weightBody');
+  const note = document.getElementById('weightNote');
+  const protocol = document.getElementById('weightProtocol');
+  const massInput = document.getElementById('weightMassG');
+  massInput.value = weightMassG.toFixed(0);
+
+  if (!isWeightExperimentMode()) {
+    panel.hidden = true;
+    applyCollisionRailLayout();
+    return;
+  }
+
+  panel.hidden = false;
+  applyCollisionRailLayout();
+  const current = weightCurrentMetrics();
+  const hasCapture = isFinite(weightCapturedForce);
+  const preview = weightResult(weightCapturedForce, weightMassG);
+
+  status.textContent = current
+    ? 'Τρέχον plateau: ' + compactNumber(current.weight) + ' N · σ ' + compactNumber(current.stdDev) + ' N'
+    : 'Επίλεξε με A-B ένα σταθερό plateau βάρους';
+
+  protocol.innerHTML =
+    '<section class="experiment-study-card"><h5>Στόχος</h5><p>Να ελέγξουν οι μαθητές ότι το βάρος είναι ανάλογο της μάζας και περιγράφεται από τη σχέση w = m·g.</p></section>' +
+    '<section class="experiment-study-card"><h5>Στήσιμο</h5><p>Κρέμασε γνωστή μάζα στον αισθητήρα δύναμης. Κάνε tare πριν βάλεις το σώμα και περίμενε να σταθεροποιηθεί η ένδειξη.</p></section>' +
+    '<section class="experiment-study-card"><h5>Βήματα</h5><ol><li>Γράψε τη μάζα του σώματος σε g.</li><li>Επίλεξε στο γράφημα ένα οριζόντιο plateau.</li><li>Πάτησε “Μέτρηση βάρους” και έπειτα “Αποθήκευση δοκιμής”.</li><li>Επανάλαβε για διαφορετικές μάζες και σύγκρινε wπ με wθ.</li></ol></section>' +
+    '<section class="experiment-study-card"><h5>Σύγκριση</h5><p>Το dashboard υπολογίζει wθ = m·9,81 και gπ = wπ/m. Αν οι μετρήσεις είναι καλές, το gπ πλησιάζει τα 9,81 m/s².</p></section>';
+
+  body.innerHTML = weightTrials.length
+    ? weightTrials.map((trial, index) => {
+        return '<tr>' +
+          '<td>' + (index + 1) + '</td>' +
+          '<td>' + trial.massG.toFixed(1) + '</td>' +
+          '<td>' + trial.massKg.toFixed(4) + '</td>' +
+          '<td>' + trial.measuredWeight.toFixed(4) + '</td>' +
+          '<td>' + trial.theoreticalWeight.toFixed(4) + '</td>' +
+          '<td>' + trial.experimentalG.toFixed(2) + '</td>' +
+          '<td>' + trial.errorPercent.toFixed(1) + '</td>' +
+          '</tr>';
+      }).join('')
+    : '<tr><td colspan="7" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>';
+
+  const cards = [];
+  if (current) {
+    cards.push(
+      '<div class="summary-card"><span>Τρέχον βάρος</span><strong>' + compactNumber(current.weight) + '</strong><small>N από το επιλεγμένο plateau</small></div>',
+      '<div class="summary-card"><span>Σταθερότητα</span><strong>' + compactNumber(current.stdDev) + '</strong><small>N τυπική απόκλιση</small></div>'
+    );
+  }
+  cards.push(
+    '<div class="summary-card"><span>Αποθηκευμένο wπ</span><strong>' + (hasCapture ? compactNumber(Math.abs(weightCapturedForce)) : '—') + '</strong><small>N πειραματικό βάρος</small></div>',
+    '<div class="summary-card"><span>Μάζα</span><strong>' + compactNumber(weightMassG) + '</strong><small>g</small></div>'
+  );
+  if (preview) {
+    cards.push(
+      '<div class="summary-card"><span>wθ = m·g</span><strong>' + compactNumber(preview.theoreticalWeight) + '</strong><small>N για g = 9,81 m/s²</small></div>',
+      '<div class="summary-card"><span>gπ = w/m</span><strong>' + compactNumber(preview.experimentalG) + '</strong><small>m/s² από τη μέτρηση</small></div>',
+      '<div class="summary-card"><span>Απόκλιση</span><strong>' + compactNumber(preview.errorPercent) + '</strong><small>% από τη θεωρητική τιμή</small></div>'
+    );
+  }
+  if (weightTrials.length) {
+    const avgG = weightTrials.reduce((sum, trial) => sum + trial.experimentalG, 0) / weightTrials.length;
+    const avgError = weightTrials.reduce((sum, trial) => sum + trial.errorPercent, 0) / weightTrials.length;
+    cards.push(
+      '<div class="summary-card"><span>Δοκιμές</span><strong>' + weightTrials.length + '</strong><small>αποθηκευμένες μετρήσεις</small></div>',
+      '<div class="summary-card"><span>Μέσο gπ</span><strong>' + compactNumber(avgG) + '</strong><small>m/s² · μέση απόκλιση ' + compactNumber(avgError) + '%</small></div>'
+    );
+  }
+
+  summary.innerHTML = cards.length
+    ? cards.join('')
+    : '<div class="experiment-empty">Επίλεξε πρώτα σταθερό plateau και γράψε τη μάζα.</div>';
+  note.textContent = 'Για τη θεωρητική τιμή χρησιμοποιείται g = 9,81 m/s². Η μάζα πρέπει να μπει σε g, αλλά ο υπολογισμός γίνεται σε kg.';
+}
+
 function renderBuoyancyExperiment() {
   const panel = document.getElementById('buoyancyExperiment');
   const summary = document.getElementById('buoyancySummary');
@@ -3099,23 +4155,27 @@ function renderBuoyancyExperiment() {
     : 'Επίλεξε με A-B ένα σταθερό plateau δύναμης';
 
   protocol.innerHTML =
-    '<section class="experiment-study-card"><h5>Στόχος</h5><p>Να μετρήσουν οι μαθητές την άνωση ως απώλεια φαινόμενου βάρους και να τη συνδέσουν με το βάρος του εκτοπιζόμενου υγρού.</p></section>' +
+    '<section class="experiment-study-card"><h5>Στόχος</h5><p>Να μετρήσουν οι μαθητές πειραματικά την άνωση και να την συγκρίνουν με την αρχή του Αρχιμήδη: Aθ = ρνερού · g · V.</p></section>' +
     '<section class="experiment-study-card"><h5>Στήσιμο</h5><p>Κρέμασε το σώμα στην κυψέλη φορτίου. Πρώτα μέτρα στον αέρα, μετά βύθισέ το πλήρως στο νερό χωρίς να ακουμπά στα τοιχώματα.</p></section>' +
-    '<section class="experiment-study-card"><h5>Βήματα</h5><ol><li>Κάνε tare με άδειο γάντζο ή βάση.</li><li>Επίλεξε σταθερό plateau στον αέρα και πάτησε “Μέτρηση στον αέρα”.</li><li>Βύθισε το σώμα πλήρως στο υγρό, περίμενε να ηρεμήσει και πάτησε “Μέτρηση στο υγρό”.</li><li>Γράψε τον όγκο του βυθισμένου σώματος σε mL και αποθήκευσε τη δοκιμή.</li></ol></section>' +
-    '<section class="experiment-study-card"><h5>Τι περιμένουμε</h5><p>Το φαινόμενο βάρος στο υγρό είναι μικρότερο. Η διαφορά Wαέρα - Wυγρό είναι η άνωση και για νερό πρέπει να πλησιάζει ρνερού·g·V.</p></section>';
+    '<section class="experiment-study-card"><h5>Βήματα</h5><ol><li>Κάνε tare με άδειο γάντζο ή βάση.</li><li>Επίλεξε σταθερό plateau στον αέρα και πάτησε “Μέτρηση στον αέρα”.</li><li>Βύθισε το σώμα πλήρως στο νερό, περίμενε να ηρεμήσει και πάτησε “Μέτρηση στο υγρό”.</li><li>Γράψε τον όγκο του βυθισμένου σώματος σε mL και αποθήκευσε τη δοκιμή.</li></ol></section>' +
+    '<section class="experiment-study-card"><h5>Σύγκριση</h5><p>Η πειραματική τιμή είναι Aπ = Wαέρα - Wυγρό. Η θεωρητική τιμή για νερό είναι Aθ = 1000 · 9,81 · V, με το V σε m³.</p></section>';
 
   body.innerHTML = buoyancyTrials.length
     ? buoyancyTrials.map((trial, index) => {
+        const fallback = buoyancyResult(trial.weightAir, trial.weightLiquid, trial.volumeMl);
+        const theoreticalBuoyancy = isFinite(trial.theoreticalBuoyancy) ? trial.theoreticalBuoyancy : (fallback ? fallback.theoreticalBuoyancy : NaN);
+        const errorPercent = isFinite(trial.errorPercent) ? trial.errorPercent : (fallback ? fallback.errorPercent : NaN);
         return '<tr>' +
           '<td>' + (index + 1) + '</td>' +
           '<td>' + trial.volumeMl.toFixed(1) + '</td>' +
           '<td>' + trial.weightAir.toFixed(4) + '</td>' +
           '<td>' + trial.weightLiquid.toFixed(4) + '</td>' +
           '<td>' + trial.buoyantForce.toFixed(4) + '</td>' +
-          '<td>' + trial.density.toFixed(0) + '</td>' +
+          '<td>' + (isFinite(theoreticalBuoyancy) ? theoreticalBuoyancy.toFixed(4) : '—') + '</td>' +
+          '<td>' + (isFinite(errorPercent) ? errorPercent.toFixed(1) : '—') + '</td>' +
           '</tr>';
       }).join('')
-    : '<tr><td colspan="6" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>';
+    : '<tr><td colspan="7" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>';
 
   const cards = [];
   if (current) {
@@ -3130,16 +4190,20 @@ function renderBuoyancyExperiment() {
   );
   if (preview) {
     cards.push(
-      '<div class="summary-card"><span>Άνωση</span><strong>' + compactNumber(preview.buoyantForce) + '</strong><small>N = Wαέρα - Wυγρό</small></div>',
-      '<div class="summary-card"><span>Απώλεια βάρους</span><strong>' + compactNumber(preview.lossPercent) + '</strong><small>% του βάρους στον αέρα</small></div>',
-      '<div class="summary-card"><span>Εκτίμηση ρ</span><strong>' + compactNumber(preview.density) + '</strong><small>kg/m³ από FΑ/(gV)</small></div>'
+      '<div class="summary-card"><span>Aπ πειραματική</span><strong>' + compactNumber(preview.buoyantForce) + '</strong><small>N = Wαέρα - Wυγρό</small></div>',
+      '<div class="summary-card"><span>Aθ Αρχιμήδη</span><strong>' + compactNumber(preview.theoreticalBuoyancy) + '</strong><small>N = ρνερού · g · V</small></div>',
+      '<div class="summary-card"><span>Απόκλιση</span><strong>' + compactNumber(preview.errorPercent) + '</strong><small>% από τη θεωρητική τιμή</small></div>'
     );
   }
   if (buoyancyTrials.length) {
-    const avgDensity = buoyancyTrials.reduce((sum, trial) => sum + trial.density, 0) / buoyancyTrials.length;
+    const avgError = buoyancyTrials.reduce((sum, trial) => {
+      const fallback = buoyancyResult(trial.weightAir, trial.weightLiquid, trial.volumeMl);
+      const errorPercent = isFinite(trial.errorPercent) ? trial.errorPercent : (fallback ? fallback.errorPercent : 0);
+      return sum + errorPercent;
+    }, 0) / buoyancyTrials.length;
     cards.push(
       '<div class="summary-card"><span>Δοκιμές</span><strong>' + buoyancyTrials.length + '</strong><small>αποθηκευμένες μετρήσεις</small></div>',
-      '<div class="summary-card"><span>Μέση ρ</span><strong>' + compactNumber(avgDensity) + '</strong><small>kg/m³</small></div>'
+      '<div class="summary-card"><span>Μέση απόκλιση</span><strong>' + compactNumber(avgError) + '</strong><small>% από Aθ νερού</small></div>'
     );
   }
 
@@ -3148,7 +4212,7 @@ function renderBuoyancyExperiment() {
     : '<div class="experiment-empty">Επίλεξε πρώτα σταθερό plateau στον αέρα και στο υγρό.</div>';
   note.textContent = preview && preview.buoyantForce <= 0
     ? 'Η άνωση βγήκε μηδενική ή αρνητική. Έλεγξε αν πάτησες ανάποδα τις μετρήσεις ή αν η φορά της δύναμης άλλαξε.'
-    : 'Για νερό, η εκτίμηση ρ πρέπει να είναι κοντά στα 1000 kg/m³ όταν ο όγκος έχει δοθεί σωστά.';
+    : 'Για τη θεωρητική τιμή χρησιμοποιείται νερό με ρ = 1000 kg/m³ και g = 9,81 m/s². Ο όγκος είναι ο βυθισμένος όγκος, όχι ο συνολικός όγκος νερού στο ποτήρι.';
 }
 
 function renderCollisionExperiment() {
@@ -3243,12 +4307,74 @@ function renderCollisionExperiment() {
   drawCollisionExperimentChart(collisionTrials, fit);
 }
 
-function setMode(mode) {
+function latestFiniteValue(key) {
+  if (lastData && isFinite(Number(lastData[key]))) return Number(lastData[key]);
+  for (let index = rows.length - 1; index >= 0; index--) {
+    const value = Number(rows[index].sample && rows[index].sample[key]);
+    if (isFinite(value)) return value;
+  }
+  return NaN;
+}
+
+function renderHeatExperiment() {
+  const panel = document.getElementById('heatExperiment');
+  const summary = document.getElementById('heatSummary');
+  const status = document.getElementById('heatStatus');
+  const protocol = document.getElementById('heatProtocol');
+  const note = document.getElementById('heatNote');
+  if (!panel) return;
+
+  if (!isHeatExperimentMode()) {
+    panel.hidden = true;
+    applyCollisionRailLayout();
+    return;
+  }
+
+  panel.hidden = false;
+  applyCollisionRailLayout();
+  const t1 = latestFiniteValue('temp1');
+  const t2 = latestFiniteValue('temp2');
+  const delta = isFinite(t1) && isFinite(t2) ? t1 - t2 : latestFiniteValue('tempDelta');
+  const absDelta = Math.abs(delta);
+  const hasValues = isFinite(t1) && isFinite(t2);
+
+  status.textContent = hasValues
+    ? 'T1 ' + compactNumber(t1) + ' °C · T2 ' + compactNumber(t2) + ' °C · ΔT ' + compactNumber(delta) + ' °C'
+    : 'Αναμονή για δύο αισθητήρες DS18B20';
+
+  summary.innerHTML = hasValues
+    ? [
+        '<div class="summary-card"><span>Αισθητήρας T1</span><strong>' + compactNumber(t1) + '</strong><small>°C κρύο νερό</small></div>',
+        '<div class="summary-card"><span>Αισθητήρας T2</span><strong>' + compactNumber(t2) + '</strong><small>°C ζεστό νερό</small></div>',
+        '<div class="summary-card"><span>Διαφορά ΔT</span><strong>' + compactNumber(delta) + '</strong><small>°C = T1 - T2</small></div>',
+        '<div class="summary-card"><span>|ΔT|</span><strong>' + compactNumber(absDelta) + '</strong><small>όσο μικραίνει, πλησιάζουν ισορροπία</small></div>'
+      ].join('')
+    : '<div class="experiment-empty">Πάτα Έναρξη και περίμενε να εμφανιστούν οι δύο θερμοκρασίες.</div>';
+
+  protocol.innerHTML =
+    '<section class="experiment-study-card"><h5>Στόχος</h5><p>Να παρατηρήσουν οι μαθητές ότι δύο νερά διαφορετικής θερμοκρασίας τείνουν προς θερμική ισορροπία.</p></section>' +
+    '<section class="experiment-study-card"><h5>Στήσιμο</h5><p>Βάλε τον DS18B20 T1 στο κρύο νερό και τον DS18B20 T2 στο ζεστό νερό. Οι μεταλλικές άκρες να είναι μέσα στο νερό, χωρίς να ακουμπούν έντονα στα τοιχώματα.</p></section>' +
+    '<section class="experiment-study-card"><h5>Βήματα</h5><ol><li>Διάλεξε διάρκεια 10 λεπτών ή μεγαλύτερη.</li><li>Πάτα Έναρξη και άφησε τους αισθητήρες ακίνητους.</li><li>Παρατήρησε αν οι καμπύλες T1 και T2 πλησιάζουν.</li><li>Χρησιμοποίησε τη γραμμή ΔT για να δεις αν η διαφορά θερμοκρασίας μικραίνει.</li></ol></section>' +
+    '<section class="experiment-study-card"><h5>Τι κρατάμε</h5><p>Η θερμική ισορροπία φαίνεται όταν οι θερμοκρασίες τείνουν να γίνουν ίσες ή όταν η διαφορά τους αλλάζει πολύ αργά.</p></section>';
+
+  note.textContent = hasValues
+    ? (absDelta < 1 ? 'Οι δύο θερμοκρασίες είναι πολύ κοντά. Συζήτησε αν το σύστημα έχει σχεδόν φτάσει σε θερμική ισορροπία.' : 'Παρατήρησε αν το |ΔT| μικραίνει με τον χρόνο. Αυτό είναι το πιο απλό σημάδι προσέγγισης θερμικής ισορροπίας.')
+    : 'Για καθαρή καμπύλη θερμικής ισορροπίας χρησιμοποίησε μεγάλη διάρκεια, π.χ. 10 λεπτά ή περισσότερο.';
+}
+
+function setMode(mode, source = 'sensor', options = {}) {
+  const shouldReset = options.reset !== false;
   fetch(apiUrl('/set-mode?mode=' + mode)).catch(() => {});
   activeMode = mode;
-  activeLessonKey = null;
-  activeScenarioId = null;
-  resetMeasurement();
+  if (source === 'sensor') {
+    activeExperimentId = '';
+    localStorage.removeItem('palladio-active-experiment');
+  }
+  if (shouldReset) {
+    resetMeasurement();
+  } else {
+    clearModeViewState();
+  }
   updateModeUi();
   updateReadouts(lastData);
 }
@@ -3260,6 +4386,7 @@ function updateModeUi() {
   modeButtons.forEach(button => {
     button.classList.toggle('active', Number(button.dataset.mode) === activeMode);
   });
+  updateExperimentUi();
   document.getElementById('tableHead').innerHTML =
     '<tr><th>Χρόνος (s)</th>' +
     meta.series.map(series => '<th>' + series.label + ' (' + series.unit + ')</th>').join('') +
@@ -3269,14 +4396,121 @@ function updateModeUi() {
   updateDerivedControls();
   renderAnalysisSeries();
   renderLegend();
+  updateSplitChartControls();
   updateTable();
   updateStaticGauge();
   updateAnalysis();
   renderHookeExperiment();
+  renderWeightExperiment();
   renderBuoyancyExperiment();
   renderMotionExperiment();
   renderCollisionExperiment();
+  renderHeatExperiment();
+  updateStudentGuide();
   draw();
+}
+
+function updateExperimentUi() {
+  experimentButtons.forEach(button => {
+    const active = button.dataset.experiment === activeExperimentId;
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-pressed', active ? 'true' : 'false');
+    if (active) {
+      const group = button.closest('.class-group');
+      if (group) group.open = true;
+    }
+  });
+}
+
+function selectExperiment(experimentId) {
+  const experiment = experimentCatalog[experimentId];
+  if (!experiment) return;
+  activeExperimentId = experimentId;
+  localStorage.setItem('palladio-active-experiment', activeExperimentId);
+  if (experiment.forceExperiment) {
+    activeForceExperiment = experiment.forceExperiment;
+    localStorage.setItem('palladio-force-experiment', activeForceExperiment);
+    const preferredWidth = preferredRailWidthForExperiment();
+    if (collisionRailWidth < preferredWidth) {
+      collisionRailWidth = preferredWidth;
+      localStorage.setItem('palladio-collision-rail-width', String(collisionRailWidth));
+    }
+  }
+  setMode(experiment.mode, 'experiment', { reset: false });
+  applyExperimentDefaults(experimentId);
+}
+
+function applyExperimentDefaults(experimentId) {
+  if (experimentId !== 'b-heat') return;
+  const timeSelect = document.getElementById('timeWindow');
+  const rateSelect = document.getElementById('sampleRate');
+  timeWindow = 600;
+  timeSelect.value = '600';
+  if (rateSelect.value !== '1') {
+    rateSelect.value = '1';
+    fetch(apiUrl('/settings?rate=1'), { cache: 'no-store' }).catch(() => {});
+  }
+  resetZoom(false);
+  showToast('Θερμότητα: διάρκεια 10 min και ρυθμός 1 Hz.');
+}
+
+function modePrompt() {
+  const experiment = experimentCatalog[activeExperimentId];
+  if (experiment) return experiment;
+  if (activeMode === 1) {
+    return {
+      title: 'Μέτρησε περιστροφή',
+      ready: 'Κράτησε τη συσκευή ακίνητη, πάτα Έναρξη και μετά στρίψε την απαλά γύρω από έναν άξονα.',
+      running: 'Παρατήρησε πότε η καμπύλη ανεβαίνει: τότε η περιστροφή γίνεται πιο γρήγορη.',
+      selected: 'Ωραία. Δες τη διάρκεια, τη μέση τιμή και την κλίση στο κομμάτι που διάλεξες.'
+    };
+  }
+  if (activeMode === 2) {
+    return {
+      title: 'Μέτρησε δύναμη',
+      ready: 'Πάτα Έναρξη και άσκησε δύναμη στον αισθητήρα. Για σταθερή μέτρηση, κράτησέ την όσο πιο ήρεμα μπορείς.',
+      running: 'Ψάξε στο γράφημα την κορυφή της δύναμης ή ένα ήρεμο οριζόντιο τμήμα.',
+      selected: 'Τώρα σύγκρινε μέγιστη, μέση τιμή και διάρκεια στο επιλεγμένο κομμάτι.'
+    };
+  }
+  if (activeMode === 4) {
+    return {
+      title: 'Μέτρησε κίνηση μπροστά από τον αισθητήρα',
+      ready: 'Βάλε το αντικείμενο μπροστά στον αισθητήρα υπερήχων, πάτα Έναρξη και κίνησέ το αργά.',
+      running: 'Αν η γραμμή είναι ευθεία, η κίνηση είναι πιο ομαλή. Αν καμπυλώνει, κάτι αλλάζει στην ταχύτητα.',
+      selected: 'Δες αν η κλίση είναι θετική ή αρνητική: αυτό δείχνει αν το αντικείμενο απομακρύνεται ή πλησιάζει.'
+    };
+  }
+  if (activeMode === 5) {
+    return {
+      title: 'Μέτρησε θερμοκρασία',
+      ready: 'Τοποθέτησε τα δύο DS18B20 στα σημεία που θέλεις να συγκρίνεις και πάτα Έναρξη.',
+      running: 'Παρατήρησε τις δύο καμπύλες και τη διαφορά θερμοκρασίας.',
+      selected: 'Δες πόσο άλλαξε η θερμοκρασία στο επιλεγμένο χρονικό διάστημα.'
+    };
+  }
+  return {
+    title: accelDisplayMode === 'force' ? 'Μέτρησε δύναμη από την κίνηση' : 'Μέτρησε επιτάχυνση',
+    ready: 'Πάτα Έναρξη και κίνησε τη συσκευή με ασφάλεια. Ξεκίνα με μια μικρή, καθαρή κίνηση.',
+    running: 'Παρατήρησε πότε αλλάζει απότομα η γραμμή. Εκεί έγινε η πιο έντονη μεταβολή.',
+    selected: 'Δες τη μεταβολή και την κλίση στο κομμάτι που επέλεξες.'
+  };
+}
+
+function updateStudentGuide() {
+  const prompt = modePrompt();
+  const title = document.getElementById('studentPromptTitle');
+  const text = document.getElementById('studentPromptText');
+  const hasSelection = Boolean(selection);
+  const hasData = rows.length > 1;
+  document.getElementById('stepMeasure').classList.toggle('active', running || !hasData);
+  document.getElementById('stepObserve').classList.toggle('active', hasData && !hasSelection);
+  document.getElementById('stepConclude').classList.toggle('active', hasSelection);
+  title.textContent = prompt.title;
+  if (hasSelection) text.textContent = prompt.selected;
+  else if (running) text.textContent = prompt.running;
+  else if (hasData) text.textContent = 'Σύρε πάνω στη γραφική για να επιλέξεις το πιο ενδιαφέρον κομμάτι.';
+  else text.textContent = prompt.ready;
 }
 
 function calibrationForMode() {
@@ -3330,6 +4564,26 @@ function renderLegend() {
   });
 }
 
+function updateSplitChartControls() {
+  const available = splitChartAvailable();
+  const toggleWrap = document.getElementById('splitChartToggleWrap');
+  const toggle = document.getElementById('splitChartToggle');
+  const field = document.getElementById('splitChartField');
+  const select = document.getElementById('splitSeriesSelect');
+  toggleWrap.hidden = !available;
+  field.hidden = !available || !splitChart;
+  toggle.checked = available && splitChart;
+  if (!available) return;
+  const meta = currentMode();
+  const primary = primaryChartSeries();
+  select.innerHTML = meta.series
+    .map((series, index) => '<option value="' + index + '"' + (series === primary ? ' disabled' : '') + '>' +
+      series.label + ' (' + series.unit + ')' + '</option>')
+    .join('');
+  secondaryChartSeries();
+  select.value = String(splitSeriesIndex);
+}
+
 function toggleSeries(index) {
   const meta = currentMode();
   const selected = meta.series[index];
@@ -3343,26 +4597,24 @@ function toggleSeries(index) {
     selected.enabled = !selected.enabled;
   }
   renderLegend();
+  updateSplitChartControls();
   updateReadouts(lastData);
   updateAnalysis();
   draw();
 }
 
 function updateReadouts(data) {
-  const meta = currentMode();
-  const cards = meta.series.map(series => {
-    const value = dataValue(data, series.key);
-    return '<div class="readout" style="--series-color:' + series.color + '">' +
-      '<span>' + series.label + '</span>' +
-      '<strong>' + value.toFixed(2) + '<small>' + series.unit + '</small></strong>' +
-      '</div>';
-  });
-  cards.push(
-    '<div class="readout" style="--series-color:#607080">' +
-    '<span>Μπαταρία</span><strong>' + Number(data.battery || 0).toFixed(2) +
-    '<small>V</small></strong></div>'
-  );
-  document.getElementById('readouts').innerHTML = cards.join('');
+  const voltage = Number(data.battery || 0);
+  const batteryPercent = Math.max(0, Math.min(100, (voltage - 3.3) / 0.9 * 100));
+  const fillColor = voltage <= 3.55 ? '#ef6b6b' : (voltage <= 3.75 ? '#f0b84f' : '#59d37d');
+  document.getElementById('readouts').innerHTML =
+    '<div class="readout battery-readout" style="--series-color:#607080;--battery-level:' +
+    batteryPercent.toFixed(0) + '%">' +
+      '<span class="battery-icon" aria-hidden="true"><span class="battery-fill" style="background:' +
+      fillColor + '"></span></span>' +
+      '<div class="battery-copy"><strong>' + (voltage ? voltage.toFixed(2) : '--') +
+      '<small>V</small></strong></div>' +
+    '</div>';
 }
 
 function addRow(data, deferUpdate) {
@@ -3393,6 +4645,7 @@ function addRow(data, deferUpdate) {
   updateTable();
   updateStaticGauge();
   updateAnalysis();
+  updateStudentGuide();
   draw();
 }
 
@@ -3402,6 +4655,7 @@ function addRows(samples) {
   updateTable();
   updateStaticGauge();
   updateAnalysis();
+  updateStudentGuide();
   draw();
 }
 
@@ -3567,9 +4821,11 @@ function setCustomYScale(min, max) {
 
 function valueAtY(y) {
   const geometry = chartGeometry;
-  const boundedY = Math.max(geometry.pad.top, Math.min(geometry.pad.top + geometry.plotH, y));
-  return geometry.scale.max - (boundedY - geometry.pad.top) *
-    (geometry.scale.max - geometry.scale.min) / geometry.plotH;
+  const panel = geometry && geometry.split ? activePanelAtPoint({ x: geometry.pad.left, y }) : null;
+  const source = panel || geometry;
+  const boundedY = Math.max(source.pad.top, Math.min(source.pad.top + source.plotH, y));
+  return source.scale.max - (boundedY - source.pad.top) *
+    (source.scale.max - source.scale.min) / source.plotH;
 }
 
 function zoomAt(centerTime, factor) {
@@ -3609,8 +4865,9 @@ function updateZoomStatus() {
   const yZoom = customYScale ? ' · Y Zoom' : '';
   const smoothing = smoothingWindow > 1 ? ' · Smooth ' + smoothingWindow : '';
   const curve = curveMode === 'smooth' ? ' · Smooth line' : '';
+  const split = splitChartActive() ? ' · Split View' : '';
   document.getElementById('zoomStatus').textContent =
-    compactNumber(span) + ' s' + (customView ? ' · Zoom' : ' · Live') + yZoom + smoothing + curve;
+    compactNumber(span) + ' s' + (customView ? ' · Zoom' : ' · Live') + split + yZoom + smoothing + curve;
 }
 
 function interpolatePointAtTime(time, series, sourceRows) {
@@ -3779,6 +5036,7 @@ function slopeUnit(series) {
 }
 
 function areaMeaning(series) {
+  if (series.key === 'temp1' || series.key === 'temp2' || series.key === 'tempDelta') return 'Θερμοκρασία × χρόνος';
   if (series.key === 'force' || series.key === 'fx' || series.key === 'fy' ||
       series.key === 'fz' || series.key === 'fnet') return 'Ώθηση';
   if (series.key === 'ax' || series.key === 'ay' || series.key === 'az' ||
@@ -3789,6 +5047,7 @@ function areaMeaning(series) {
 }
 
 function slopeMeaning(series) {
+  if (series.key === 'temp1' || series.key === 'temp2' || series.key === 'tempDelta') return 'Ρυθμός μεταβολής θερμοκρασίας';
   if (series.key === 'distance') return 'Μέση ταχύτητα (fit)';
   if (series.key === 'velocity') return 'Μέση επιτάχυνση (fit)';
   if (series.key === 'force' || series.key === 'fx' || series.key === 'fy' ||
@@ -3884,125 +5143,6 @@ function analysisExamples(series) {
     };
   }
   return examples;
-}
-
-function sensorLesson(meta, series) {
-  const lessons = {
-    0: {
-      tag: 'Μάθημα αισθητήρα',
-      title: accelDisplayMode === 'force' ? 'Δύναμη από επιταχυνσιόμετρο' : 'Επιταχυνσιόμετρο',
-      intro: accelDisplayMode === 'force'
-        ? 'Εδώ χρησιμοποιούμε το επιταχυνσιόμετρο για να εκτιμήσουμε δύναμη μέσω της σχέσης F = m·a, με τη μάζα που ορίζεις εσύ.'
-        : 'Το επιταχυνσιόμετρο μετρά πώς αλλάζει η κίνηση της συσκευής στον χρόνο. Είναι ιδανικό για κρούσεις, ταλαντώσεις, κεκλιμένα επίπεδα και μελέτη της βαρύτητας.',
-      why: accelDisplayMode === 'force'
-        ? 'Οι μαθητές βλέπουν πώς περνάμε από την επιτάχυνση στη δύναμη και πώς μια κρούση αποκτά άμεση ερμηνεία σε Newton.'
-        : 'Οι μαθητές βλέπουν ότι η επιτάχυνση δεν είναι μόνο τύπος στο τετράδιο αλλά πραγματικό, μετρήσιμο μέγεθος που αλλάζει από στιγμή σε στιγμή.',
-      experiment: accelDisplayMode === 'force'
-        ? 'Παράδειγμα: στερέωσε τη συσκευή σε αμαξίδιο σύγκρουσης, όρισε τη μάζα του συστήματος και παρατήρησε τη δύναμη κατά την πρόσκρουση.'
-        : 'Παράδειγμα: στερέωσε τη συσκευή σε αμαξίδιο ή σε εκκρεμές και μέτρησε πώς αλλάζει η επιτάχυνση κατά την κίνηση.',
-      graph: accelDisplayMode === 'force'
-        ? 'Στο γράφημα F-t κοιτάμε κορυφές δύναμης, διάρκεια κρούσης και συνολική ώθηση. Η μορφή της καμπύλης δείχνει πόσο απότομη ήταν η αλληλεπίδραση.'
-        : 'Στο γράφημα a-t κοιτάμε πότε εμφανίζονται κορυφές, πότε αλλάζει πρόσημο το σήμα και αν υπάρχει περιοδικότητα. Σε ήρεμη θέση συνήθως ένας άξονας κυριαρχείται από τη βαρύτητα.',
-      steps: [
-        'Ξεκίνα με ακίνητη συσκευή ώστε οι μαθητές να αναγνωρίσουν το baseline.',
-        accelDisplayMode === 'force'
-          ? 'Όρισε σωστά τη μάζα πριν ξεκινήσει η μέτρηση.'
-          : 'Ζήτησε πρόβλεψη για το πότε θα εμφανιστεί μέγιστη επιτάχυνση.',
-        'Κάνε επιλογή σε μία πλήρη ταλάντωση ή μόνο στο κομμάτι της κρούσης.',
-        accelDisplayMode === 'force'
-          ? 'Χρησιμοποίησε τη μέγιστη δύναμη και το εμβαδό για να συζητήσεις κορυφή και ώθηση.'
-          : 'Χρησιμοποίησε το εμβαδό για να συζητήσεις μεταβολή ταχύτητας.'
-      ],
-      takeaway: accelDisplayMode === 'force'
-        ? 'Ο στόχος είναι να συνδέσουν το σήμα της κρούσης με πραγματική δύναμη και όχι απλώς με “δυνατό τράνταγμα”.'
-        : 'Ο στόχος είναι να συνδέσουν οι μαθητές το σχήμα της καμπύλης με πραγματική κίνηση και όχι απλώς να διαβάσουν αριθμούς.'
-    },
-    1: {
-      tag: 'Μάθημα αισθητήρα',
-      title: 'Γυροσκόπιο',
-      intro: 'Το γυροσκόπιο μετρά τη γωνιακή ταχύτητα, δηλαδή πόσο γρήγορα στρίβει η συσκευή γύρω από κάθε άξονα.',
-      why: 'Βοηθά τους μαθητές να ξεχωρίσουν τη μεταφορική από την περιστροφική κίνηση και να δουν ότι και η περιστροφή περιγράφεται με ίδιες λογικές ανάλυσης.',
-      experiment: 'Παράδειγμα: γύρισε τη συσκευή περίπου 90° ή κάνε ελεγχόμενη περιστροφή πάνω σε περιστρεφόμενη βάση.',
-      graph: 'Στο γράφημα ω-t κοιτάμε τις κορυφές όταν ξεκινά και όταν σταματά η περιστροφή. Το εμβαδό κάτω από την καμπύλη συνδέεται με τη συνολική γωνία.',
-      steps: [
-        'Μηδένισε πρώτα το gyro με τη συσκευή ακίνητη.',
-        'Κάνε μία σύντομη και μία αργή περιστροφή για σύγκριση.',
-        'Επίλεξε μόνο το διάστημα όπου η περιστροφή όντως συμβαίνει.',
-        'Σύγκρινε το εμβαδό με την αναμενόμενη γωνία περιστροφής.'
-      ],
-      takeaway: 'Οι μαθητές μαθαίνουν ότι η περιστροφή αναλύεται με ρυθμούς, εμβαδά και μοντέλα όπως και κάθε άλλη κίνηση.'
-    },
-    2: {
-      tag: 'Μάθημα αισθητήρα',
-      title: 'Κυψέλη φορτίου',
-      intro: 'Η κυψέλη φορτίου μετρά δύναμη και είναι πολύ καλή για πειράματα κρούσης, πίεσης, ελαστικότητας και σύγκρισης δράσης σε διαφορετικές συνθήκες.',
-      why: 'Οι μαθητές βλέπουν ότι η δύναμη δεν είναι σταθερή ιδέα αλλά ποσότητα που μεταβάλλεται στον χρόνο και αφήνει καθαρό αποτύπωμα στη γραφική.',
-      experiment: 'Παράδειγμα: πίεσε σταδιακά την κυψέλη ή κάνε δύο κρούσεις με διαφορετική σκληρότητα και σύγκρινε κορυφές και ώθηση.',
-      graph: 'Στο γράφημα F-t παρατηρούμε τη μέγιστη δύναμη, τη διάρκεια επαφής και το εμβαδό, που δίνει την ώθηση.',
-      steps: [
-        'Κάνε tare πριν από κάθε σειρά μετρήσεων.',
-        'Σύγκρινε μικρή και μεγάλη εφαρμοζόμενη δύναμη.',
-        'Δες αν η μεγαλύτερη κορυφή συνοδεύεται από μικρότερη ή μεγαλύτερη διάρκεια.',
-        'Χρησιμοποίησε το εμβαδό για να μιλήσεις για μεταβολή ορμής.'
-      ],
-      takeaway: 'Η γραφική της δύναμης είναι πολύ καλή γέφυρα ανάμεσα στην παρατήρηση, στους Νόμους του Νεύτωνα και στην έννοια της ώθησης.'
-    },
-    4: {
-      tag: 'Μάθημα αισθητήρα',
-      title: series && series.key === 'velocity'
-        ? 'Υπερηχητικός αισθητήρας: Ταχύτητα'
-        : series && series.key === 'acceleration'
-          ? 'Υπερηχητικός αισθητήρας: Επιτάχυνση'
-          : 'Υπερηχητικός αισθητήρας: Απόσταση',
-      intro: series && series.key === 'velocity'
-        ? 'Εδώ ο υπερηχητικός αισθητήρας χρησιμοποιείται για να παρακολουθούμε πώς αλλάζει η ταχύτητα από τη μεταβολή της θέσης.'
-        : series && series.key === 'acceleration'
-          ? 'Εδώ μελετάμε την επιτάχυνση που προκύπτει από τη χρονική μεταβολή της ταχύτητας ή της θέσης.'
-          : 'Ο υπερηχητικός αισθητήρας μετρά απόσταση από στόχο και είναι ιδανικός για ευθύγραμμη κίνηση, ομαλή ή επιταχυνόμενη.',
-      why: series && series.key === 'velocity'
-        ? 'Οι μαθητές καταλαβαίνουν ότι η ταχύτητα δεν φαίνεται άμεσα, αλλά εξάγεται από την κλίση ή από την επεξεργασία της θέσης.'
-        : series && series.key === 'acceleration'
-          ? 'Δείχνει καθαρά ότι η επιτάχυνση είναι ο ρυθμός μεταβολής της ταχύτητας και όχι απλώς το να πηγαίνει κάτι γρήγορα.'
-          : 'Δίνει εξαιρετική εισαγωγή στη σύνδεση θέσης, κλίσης και κίνησης, επειδή οι μαθητές βλέπουν ένα σώμα να πλησιάζει ή να απομακρύνεται.',
-      experiment: series && series.key === 'velocity'
-        ? 'Παράδειγμα: κίνησε ένα αμαξίδιο σχεδόν ομαλά και έλεγξε αν η ταχύτητα μένει περίπου σταθερή.'
-        : series && series.key === 'acceleration'
-          ? 'Παράδειγμα: άφησε αμαξίδιο σε ελαφρά κλίση και δες αν προκύπτει περίπου σταθερή επιτάχυνση.'
-          : 'Παράδειγμα: μετακίνησε αμαξίδιο μπροστά από τον αισθητήρα και μέτρησε τη θέση του στον χρόνο.',
-      graph: series && series.key === 'velocity'
-        ? 'Στο γράφημα υ-t κοιτάμε αν η γραμμή είναι σχεδόν οριζόντια, αν αυξάνει ή αν μειώνεται. Το εμβαδό αντιστοιχεί σε μετατόπιση.'
-        : series && series.key === 'acceleration'
-          ? 'Στο γράφημα α-t ελέγχουμε αν η επιτάχυνση είναι περίπου σταθερή ή αλλάζει σε φάσεις. Το εμβαδό δίνει μεταβολή ταχύτητας.'
-          : 'Στο γράφημα x-t κοιτάμε αν η καμπύλη είναι ευθεία ή καμπύλη. Η κλίση της μας λέει για την ταχύτητα.',
-      steps: series && series.key === 'velocity'
-        ? [
-            'Διάλεξε το μέγεθος ταχύτητα από το πεδίο ανάλυσης.',
-            'Κάνε zoom σε τμήμα όπου η κίνηση είναι καθαρή.',
-            'Χρησιμοποίησε μέση τιμή και fit slope για να ελέγξεις αν η κίνηση είναι ομαλή.',
-            'Σύγκρινε διαφορετικές διαδρομές ή διαφορετικές κλίσεις τροχιάς.'
-          ]
-        : series && series.key === 'acceleration'
-          ? [
-              'Διάλεξε το μέγεθος επιτάχυνση.',
-              'Εντόπισε αν υπάρχουν τμήματα με περίπου σταθερή τιμή.',
-              'Χρησιμοποίησε μέση τιμή και τυπική απόκλιση για να εκτιμήσεις σταθερότητα.',
-              'Σύνδεσε το πρόσημο της επιτάχυνσης με το αν το σώμα επιταχύνεται ή επιβραδύνεται.'
-            ]
-          : [
-              'Ξεκίνα με το μέγεθος απόσταση.',
-              'Έλεγξε αν η θέση αλλάζει γραμμικά ή καμπύλα με τον χρόνο.',
-              'Χρησιμοποίησε την κλίση A-B ή το fit slope για μέση ταχύτητα.',
-              'Σύγκρινε δύο κινήσεις: ομαλή και επιταχυνόμενη.'
-            ],
-      takeaway: series && series.key === 'velocity'
-        ? 'Η ταχύτητα ερμηνεύεται καλύτερα όταν οι μαθητές τη συνδέσουν με την κλίση του x-t και τη μορφή του υ-t.'
-        : series && series.key === 'acceleration'
-          ? 'Η επιτάχυνση αποκτά νόημα όταν συνδεθεί ταυτόχρονα με το α-t και με το πώς αλλάζει η ταχύτητα.'
-          : 'Ο υπερηχητικός αισθητήρας είναι ίσως η πιο καθαρή σχολική γέφυρα ανάμεσα σε θέση, ταχύτητα και επιτάχυνση.'
-    }
-  };
-
-  return lessons[activeMode] || lessons[0];
 }
 
 function experimentScenarios(meta, series) {
@@ -4424,95 +5564,11 @@ function calculateAnalysis() {
   };
 }
 
-function resultCard(key, label, value, detail, wide) {
-  const isActive = activeLessonKey === key;
-  return '<button type="button" class="result-card' + (wide ? ' wide' : '') + (isActive ? ' active' : '') +
-    '" data-lesson-key="' + key + '" aria-pressed="' + (isActive ? 'true' : 'false') + '">' +
+function resultCard(key, label, value, detail, wide, advanced) {
+  return '<div class="result-card' + (wide ? ' wide' : '') + (advanced ? ' advanced' : '') + '">' +
     '<span>' + label + '</span><strong>' + value + '</strong>' +
     (detail ? '<small>' + detail + '</small>' : '') +
-    '<em>Mini lesson</em>' +
-    '</button>';
-}
-
-function renderLessonPanel() {
-  const panel = document.getElementById('lessonPanel');
-  const result = analysisCache && analysisCache.series ? analysisCache : null;
-  const modeMeta = currentMode();
-  const fallbackSeries = modeMeta.series[analysisSeriesIndex] || modeMeta.series[0];
-  const series = result ? result.series : fallbackSeries;
-  const scenarios = experimentScenarios(modeMeta, series);
-  if (!scenarios.some(scenario => scenario.id === activeScenarioId)) {
-    activeScenarioId = scenarios.length ? scenarios[0].id : null;
-  }
-  const activeScenario = scenarios.find(scenario => scenario.id === activeScenarioId) || null;
-  const lesson = activeLessonKey && result
-    ? lessonContent(activeLessonKey, series, result, analysisExamples(series))
-    : sensorLesson(modeMeta, series);
-  if (!lesson) {
-    panel.innerHTML = '<div class="lesson-empty">Το μάθημα δεν είναι διαθέσιμο ακόμη.</div>';
-    return;
-  }
-
-  const steps = (lesson.steps || []).map(step => '<li>' + step + '</li>').join('');
-  const scenarioTabs = scenarios.map(scenario => {
-    const activeClass = scenario.id === activeScenarioId ? ' active' : '';
-    return '<button type="button" class="scenario-tab' + activeClass + '" data-scenario-id="' + scenario.id + '">' +
-      scenario.title + '</button>';
-  }).join('');
-  const scenarioSteps = activeScenario
-    ? activeScenario.steps.map(step => '<li>' + step + '</li>').join('')
-    : '';
-  const scenarioHtml = activeScenario
-    ? '<div class="scenario-panel">' +
-        '<h5>Έτοιμα σχολικά σενάρια</h5>' +
-        '<div class="scenario-tabs">' + scenarioTabs + '</div>' +
-        '<div class="scenario-card">' +
-          '<div class="scenario-head">' +
-            '<h4>' + activeScenario.title + '</h4>' +
-            '<p>' + activeScenario.goal + '</p>' +
-          '</div>' +
-          '<div class="scenario-grid">' +
-            '<section class="scenario-block"><h6>Στήσιμο</h6><p>' + activeScenario.setup + '</p></section>' +
-            '<section class="scenario-block"><h6>Τι να παρατηρήσουν</h6><p>' + activeScenario.analysis + '</p></section>' +
-            '<section class="scenario-block full"><h6>Βήματα πειράματος</h6><ol class="scenario-list">' + scenarioSteps + '</ol></section>' +
-            '<section class="scenario-block full"><h6>Σημείωση καθηγητή</h6><p>' + activeScenario.teacher + '</p></section>' +
-          '</div>' +
-        '</div>' +
-      '</div>'
-    : '';
-  panel.innerHTML =
-    '<div class="lesson-head">' +
-      '<div>' +
-        '<span class="lesson-tag">' + (lesson.tag || 'Mini lesson') + '</span>' +
-        '<h4>' + lesson.title + '</h4>' +
-        '<p>' + lesson.intro + '</p>' +
-      '</div>' +
-      (activeLessonKey
-        ? '<button type="button" class="lesson-close" id="lessonClose" aria-label="Επιστροφή στο μάθημα αισθητήρα">×</button>'
-        : '') +
-    '</div>' +
-    '<div class="lesson-body">' +
-      '<section class="lesson-section"><h5>Γιατί το κάνουμε</h5><p>' + lesson.why + '</p></section>' +
-      '<section class="lesson-section"><h5>Παράδειγμα πειράματος</h5><p>' + lesson.experiment + '</p></section>' +
-      '<section class="lesson-section full"><h5>Πώς διαβάζουμε το γράφημα</h5><p>' + lesson.graph + '</p></section>' +
-      '<section class="lesson-section full"><h5>Τρόπος ανάλυσης</h5><ol class="lesson-steps">' + steps + '</ol></section>' +
-      '<section class="lesson-section full"><h5>Τι να κρατήσουν οι μαθητές</h5><p>' + lesson.takeaway + '</p></section>' +
-    '</div>' + scenarioHtml;
-
-  const closeButton = document.getElementById('lessonClose');
-  if (closeButton) {
-    closeButton.addEventListener('click', () => {
-      activeLessonKey = null;
-      updateAnalysis();
-    });
-  }
-
-  panel.querySelectorAll('[data-scenario-id]').forEach(button => {
-    button.addEventListener('click', () => {
-      activeScenarioId = button.dataset.scenarioId;
-      renderLessonPanel();
-    });
-  });
+    '</div>';
 }
 
 function updateAnalysis() {
@@ -4529,11 +5585,13 @@ function updateAnalysis() {
   const container = document.getElementById('analysisResults');
   if (!analysisCache || analysisCache.points.length < 2) {
     container.innerHTML = '<div class="analysis-empty">Αναμονή για τουλάχιστον δύο δείγματα...</div>';
-    renderLessonPanel();
     renderHookeExperiment();
+    renderWeightExperiment();
     renderBuoyancyExperiment();
     renderMotionExperiment();
     renderCollisionExperiment();
+    renderHeatExperiment();
+    updateStudentGuide();
     return;
   }
 
@@ -4542,59 +5600,46 @@ function updateAnalysis() {
   const fitName = result.fit
     ? (result.fit.degree === 2 ? 'Παραβολικό fit' : 'Γραμμικό fit')
     : 'Fit';
-  const availableLessons = {
-    markerA: true,
-    markerB: true,
-    duration: true,
-    delta: true,
-    slope: true,
-    mean: true,
-    stdDev: true,
-    minMax: true,
-    area: true,
-    absoluteArea: true,
-    fitSlope: true,
-    fit: true
-  };
-  if (activeLessonKey && !availableLessons[activeLessonKey]) activeLessonKey = null;
   container.innerHTML =
-    resultCard('markerA', 'Δείκτης A',
+    resultCard('markerA', 'Αρχή επιλογής',
       't = ' + compactNumber(result.pointA.x) + ' s',
-      'y = ' + compactNumber(result.pointA.y) + ' ' + series.unit) +
-    resultCard('markerB', 'Δείκτης B',
+      'y = ' + compactNumber(result.pointA.y) + ' ' + series.unit, false, true) +
+    resultCard('markerB', 'Τέλος επιλογής',
       't = ' + compactNumber(result.pointB.x) + ' s',
-      'y = ' + compactNumber(result.pointB.y) + ' ' + series.unit) +
-    resultCard('duration', 'Δt (A–B)', compactNumber(result.duration) + ' s',
-      result.points.length + ' σημεία ανάλυσης') +
-    resultCard('delta', 'Δy (A–B)', compactNumber(result.delta) + ' ' + series.unit,
-      'yB − yA') +
-    resultCard('slope', 'Κλίση A–B', compactNumber(result.abSlope) + ' ' + slopeUnit(series),
-      'Δy / Δt') +
+      'y = ' + compactNumber(result.pointB.y) + ' ' + series.unit, false, true) +
+    resultCard('duration', 'Πόσο κράτησε', compactNumber(result.duration) + ' s',
+      result.points.length + ' μετρήσεις') +
+    resultCard('delta', 'Πόσο άλλαξε', compactNumber(result.delta) + ' ' + series.unit,
+      'τελική − αρχική τιμή') +
+    resultCard('slope', 'Πόσο γρήγορα άλλαξε', compactNumber(result.abSlope) + ' ' + slopeUnit(series),
+      'κλίση στο επιλεγμένο κομμάτι') +
     resultCard('mean', 'Μέση τιμή', compactNumber(result.mean) + ' ' + series.unit,
       '') +
-    resultCard('stdDev', 'Τυπική απόκλιση', compactNumber(result.stdDev) + ' ' + series.unit,
-      'Δειγματική σ') +
+    resultCard('stdDev', 'Πόσο απλώνονται οι τιμές', compactNumber(result.stdDev) + ' ' + series.unit,
+      'μικρό = πιο σταθερή μέτρηση', false, true) +
     resultCard('minMax', 'Ελάχιστο / Μέγιστο',
       compactNumber(result.min) + ' / ' + compactNumber(result.max) + ' ' + series.unit,
       '') +
     resultCard('area', areaMeaning(series), compactNumber(result.signedArea) + ' ' + areaUnit(series),
-      'Προσημασμένη ολοκλήρωση') +
-    resultCard('absoluteArea', 'Απόλυτο εμβαδό', compactNumber(result.absoluteArea) + ' ' + areaUnit(series),
-      'Συνολικό εμβαδό |y|') +
+      'εμβαδό με πρόσημο', false, true) +
+    resultCard('absoluteArea', 'Συνολικό εμβαδό', compactNumber(result.absoluteArea) + ' ' + areaUnit(series),
+      'χωρίς ακύρωση θετικών και αρνητικών', false, true) +
     resultCard('fitSlope', slopeMeaning(series),
       result.linear ? compactNumber(result.linear.coefficients[1]) + ' ' + slopeUnit(series) : '—',
-      'Από γραμμική παλινδρόμηση') +
-    resultCard('fit', fitName, fitEquation(result.fit),
+      'από τη γραμμή τάσης', false, true) +
+    resultCard('fit', 'Γραμμή τάσης', fitEquation(result.fit),
       result.fit
-        ? 'R² = ' + compactNumber(result.fit.r2) +
+        ? 'ταίριασμα R² = ' + compactNumber(result.fit.r2) +
           ' · RMSE = ' + compactNumber(result.fit.rmse) + ' ' + series.unit
         : 'Η καμπύλη fit είναι απενεργοποιημένη',
-      true);
-  renderLessonPanel();
+      true, true);
   renderHookeExperiment();
+  renderWeightExperiment();
   renderBuoyancyExperiment();
   renderMotionExperiment();
   renderCollisionExperiment();
+  renderHeatExperiment();
+  updateStudentGuide();
 }
 
 function niceNumber(value, round) {
@@ -4616,7 +5661,7 @@ function niceNumber(value, round) {
   return niceFraction * Math.pow(10, exponent);
 }
 
-function yScale(dataRows, selectedSeries) {
+function yScale(dataRows, selectedSeries, allowCustomScale = true) {
   const meta = currentMode();
   const values = [];
   dataRows.forEach(row => {
@@ -4653,7 +5698,7 @@ function yScale(dataRows, selectedSeries) {
   const step = niceNumber((max - min) / 6, true);
   const niceMin = Math.floor(min / step) * step;
   const niceMax = Math.ceil(max / step) * step;
-  if (customYScale) {
+  if (allowCustomScale && customYScale) {
     const manual = clampYScale(customYScale.min, customYScale.max);
     const manualStep = niceNumber((manual.max - manual.min) / 6, true);
     return { min: manual.min, max: manual.max, step: manualStep };
@@ -4683,6 +5728,218 @@ function resizeCanvas() {
   drawCollisionExperimentChart(isCollisionExperimentMode() ? collisionTrials : [], collisionFit(collisionTrials));
 }
 
+function drawPanelFrame(panel, width, height, viewSpan) {
+  const pad = panel.pad;
+  const scale = panel.scale;
+  const plotW = panel.plotW;
+  const plotH = panel.plotH;
+  const xMin = panel.xMin;
+  const xMax = panel.xMax;
+  const timeScale = panel.timeScale;
+  const valueScale = panel.valueScale;
+  const series = panel.series[0];
+
+  ctx.save();
+  ctx.font = '12px system-ui';
+  ctx.lineWidth = 1;
+  ctx.textBaseline = 'middle';
+
+  ctx.fillStyle = '#25384b';
+  ctx.font = '800 13px system-ui';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'top';
+  ctx.fillText(panel.title, pad.left, Math.max(2, pad.top - 16));
+
+  const minorStep = scale.step / 2;
+  for (let value = Math.ceil(scale.min / minorStep) * minorStep; value <= scale.max + minorStep / 2; value += minorStep) {
+    const y = pad.top + (scale.max - value) * plotH / (scale.max - scale.min);
+    const major = Math.abs(value / scale.step - Math.round(value / scale.step)) < 0.001;
+    ctx.strokeStyle = Math.abs(value) < minorStep / 10 ? '#8798a7' : (major ? '#d5dee5' : '#eef2f5');
+    ctx.lineWidth = Math.abs(value) < minorStep / 10 ? 1.5 : 1;
+    ctx.beginPath();
+    ctx.moveTo(pad.left, y);
+    ctx.lineTo(pad.left + plotW, y);
+    ctx.stroke();
+    if (major) {
+      ctx.fillStyle = '#526474';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(
+        formatValue(value / valueScale.multiplier, (scale.max - scale.min) / valueScale.multiplier),
+        pad.left - 8,
+        y
+      );
+    }
+  }
+
+  const xStep = niceNumber(viewSpan / 5, true);
+  for (let value = Math.ceil(xMin / xStep) * xStep; value <= xMax; value += xStep) {
+    const x = pad.left + (value - xMin) * plotW / (xMax - xMin);
+    ctx.strokeStyle = '#dce4eb';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x, pad.top);
+    ctx.lineTo(x, pad.top + plotH);
+    ctx.stroke();
+    ctx.fillStyle = '#526474';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    const xDigits = xStep < 1 ? 2 : (xStep < 10 ? 1 : 0);
+    ctx.fillText((value / timeScale.multiplier).toFixed(xDigits), x, pad.top + plotH + 8);
+  }
+
+  ctx.strokeStyle = series.color;
+  ctx.lineWidth = 1.4;
+  ctx.strokeRect(pad.left, pad.top, plotW, plotH);
+
+  ctx.fillStyle = '#344553';
+  ctx.font = '600 12px system-ui';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'bottom';
+  ctx.fillText('Χρόνος (' + timeScale.unit + ')', pad.left + plotW / 2, pad.top + plotH + 44);
+
+  ctx.save();
+  ctx.translate(Math.max(12, pad.left - 54), pad.top + plotH / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  ctx.fillText(axisLabel(panel.series, valueScale), 0, 0);
+  ctx.restore();
+  ctx.restore();
+}
+
+function drawSeriesInPanel(panel, dataRows) {
+  const pad = panel.pad;
+  const scale = panel.scale;
+  const series = panel.series[0];
+  const xMin = panel.xMin;
+  const xMax = panel.xMax;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(pad.left, pad.top, panel.plotW, panel.plotH);
+  ctx.clip();
+
+  if (selection) {
+    const start = Math.max(xMin, Math.min(selection.start, selection.end));
+    const end = Math.min(xMax, Math.max(selection.start, selection.end));
+    if (end >= start) {
+      const startX = pad.left + (start - xMin) * panel.plotW / (xMax - xMin);
+      const endX = pad.left + (end - xMin) * panel.plotW / (xMax - xMin);
+      ctx.fillStyle = 'rgba(23, 105, 170, 0.08)';
+      ctx.fillRect(startX, pad.top, Math.max(2, endX - startX), panel.plotH);
+      ctx.strokeStyle = 'rgba(23, 105, 170, 0.55)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([5, 4]);
+      ctx.beginPath();
+      ctx.moveTo(startX, pad.top);
+      ctx.lineTo(startX, pad.top + panel.plotH);
+      ctx.moveTo(endX, pad.top);
+      ctx.lineTo(endX, pad.top + panel.plotH);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  }
+
+  ctx.strokeStyle = series.color;
+  ctx.lineWidth = 2.4;
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  const points = [];
+  dataRows.forEach(row => {
+    const value = rowValue(row, series);
+    if (!isFinite(value)) return;
+    const x = pad.left + (row.time - xMin) * panel.plotW / (xMax - xMin);
+    const y = pad.top + (scale.max - value) * panel.plotH / (scale.max - scale.min);
+    points.push({ x, y });
+  });
+  drawDataPath(points);
+  ctx.stroke();
+
+  if (hoverPoint && dataRows.length) {
+    const hoverTime = timeAtX(hoverPoint.x, hoverPoint.y);
+    const nearest = dataRows.reduce((best, row) => {
+      return Math.abs(row.time - hoverTime) < Math.abs(best.time - hoverTime) ? row : best;
+    }, dataRows[0]);
+    const x = pad.left + (nearest.time - xMin) * panel.plotW / (xMax - xMin);
+    const value = rowValue(nearest, series);
+    const y = pad.top + (scale.max - value) * panel.plotH / (scale.max - scale.min);
+    ctx.strokeStyle = '#33495b';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath();
+    ctx.moveTo(x, pad.top);
+    ctx.lineTo(x, pad.top + panel.plotH);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#fff';
+    ctx.strokeStyle = series.color;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function activePanelAtPoint(point) {
+  const panels = chartGeometry && chartGeometry.panels ? chartGeometry.panels : [];
+  return panels.find(panel => {
+    const pad = panel.pad;
+    return point.x >= pad.left && point.x <= pad.left + panel.plotW &&
+      point.y >= pad.top && point.y <= pad.top + panel.plotH;
+  }) || panels[0] || null;
+}
+
+function drawSplitChart(width, height) {
+  const view = getViewBounds();
+  const dataRows = visibleRows();
+  const xMin = view.start;
+  const xMax = view.end;
+  const viewSpan = Math.max(0.5, xMax - xMin);
+  const timeScale = selectedTimeScale(viewSpan);
+  const panels = splitChartPanels(width, height, xMin, xMax, timeScale, dataRows);
+  chartGeometry = {
+    split: true,
+    panels,
+    pad: panels[0].pad,
+    plotW: panels[0].plotW,
+    plotH: panels[0].plotH,
+    xMin,
+    xMax,
+    scale: panels[0].scale,
+    dataRows,
+    selectedSeries: panels.flatMap(panel => panel.series),
+    timeScale,
+    valueScale: panels[0].valueScale
+  };
+
+  ctx.save();
+  panels.forEach(panel => drawPanelFrame(panel, width, height, viewSpan));
+  if (!dataRows.length) {
+    ctx.fillStyle = '#718190';
+    ctx.font = '600 14px system-ui';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    panels.forEach(panel => {
+      ctx.fillText('Αναμονή για μετρήσεις...', panel.pad.left + panel.plotW / 2, panel.pad.top + panel.plotH / 2);
+    });
+  }
+  panels.forEach(panel => drawSeriesInPanel(panel, dataRows));
+  if (hoverPoint && dataRows.length) {
+    const panel = activePanelAtPoint(hoverPoint);
+    if (panel) {
+      const hoverTime = timeAtX(hoverPoint.x, hoverPoint.y);
+      const nearest = dataRows.reduce((best, row) => {
+        return Math.abs(row.time - hoverTime) < Math.abs(best.time - hoverTime) ? row : best;
+      }, dataRows[0]);
+      const x = panel.pad.left + (nearest.time - xMin) * panel.plotW / (xMax - xMin);
+      showTooltip(nearest, x, hoverPoint.y, panels.flatMap(item => item.series));
+    }
+  }
+  ctx.restore();
+}
+
 function draw() {
   const rect = canvas.getBoundingClientRect();
   const width = rect.width;
@@ -4692,6 +5949,11 @@ function draw() {
   ctx.clearRect(0, 0, width, height);
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, width, height);
+
+  if (splitChartActive()) {
+    drawSplitChart(width, height);
+    return;
+  }
 
   const pad = { left: width < 520 ? 64 : 82, right: 24, top: 20, bottom: 58 };
   const plotW = Math.max(1, width - pad.left - pad.right);
@@ -4954,9 +6216,7 @@ function pointerPosition(event) {
 function inspectChart(event) {
   if (!chartGeometry) return;
   const point = pointerPosition(event);
-  const pad = chartGeometry.pad;
-  const inside = point.x >= pad.left && point.x <= pad.left + chartGeometry.plotW &&
-    point.y >= pad.top && point.y <= pad.top + chartGeometry.plotH;
+  const inside = pointInsidePlot(point);
   hoverPoint = inside ? point : null;
   if (!inside) tooltip.hidden = true;
   draw();
@@ -4964,6 +6224,7 @@ function inspectChart(event) {
 
 function pointInsidePlot(point) {
   if (!chartGeometry) return false;
+  if (chartGeometry.split) return Boolean(activePanelAtPoint(point));
   const pad = chartGeometry.pad;
   return point.x >= pad.left && point.x <= pad.left + chartGeometry.plotW &&
     point.y >= pad.top && point.y <= pad.top + chartGeometry.plotH;
@@ -4971,26 +6232,31 @@ function pointInsidePlot(point) {
 
 function pointInsideYZoomZone(point) {
   if (!chartGeometry) return false;
+  if (chartGeometry.split) return pointInsidePlot(point);
   const pad = chartGeometry.pad;
   return point.x >= pad.left - 58 && point.x <= pad.left + chartGeometry.plotW &&
     point.y >= pad.top && point.y <= pad.top + chartGeometry.plotH;
 }
 
-function timeAtX(x) {
+function timeAtX(x, y) {
   const geometry = chartGeometry;
-  const boundedX = Math.max(geometry.pad.left, Math.min(geometry.pad.left + geometry.plotW, x));
-  return geometry.xMin + (boundedX - geometry.pad.left) *
-    (geometry.xMax - geometry.xMin) / geometry.plotW;
+  const point = { x, y: isFinite(y) ? y : geometry.pad.top + 1 };
+  const panel = geometry.split ? (activePanelAtPoint(point) || geometry.panels[0]) : null;
+  const source = panel || geometry;
+  const boundedX = Math.max(source.pad.left, Math.min(source.pad.left + source.plotW, x));
+  return geometry.xMin + (boundedX - source.pad.left) *
+    (geometry.xMax - geometry.xMin) / source.plotW;
 }
 
 function setRunning(value) {
   running = value;
   const button = document.getElementById('toggle');
   const status = document.getElementById('sessionStatus');
-  button.textContent = running ? 'Παύση' : 'Συνέχεια';
+  button.textContent = running ? 'Παύση' : (rows.length ? 'Συνέχεια' : 'Έναρξη');
   button.classList.toggle('recording', running);
-  status.textContent = running ? '● LIVE DATA' : '● ΑΝΑΛΥΣΗ';
+  status.textContent = running ? '● ΜΕΤΡΑΕΙ' : (rows.length ? '● ΠΑΡΑΤΗΡΗΣΗ' : '● ΕΤΟΙΜΟ');
   status.classList.toggle('paused', !running);
+  updateStudentGuide();
 }
 
 function setChartTool(tool) {
@@ -5003,9 +6269,9 @@ function setChartTool(tool) {
     button.classList.toggle('active', button.dataset.chartTool === tool);
   });
   const hints = {
-    inspect: 'Μετακίνησε πάνω στη γραφική για ακριβείς τιμές χωρίς να αλλάζεις το A/B.',
-    select: 'Σύρε πάνω στη γραφική για να επιλέξεις το διάστημα ανάλυσης.',
-    pan: 'Σύρε για μετακίνηση σε χρόνο και τιμή. Ροδέλα για χρόνο, Shift + ροδέλα για κάθετο zoom.'
+    inspect: 'Μετακίνησε πάνω στη γραφική για να διαβάσεις μια τιμή.',
+    select: 'Σύρε πάνω στη γραφική για να διαλέξεις το κομμάτι που σε ενδιαφέρει.',
+    pan: 'Σύρε για να μετακινήσεις το γράφημα. Χρησιμοποίησε + και − για μεγέθυνση.'
   };
   document.getElementById('chartHint').textContent = hints[tool];
   canvas.style.cursor = tool === 'select' ? 'crosshair' : (tool === 'pan' ? 'grab' : 'default');
@@ -5020,7 +6286,7 @@ function beginPinch() {
   const midpoint = (points[0].x + points[1].x) / 2;
   pinchState = {
     distance,
-    midpointTime: timeAtX(midpoint),
+    midpointTime: timeAtX(midpoint, (points[0].y + points[1].y) / 2),
     view: getViewBounds()
   };
   selecting = false;
@@ -5037,7 +6303,7 @@ function updatePinch() {
   const nextSpan = initialSpan * pinchState.distance / distance;
   const initialRatio = (pinchState.midpointTime - pinchState.view.start) / initialSpan;
   const midpointX = (points[0].x + points[1].x) / 2;
-  const currentMidpoint = timeAtX(midpointX);
+  const currentMidpoint = timeAtX(midpointX, (points[0].y + points[1].y) / 2);
   const start = currentMidpoint - nextSpan * initialRatio;
   setCustomView(start, start + nextSpan);
 }
@@ -5067,7 +6333,7 @@ function startChartInteraction(event) {
 
   if (chartTool === 'select') {
     selecting = true;
-    selectionAnchor = timeAtX(point.x);
+    selectionAnchor = timeAtX(point.x, point.y);
     selection = { start: selectionAnchor, end: selectionAnchor };
   } else if (chartTool === 'pan') {
     panning = true;
@@ -5103,14 +6369,14 @@ function moveChartInteraction(event) {
   }
   event.preventDefault();
   if (selecting) {
-    selection = { start: selectionAnchor, end: timeAtX(point.x) };
+    selection = { start: selectionAnchor, end: timeAtX(point.x, point.y) };
     updateAnalysis();
     draw();
   } else if (panning && panStartView) {
     const span = panStartView.end - panStartView.start;
     const shift = (panStartX - point.x) * span / chartGeometry.plotW;
     customView = clampView(panStartView.start + shift, panStartView.end + shift);
-    if (panStartYScale) {
+    if (panStartYScale && !chartGeometry.split) {
       const ySpan = panStartYScale.max - panStartYScale.min;
       const yShift = (point.y - panStartY) * ySpan / chartGeometry.plotH;
       customYScale = clampYScale(panStartYScale.min + yShift, panStartYScale.max + yShift);
@@ -5152,10 +6418,10 @@ function handleWheel(event) {
   event.preventDefault();
   const factor = event.deltaY > 0 ? 1.22 : 0.82;
   const yAxisWheel = event.shiftKey || point.x < chartGeometry.pad.left;
-  if (yAxisWheel) {
+  if (yAxisWheel && !chartGeometry.split) {
     zoomYAt(valueAtY(point.y), factor);
   } else {
-    zoomAt(timeAtX(point.x), factor);
+    zoomAt(timeAtX(point.x, point.y), factor);
   }
 }
 
@@ -5163,8 +6429,32 @@ modeButtons.forEach(button => {
   button.addEventListener('click', () => setMode(Number(button.dataset.mode)));
 });
 
+experimentButtons.forEach(button => {
+  button.addEventListener('click', () => selectExperiment(button.dataset.experiment));
+});
+
 document.querySelectorAll('[data-chart-tool]').forEach(button => {
   button.addEventListener('click', () => setChartTool(button.dataset.chartTool));
+});
+
+document.getElementById('splitChartToggle').addEventListener('change', event => {
+  splitChart = event.target.checked;
+  localStorage.setItem('palladio-split-chart', splitChart ? '1' : '0');
+  customYScale = null;
+  hoverPoint = null;
+  tooltip.hidden = true;
+  updateSplitChartControls();
+  updateZoomStatus();
+  draw();
+});
+
+document.getElementById('splitSeriesSelect').addEventListener('change', event => {
+  splitSeriesIndex = Number(event.target.value);
+  localStorage.setItem('palladio-split-series-index', String(splitSeriesIndex));
+  hoverPoint = null;
+  tooltip.hidden = true;
+  updateSplitChartControls();
+  draw();
 });
 
 document.getElementById('toggle').addEventListener('click', () => {
@@ -5227,7 +6517,6 @@ document.getElementById('buoyancyVolumeMl').value = buoyancyVolumeMl.toFixed(0);
 document.getElementById('accelView').addEventListener('change', event => {
   accelDisplayMode = event.target.value === 'force' ? 'force' : 'accel';
   localStorage.setItem('palladio-accel-view', accelDisplayMode);
-  activeLessonKey = null;
   customYScale = null;
   updateModeUi();
   updateReadouts(lastData);
@@ -5274,8 +6563,6 @@ document.getElementById('curveMode').addEventListener('change', event => {
 
 document.getElementById('analysisSeries').addEventListener('change', event => {
   analysisSeriesIndex = Number(event.target.value);
-  activeLessonKey = null;
-  activeScenarioId = null;
   customYScale = null;
   const meta = currentMode();
   if (activeMode === 4) {
@@ -5300,14 +6587,6 @@ document.getElementById('clearSelection').addEventListener('click', () => {
   selection = null;
   updateAnalysis();
   draw();
-});
-
-document.getElementById('analysisResults').addEventListener('click', event => {
-  const card = event.target.closest('[data-lesson-key]');
-  if (!card) return;
-  const key = card.dataset.lessonKey;
-  activeLessonKey = activeLessonKey === key ? null : key;
-  updateAnalysis();
 });
 
 document.getElementById('forceExperimentTabs').addEventListener('click', event => {
@@ -5414,6 +6693,83 @@ document.getElementById('exportHookeTrials').addEventListener('click', () => {
   URL.revokeObjectURL(url);
 });
 
+document.getElementById('weightMassG').addEventListener('change', event => {
+  weightMassG = Math.max(0, Number(event.target.value) || 0);
+  localStorage.setItem('palladio-weight-mass-g', String(weightMassG));
+  event.target.value = weightMassG.toFixed(0);
+  renderWeightExperiment();
+});
+
+document.getElementById('captureWeightTrial').addEventListener('click', () => {
+  const current = weightCurrentMetrics();
+  if (!current) {
+    showToast('Πρώτα επίλεξε με A-B ένα σταθερό plateau βάρους.', true);
+    return;
+  }
+  weightCapturedForce = current.meanForce;
+  saveWeightCapture();
+  renderWeightExperiment();
+  showToast('Κρατήθηκε βάρος: ' + compactNumber(current.weight) + ' N');
+});
+
+document.getElementById('saveWeightTrial').addEventListener('click', () => {
+  const massG = Math.max(0, Number(document.getElementById('weightMassG').value) || 0);
+  const result = weightResult(weightCapturedForce, massG);
+  if (!result) {
+    showToast('Χρειάζονται μέτρηση βάρους και μάζα μεγαλύτερη από 0 g.', true);
+    return;
+  }
+  weightMassG = massG;
+  localStorage.setItem('palladio-weight-mass-g', String(weightMassG));
+  weightTrials.push({
+    massG: result.massG,
+    massKg: result.massKg,
+    measuredWeight: result.measuredWeight,
+    theoreticalWeight: result.theoreticalWeight,
+    experimentalG: result.experimentalG,
+    difference: result.difference,
+    errorPercent: result.errorPercent
+  });
+  saveWeightTrials();
+  renderWeightExperiment();
+  showToast('Αποθηκεύτηκε δοκιμή: wπ = ' + compactNumber(result.measuredWeight) + ' N');
+});
+
+document.getElementById('clearWeightTrials').addEventListener('click', () => {
+  weightTrials = [];
+  saveWeightTrials();
+  renderWeightExperiment();
+  showToast('Οι δοκιμές w = mg διαγράφηκαν.');
+});
+
+document.getElementById('exportWeightTrials').addEventListener('click', () => {
+  if (!weightTrials.length) {
+    showToast('Δεν υπάρχουν δοκιμές w = mg για εξαγωγή.', true);
+    return;
+  }
+  const csvRows = [
+    ['trial', 'mass_g', 'mass_kg', 'measured_weight_N', 'theoretical_weight_N', 'experimental_g_m_per_s2', 'difference_N', 'error_percent'],
+    ...weightTrials.map((trial, index) => [
+      String(index + 1),
+      trial.massG.toFixed(3),
+      trial.massKg.toFixed(6),
+      trial.measuredWeight.toFixed(6),
+      trial.theoreticalWeight.toFixed(6),
+      trial.experimentalG.toFixed(6),
+      trial.difference.toFixed(6),
+      trial.errorPercent.toFixed(3)
+    ])
+  ];
+  const csv = csvRows.map(row => row.join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'palladio-weight-mg.csv';
+  link.click();
+  URL.revokeObjectURL(url);
+});
+
 document.getElementById('buoyancyVolumeMl').addEventListener('change', event => {
   buoyancyVolumeMl = Math.max(0, Number(event.target.value) || 0);
   localStorage.setItem('palladio-buoyancy-volume-ml', String(buoyancyVolumeMl));
@@ -5464,6 +6820,9 @@ document.getElementById('saveBuoyancyTrial').addEventListener('click', () => {
     weightAir: result.weightAir,
     weightLiquid: result.weightLiquid,
     buoyantForce: result.buoyantForce,
+    theoreticalBuoyancy: result.theoreticalBuoyancy,
+    difference: result.difference,
+    errorPercent: result.errorPercent,
     lossPercent: result.lossPercent,
     density: result.density
   });
@@ -5485,17 +6844,26 @@ document.getElementById('exportBuoyancyTrials').addEventListener('click', () => 
     return;
   }
   const csvRows = [
-    ['trial', 'volume_ml', 'volume_m3', 'weight_air_N', 'weight_liquid_N', 'buoyant_force_N', 'loss_percent', 'density_kg_per_m3'],
-    ...buoyancyTrials.map((trial, index) => [
-      String(index + 1),
-      trial.volumeMl.toFixed(3),
-      trial.volumeM3.toExponential(6),
-      trial.weightAir.toFixed(6),
-      trial.weightLiquid.toFixed(6),
-      trial.buoyantForce.toFixed(6),
-      trial.lossPercent.toFixed(3),
-      trial.density.toFixed(3)
-    ])
+    ['trial', 'volume_ml', 'volume_m3', 'weight_air_N', 'weight_liquid_N', 'experimental_buoyancy_N', 'theoretical_buoyancy_water_N', 'difference_N', 'error_percent', 'loss_percent', 'density_kg_per_m3'],
+    ...buoyancyTrials.map((trial, index) => {
+      const fallback = buoyancyResult(trial.weightAir, trial.weightLiquid, trial.volumeMl);
+      const theoreticalBuoyancy = isFinite(trial.theoreticalBuoyancy) ? trial.theoreticalBuoyancy : (fallback ? fallback.theoreticalBuoyancy : NaN);
+      const difference = isFinite(trial.difference) ? trial.difference : (fallback ? fallback.difference : NaN);
+      const errorPercent = isFinite(trial.errorPercent) ? trial.errorPercent : (fallback ? fallback.errorPercent : NaN);
+      return [
+        String(index + 1),
+        trial.volumeMl.toFixed(3),
+        trial.volumeM3.toExponential(6),
+        trial.weightAir.toFixed(6),
+        trial.weightLiquid.toFixed(6),
+        trial.buoyantForce.toFixed(6),
+        isFinite(theoreticalBuoyancy) ? theoreticalBuoyancy.toFixed(6) : '',
+        isFinite(difference) ? difference.toFixed(6) : '',
+        isFinite(errorPercent) ? errorPercent.toFixed(3) : '',
+        trial.lossPercent.toFixed(3),
+        trial.density.toFixed(3)
+      ];
+    })
   ];
   const csv = csvRows.map(row => row.join(',')).join('\n');
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
@@ -5578,7 +6946,15 @@ document.getElementById('hookePanelToggle').addEventListener('click', () => {
   setCollisionRailCollapsed(!collisionRailCollapsed);
 });
 
+document.getElementById('weightPanelToggle').addEventListener('click', () => {
+  setCollisionRailCollapsed(!collisionRailCollapsed);
+});
+
 document.getElementById('buoyancyPanelToggle').addEventListener('click', () => {
+  setCollisionRailCollapsed(!collisionRailCollapsed);
+});
+
+document.getElementById('heatPanelToggle').addEventListener('click', () => {
   setCollisionRailCollapsed(!collisionRailCollapsed);
 });
 
@@ -5635,6 +7011,7 @@ window.addEventListener('resize', resizeCanvas);
 updateModeUi();
 updateReadouts({});
 setChartTool('select');
+setRunning(running);
 updateZoomStatus();
 applyCollisionRailLayout();
 resizeCanvas();

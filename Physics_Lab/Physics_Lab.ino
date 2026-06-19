@@ -2,6 +2,8 @@
 #include <WiFi.h>
 #include <WiFiUdp.h>
 #include <WebServer.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
 #include "HX711.h"
 #include "web_dashboard.h"
 #include "logo_asset.h"
@@ -15,6 +17,7 @@ const int accelPort = 4210;
 const int gyroPort  = 4211;
 const int forcePort = 4213;
 const int ultraPort = 4215;
+const int tempPort  = 4216;
 
 WiFiUDP udp;
 WebServer server(80);
@@ -24,12 +27,18 @@ WebServer server(80);
 #define ECHO_PIN 0   // G0
 #define DT 36        // HX711 DOUT (virtual, reused)
 #define SCK 26       // HX711 SCK (shared with TRIG)
+#define TEMP1_PIN 25 // DS18B20 T1 data
+#define TEMP2_PIN 26 // DS18B20 T2 data
 
 HX711 scale;
 const float SCALE_FACTOR = 48163.7;
+OneWire oneWireTemp1(TEMP1_PIN);
+OneWire oneWireTemp2(TEMP2_PIN);
+DallasTemperature tempSensor1(&oneWireTemp1);
+DallasTemperature tempSensor2(&oneWireTemp2);
 
 int mode = 0;
-const int maxMode = 4;
+const int maxMode = 5;
 uint16_t sampleRateHz = 10;
 unsigned long sampleIntervalMs = 100;
 unsigned long lastSampleDue = 0;
@@ -44,6 +53,7 @@ struct SampleRecord {
   float gx, gy, gz;
   float force;
   float distance, velocity, acceleration;
+  float temp1, temp2, tempDelta;
   float battery;
 };
 
@@ -64,6 +74,7 @@ float latestAx = 0, latestAy = 0, latestAz = 0;
 float latestGx = 0, latestGy = 0, latestGz = 0;
 float latestForce = 0;
 float latestDistance = 0, latestVelocity = 0, latestAcceleration = 0;
+float latestTemp1 = 0, latestTemp2 = 0, latestTempDelta = 0;
 float rawAx = 0, rawAy = 0, rawAz = 0;
 float rawGx = 0, rawGy = 0, rawGz = 0;
 float accelOffsetX = 0, accelOffsetY = 0, accelOffsetZ = 0;
@@ -94,7 +105,7 @@ void drawBattery(float voltage) {
 }
 
 void displayMode() {
-  const char* modes[] = {"Accel", "Gyro", "Force", "WiFi Info", "Ultrasonic"};
+  const char* modes[] = {"Accel", "Gyro", "Force", "WiFi Info", "Ultrasonic", "Heat"};
   M5.Lcd.setTextSize(2);
   M5.Lcd.setTextColor(CYAN, BLACK);
   M5.Lcd.fillRect(0, 0, 160, 20, BLACK);
@@ -122,7 +133,7 @@ void startAccessPoint() {
 }
 
 const char* getModeName() {
-  const char* modes[] = {"Acceleration", "Gyroscope", "Load Cell", "WiFi Info", "Ultrasonic"};
+  const char* modes[] = {"Acceleration", "Gyroscope", "Load Cell", "WiFi Info", "Ultrasonic", "Temperature"};
   return modes[mode];
 }
 
@@ -146,6 +157,9 @@ void recordSample(uint8_t sampleMode, unsigned long timestampMs, unsigned long i
   record.distance = latestDistance;
   record.velocity = latestVelocity;
   record.acceleration = latestAcceleration;
+  record.temp1 = latestTemp1;
+  record.temp2 = latestTemp2;
+  record.tempDelta = latestTempDelta;
   record.battery = lastBatteryVoltage;
 
   sampleBufferHead = (sampleBufferHead + 1) % sampleBufferSize;
@@ -192,7 +206,7 @@ void handleLogo() {
 
 void handleData() {
   addCorsHeaders();
-  char json[640];
+  char json[760];
   snprintf(
     json,
     sizeof(json),
@@ -200,7 +214,8 @@ void handleData() {
     "\"sampleId\":%lu,\"sampleMs\":%lu,\"sampleRate\":%u,"
     "\"ax\":%.3f,\"ay\":%.3f,\"az\":%.3f,"
     "\"gx\":%.3f,\"gy\":%.3f,\"gz\":%.3f,"
-    "\"force\":%.3f,\"distance\":%.3f,\"velocity\":%.3f,\"acceleration\":%.3f}",
+    "\"force\":%.3f,\"distance\":%.3f,\"velocity\":%.3f,\"acceleration\":%.3f,"
+    "\"temp1\":%.3f,\"temp2\":%.3f,\"tempDelta\":%.3f}",
     mode,
     getModeName(),
     apSsid,
@@ -218,20 +233,24 @@ void handleData() {
     latestForce,
     latestDistance,
     latestVelocity,
-    latestAcceleration
+    latestAcceleration,
+    latestTemp1,
+    latestTemp2,
+    latestTempDelta
   );
   server.send(200, "application/json", json);
 }
 
 void sendSampleJson(const SampleRecord& record, bool comma) {
-  char json[384];
+  char json[520];
   snprintf(
     json,
     sizeof(json),
     "%s{\"mode\":%u,\"sampleId\":%lu,\"sampleMs\":%lu,\"sampleRate\":%u,"
     "\"battery\":%.2f,\"ax\":%.3f,\"ay\":%.3f,\"az\":%.3f,"
     "\"gx\":%.3f,\"gy\":%.3f,\"gz\":%.3f,"
-    "\"force\":%.3f,\"distance\":%.3f,\"velocity\":%.3f,\"acceleration\":%.3f}",
+    "\"force\":%.3f,\"distance\":%.3f,\"velocity\":%.3f,\"acceleration\":%.3f,"
+    "\"temp1\":%.3f,\"temp2\":%.3f,\"tempDelta\":%.3f}",
     comma ? "," : "",
     record.mode,
     record.id,
@@ -247,7 +266,10 @@ void sendSampleJson(const SampleRecord& record, bool comma) {
     record.force,
     record.distance,
     record.velocity,
-    record.acceleration
+    record.acceleration,
+    record.temp1,
+    record.temp2,
+    record.tempDelta
   );
   server.sendContent(json);
 }
@@ -317,7 +339,8 @@ void handleSetMode() {
 void handleSettings() {
   if (server.hasArg("rate")) {
     int requestedRate = server.arg("rate").toInt();
-    if (requestedRate == 5 || requestedRate == 10 || requestedRate == 20 ||
+    if (requestedRate == 1 || requestedRate == 2 ||
+        requestedRate == 5 || requestedRate == 10 || requestedRate == 20 ||
         requestedRate == 50 || requestedRate == 100) {
       sampleRateHz = requestedRate;
       sampleIntervalMs = 1000UL / sampleRateHz;
@@ -502,6 +525,30 @@ bool sampleCurrentMode(unsigned long now) {
     return true;
   }
 
+  if (mode == 5) {
+    tempSensor1.requestTemperatures();
+    tempSensor2.requestTemperatures();
+    float t1 = tempSensor1.getTempCByIndex(0);
+    float t2 = tempSensor2.getTempCByIndex(0);
+    if (t1 == DEVICE_DISCONNECTED_C || t2 == DEVICE_DISCONNECTED_C) return false;
+
+    latestTemp1 = t1;
+    latestTemp2 = t2;
+    latestTempDelta = t1 - t2;
+
+    M5.Lcd.fillRect(0, 20, 160, 100, BLACK);
+    M5.Lcd.setTextColor(YELLOW, BLACK);
+    M5.Lcd.setTextSize(2);
+    M5.Lcd.setCursor(0, 30);
+    M5.Lcd.printf("T1: %.1fC\nT2: %.1fC\ndT: %.1fC", latestTemp1, latestTemp2, latestTempDelta);
+    drawFooter();
+
+    char buf[64];
+    snprintf(buf, sizeof(buf), "%.2f,%.2f,%.2f,%.2f", latestTemp1, latestTemp2, latestTempDelta, lastBatteryVoltage);
+    sendUdpPacket(buf, tempPort);
+    return true;
+  }
+
   return false;
 }
 
@@ -518,6 +565,11 @@ void setup() {
   startWebServer();
   pinMode(TRIG_PIN, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
+
+  tempSensor1.begin();
+  tempSensor2.begin();
+  tempSensor1.setResolution(11);
+  tempSensor2.setResolution(11);
 
   scale.begin(DT, SCK);
   scale.set_scale(SCALE_FACTOR);
