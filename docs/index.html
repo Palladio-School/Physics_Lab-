@@ -398,6 +398,10 @@ input[type="number"] {
   color: var(--blue-dark);
   box-shadow: 0 2px 7px rgba(37, 55, 84, 0.12);
 }
+.chart-actions .tool-group,
+.chart-actions .zoom-status {
+  display: none;
+}
 .zoom-status {
   min-height: 34px;
   padding: 0 10px;
@@ -451,6 +455,205 @@ input[type="number"] {
   height: clamp(360px, 56vh, 620px);
   min-height: 360px;
   background: linear-gradient(#fff, #fcfdff);
+}
+.sonar-main-view {
+  display: none;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background: #fff;
+}
+.sonar-main-view img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+.sonar-main-view canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: grab;
+  touch-action: none;
+}
+.sonar-main-view canvas.dragging {
+  cursor: grabbing;
+}
+.sonar-overlay-card {
+  position: absolute;
+  left: var(--sonar-card-left, 62%);
+  top: var(--sonar-card-top, 36%);
+  width: min(190px, 28%);
+  padding: 10px 12px;
+  border: 1px solid rgba(207, 224, 240, 0.92);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 10px 24px rgba(30, 48, 76, 0.12);
+  backdrop-filter: blur(8px);
+}
+.sonar-overlay-card span {
+  display: block;
+  color: #5c7087;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+.sonar-overlay-card strong {
+  display: block;
+  margin-top: 2px;
+  color: #173b73;
+  font-size: clamp(24px, 2.6vw, 34px);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.sonar-distance-label {
+  position: absolute;
+  left: 39.5%;
+  top: 30.5%;
+  height: 57.5%;
+  width: 82px;
+  color: #0f6f9f;
+  pointer-events: none;
+}
+.sonar-distance-label::before {
+  content: "";
+  position: absolute;
+  left: 46px;
+  top: 12px;
+  bottom: 12px;
+  width: 2.5px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(54, 156, 190, 0.34), rgba(16, 108, 151, 0.8), rgba(54, 156, 190, 0.34));
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.34);
+}
+.sonar-distance-label::after {
+  content: "";
+  position: absolute;
+  left: 27px;
+  top: 12px;
+  width: 39px;
+  height: calc(100% - 24px);
+  border-top: 2.5px solid rgba(16, 108, 151, 0.7);
+  border-bottom: 2.5px solid rgba(16, 108, 151, 0.7);
+  border-radius: 2px;
+}
+.sonar-distance-label span {
+  position: absolute;
+  left: 7px;
+  top: 55%;
+  transform: translateY(-50%);
+  color: #0f5f8b;
+  font-size: 30px;
+  font-weight: 950;
+  font-style: italic;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.92),
+    1px 0 0 rgba(255, 255, 255, 0.82),
+    0 -1px 0 rgba(255, 255, 255, 0.82),
+    -1px 0 0 rgba(255, 255, 255, 0.82),
+    0 6px 14px rgba(30, 48, 76, 0.12);
+}
+.sonar-position-controls {
+  position: absolute;
+  left: 18px;
+  bottom: 18px;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid rgba(207, 224, 240, 0.82);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.74);
+  box-shadow: 0 10px 24px rgba(30, 48, 76, 0.12);
+  backdrop-filter: blur(8px);
+}
+.sonar-position-controls button {
+  min-height: 36px;
+  padding: 0 13px;
+  border-radius: 11px;
+  font-size: 12px;
+  font-weight: 900;
+}
+.sonar-position-controls button.active {
+  border-color: rgba(26, 102, 199, 0.5);
+  background: #eaf3ff;
+  color: #173b73;
+}
+.sonar-controls-panel {
+  display: none;
+  margin: 12px 10px 10px;
+  padding: 16px 18px;
+  border: 1px solid #dce7f1;
+  border-radius: 12px;
+  background: #f8fbff;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px 18px;
+}
+.sonar-controls-panel .field {
+  min-height: 62px;
+  flex: 1 1 260px;
+  justify-content: space-between;
+  padding: 0 14px;
+  border: 1px solid #dce7f1;
+  border-radius: 12px;
+  background: #fff;
+  color: #5f7187;
+  font-size: 15px;
+  font-weight: 900;
+}
+.sonar-controls-panel .field input {
+  width: 120px;
+  min-height: 44px;
+  font-size: 17px;
+  font-weight: 900;
+}
+.sonar-formula-chip {
+  min-height: 62px;
+  flex: 0 0 auto;
+  padding: 0 22px;
+  border: 1px solid rgba(207, 224, 240, 0.92);
+  border-radius: 12px;
+  background: #edf5ff;
+  color: #173b73;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 950;
+}
+.sonar-formula-chip small {
+  margin-top: 3px;
+  color: #5f7187;
+  font-size: 11px;
+  font-weight: 900;
+}
+.sonar-mode .sonar-controls-panel {
+  display: none;
+}
+.sonar-mode .plot-wrap > canvas,
+.sonar-mode .plot-wrap .tooltip {
+  display: none;
+}
+.sonar-mode .plot-wrap {
+  aspect-ratio: 1672 / 941;
+  height: auto;
+  min-height: 0;
+}
+.sonar-mode .sonar-main-view {
+  display: block;
+}
+.sonar-mode .sonar-main-view canvas {
+  display: block;
+}
+.sonar-mode .legend,
+.sonar-mode .split-chart-toggle,
+.sonar-mode .split-chart-field {
+  display: none;
+}
+.workspace-grid.rail-hidden {
+  grid-template-columns: minmax(0, 1fr);
 }
 canvas {
   width: 100%;
@@ -1091,12 +1294,25 @@ canvas {
   background: linear-gradient(180deg, #ffffff, #f7fbff);
   overflow: hidden;
 }
+.sonar-illustration {
+  margin: 0 16px 12px;
+  border: 1px solid #dce7f1;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ffffff, #f7fbff);
+  overflow: hidden;
+}
 .motion-illustration img {
   display: block;
   width: 100%;
   height: auto;
 }
-.motion-image-note {
+.sonar-illustration img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.motion-image-note,
+.sonar-image-note {
   padding: 9px 12px 11px;
   border-top: 1px solid #dce7f1;
   background: #f8fbff;
@@ -1104,6 +1320,49 @@ canvas {
   font-size: 12px;
   font-weight: 800;
   line-height: 1.35;
+}
+.pendulum-sim {
+  margin: 0 16px 12px;
+  border: 1px solid #dce7f1;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ffffff, #f7fbff);
+  overflow: hidden;
+}
+.pendulum-sim canvas {
+  width: 100%;
+  height: clamp(360px, 42vw, 540px);
+  display: block;
+  background: #fff;
+  cursor: grab;
+  touch-action: none;
+}
+.pendulum-note {
+  padding: 9px 12px 11px;
+  border-top: 1px solid #dce7f1;
+  background: #f8fbff;
+  color: #52667d;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+.pendulum-guide-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 0 16px 12px;
+}
+.pendulum-guide-buttons button {
+  border: 1px solid #cfe0f0;
+  background: #f8fbff;
+  color: #1f3f70;
+  border-radius: 10px;
+  padding: 9px 11px;
+  font-weight: 900;
+  cursor: pointer;
+}
+.pendulum-guide-buttons button:hover {
+  border-color: #8eb7df;
+  background: #eef6ff;
 }
 .free-body-diagram text {
   fill: #26384a;
@@ -2078,17 +2337,29 @@ tbody tr:last-child td { border-bottom: 0; }
             Απόσταση και χρόνος
             <small>Αισθητήρας υπερήχων</small>
           </button>
+          <button data-experiment="a-sonar" type="button">
+            Sonar: μέτρηση απόστασης
+            <small>Αρχή λειτουργίας υπερήχων</small>
+          </button>
           <button data-experiment="a-speed" type="button">
             Μέση ταχύτητα
             <small>Αισθητήρας υπερήχων</small>
           </button>
           <button data-experiment="a-weight" type="button">
-            Βάρος και δύναμη
+            Μάζα/Βάρος - επιμήκυνση ελατηρίου
             <small>Αισθητήρας δύναμης</small>
           </button>
           <button data-experiment="a-shake" type="button">
             Απότομη κίνηση και επιτάχυνση
             <small>Επιταχυνσιόμετρο</small>
+          </button>
+          <button data-experiment="a-heat" type="button">
+            Θερμότητα
+            <small>Δύο θερμόμετρα</small>
+          </button>
+          <button data-experiment="a-pendulum" type="button">
+            Απλό εκκρεμές
+            <small>Ψηφιακό πείραμα</small>
           </button>
         </div>
       </details>
@@ -2110,10 +2381,6 @@ tbody tr:last-child td { border-bottom: 0; }
           <button data-experiment="b-buoyancy" type="button">
             Άνωση
             <small>Φαινόμενο βάρος</small>
-          </button>
-          <button data-experiment="b-heat" type="button">
-            Θερμότητα
-            <small>Δύο θερμόμετρα</small>
           </button>
           <button data-experiment="b-rotation" type="button">
             Περιστροφή
@@ -2288,11 +2555,23 @@ tbody tr:last-child td { border-bottom: 0; }
           </div>
           <div class="plot-wrap" id="plotWrap">
             <canvas id="chart" aria-label="Γράφημα μετρήσεων"></canvas>
+            <div class="sonar-main-view" id="sonarMainView" aria-label="Εικονογράφηση sonar με χρόνο επιστροφής ηχητικής ακτίνας">
+              <canvas id="sonarCanvas" aria-label="Διαδραστική εικονογράφηση sonar με βαρκάκι σε τρεις θέσεις"></canvas>
+              <div class="sonar-overlay-card">
+                <span>Δt</span>
+                <strong id="sonarMainTime">— ms</strong>
+              </div>
+              <div class="sonar-position-controls" aria-label="Θέσεις βαρκιού sonar">
+                <button type="button" data-sonar-position="0">Θέση 1</button>
+                <button type="button" data-sonar-position="1">Θέση 2</button>
+                <button type="button" data-sonar-position="2">Θέση 3</button>
+              </div>
+            </div>
             <div class="tooltip" id="tooltip" hidden></div>
           </div>
           <div class="chart-foot">
             <span><strong id="sampleCount">0</strong> δείγματα</span>
-            <span id="chartHint">Σύρε πάνω στη γραφική για να επιλέξεις το κομμάτι που θέλεις να μελετήσεις.</span>
+            <span id="chartHint">Σύρε στο γράφημα για μετακίνηση στον χρόνο. Ροδέλα για zoom που εστιάζει στην κυματομορφή. Shift + σύρσιμο για επιλογή A-B.</span>
           </div>
         </section>
 
@@ -2354,7 +2633,7 @@ tbody tr:last-child td { border-bottom: 0; }
                   <option value="linear">Ευθεία γραμμή</option>
                   <option value="quadratic">Καμπύλη παραβολής</option>
                   <option value="best">Καλύτερη επιλογή</option>
-                  <option value="none">Χωρίς γραμμή τάσης</option>
+                  <option value="none" selected>Χωρίς γραμμή τάσης</option>
                 </select>
               </label>
               <button id="clearSelection">Καθαρισμός επιλογής</button>
@@ -2453,8 +2732,8 @@ tbody tr:last-child td { border-bottom: 0; }
         <section class="experiment-panel" id="weightExperiment" hidden>
           <div class="experiment-head">
             <div>
-              <h3>Βάρος και μάζα</h3>
-              <p>Μέτρα το βάρος σωμάτων με γνωστή μάζα και σύγκρινε την πειραματική τιμή με τη σχέση w = m·g.</p>
+              <h3>Μάζα/Βάρος - επιμήκυνση ελατηρίου</h3>
+              <p>Κρέμασε μάζες σε ελατήριο, μέτρα το βάρος τους και σημείωσε την επιμήκυνση του ελατηρίου.</p>
             </div>
             <div class="experiment-head-actions">
               <span class="experiment-status" id="weightStatus">Περίμενε σταθερό plateau βάρους</span>
@@ -2467,24 +2746,30 @@ tbody tr:last-child td { border-bottom: 0; }
               <input id="weightMassG" type="number" step="1" min="0" value="100">
               <small>g</small>
             </label>
+            <label class="field">
+              Δx
+              <input id="weightExtensionCm" type="number" step="0.1" min="0" value="1.0">
+              <small>cm</small>
+            </label>
             <button id="captureWeightTrial">Μέτρηση βάρους</button>
             <button id="saveWeightTrial">Αποθήκευση δοκιμής</button>
             <button id="clearWeightTrials">Καθαρισμός δοκιμών</button>
             <button id="exportWeightTrials">Εξαγωγή CSV</button>
           </div>
           <div class="experiment-summary" id="weightSummary">
-            <div class="experiment-empty">Επίλεξε με A-B ένα σταθερό τμήμα δύναμης και γράψε τη μάζα του σώματος.</div>
+            <div class="experiment-empty">Επίλεξε με A-B ένα σταθερό τμήμα δύναμης, γράψε τη μάζα και την επιμήκυνση Δx.</div>
           </div>
           <div class="experiment-study">
             <div class="experiment-study-grid" id="weightProtocol"></div>
           </div>
-          <div class="table-title">Αποθηκευμένες δοκιμές w = m·g</div>
+          <div class="table-title">Αποθηκευμένες δοκιμές μάζας, βάρους και επιμήκυνσης</div>
           <table>
             <thead>
               <tr>
                 <th>#</th>
                 <th>m (g)</th>
                 <th>m (kg)</th>
+                <th>Δx (cm)</th>
                 <th>wπ (N)</th>
                 <th>wθ = mg (N)</th>
                 <th>gπ = w/m (m/s²)</th>
@@ -2492,11 +2777,11 @@ tbody tr:last-child td { border-bottom: 0; }
               </tr>
             </thead>
             <tbody id="weightBody">
-              <tr><td colspan="7" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>
+              <tr><td colspan="8" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>
             </tbody>
           </table>
           <div class="experiment-note" id="weightNote">
-            Χρησιμοποίησε σταθερό σώμα που κρέμεται ελεύθερα, χωρίς να ακουμπά στον πάγκο ή στο καλώδιο.
+            Η επιμήκυνση Δx μετριέται σε σχέση με το αρχικό μήκος του ελατηρίου χωρίς μάζα.
           </div>
         </section>
         <section class="experiment-panel" id="buoyancyExperiment" hidden>
@@ -2686,7 +2971,7 @@ tbody tr:last-child td { border-bottom: 0; }
             </div>
           </div>
           <div class="motion-illustration">
-            <img src="assets/uniform-motion-illustration.png" alt="Σχολική εικονογράφηση πειράματος ευθύγραμμης ομαλής κίνησης με αισθητήρα υπερήχων και αμαξίδιο">
+            <img src="assets/uniform-motion-editorial-hcsr04-track.png" alt="Μοντέρνα εικονογράφηση πειράματος ευθύγραμμης ομαλής κίνησης με αισθητήρα υπερήχων HC-SR04, εργαστηριακό χάρακα και αμαξίδιο">
             <div class="motion-image-note">Ο αισθητήρας υπερήχων μετρά την απόσταση από το αμαξίδιο. Στην ευθύγραμμη ομαλή κίνηση οι ίσοι χρόνοι αντιστοιχούν σε ίσες μετατοπίσεις.</div>
           </div>
           <div class="experiment-summary" id="motionSummary">
@@ -2765,7 +3050,7 @@ tbody tr:last-child td { border-bottom: 0; }
           <div class="experiment-head">
             <div>
               <h3>Θερμική ισορροπία</h3>
-              <p>Παρακολούθησε δύο DS18B20 αισθητήρες σε κρύο και ζεστό νερό και δες αν οι θερμοκρασίες πλησιάζουν με τον χρόνο.</p>
+              <p>Παρακολούθησε δύο DS18B20 αισθητήρες σε ποτήρι και λεκάνη νερού που βρίσκονται σε θερμική επαφή.</p>
             </div>
             <div class="experiment-head-actions">
               <span class="experiment-status" id="heatStatus">Αναμονή για μετρήσεις θερμοκρασίας</span>
@@ -2773,8 +3058,8 @@ tbody tr:last-child td { border-bottom: 0; }
             </div>
           </div>
           <div class="heat-illustration">
-            <img src="assets/heat-ds18b20-illustration.png" alt="Σχολική εικονογράφηση πειράματος θερμικής ισορροπίας με δύο ποτήρια νερού και δύο αισθητήρες DS18B20">
-            <div class="heat-image-note">Αριστερά: αισθητήρας στο κρύο νερό. Δεξιά: αισθητήρας στο ζεστό νερό. Στόχος είναι να παρατηρήσεις πώς αλλάζουν οι δύο θερμοκρασίες και η διαφορά ΔT.</div>
+            <img src="assets/heat-equilibrium-basin-cup-editorial.png" alt="Μοντέρνα εικονογράφηση πειράματος θερμικής ισορροπίας με ποτήρι μέσα σε λεκάνη νερού και δύο αισθητήρες DS18B20">
+            <div class="heat-image-note">Το ποτήρι βρίσκεται μέσα στη λεκάνη νερού, άρα τα δύο νερά είναι σε θερμική επαφή μέσω του τοιχώματος. Οι δύο αισθητήρες δείχνουν πώς πλησιάζουν οι θερμοκρασίες.</div>
           </div>
           <div class="experiment-summary" id="heatSummary">
             <div class="experiment-empty">Πάτα Έναρξη και περίμενε να εμφανιστούν οι δύο θερμοκρασίες.</div>
@@ -2784,6 +3069,94 @@ tbody tr:last-child td { border-bottom: 0; }
           </div>
           <div class="experiment-note" id="heatNote">
             Για καθαρή καμπύλη θερμικής ισορροπίας χρησιμοποίησε μεγάλη διάρκεια, π.χ. 10 λεπτά ή περισσότερο.
+          </div>
+        </section>
+        <section class="experiment-panel" id="pendulumExperiment" hidden>
+          <div class="experiment-head">
+            <div>
+              <h3>Απλό εκκρεμές</h3>
+              <p>Ψηφιακό πείραμα για τη σχέση μήκους και περιόδου. Δεν χρειάζεται σύνδεση με M5.</p>
+            </div>
+            <div class="experiment-head-actions">
+              <span class="experiment-status" id="pendulumStatus">Ψηφιακή προσομοίωση</span>
+              <button class="experiment-toggle" id="pendulumPanelToggle" type="button">Κλείσιμο panel</button>
+            </div>
+          </div>
+          <div class="pendulum-sim">
+            <canvas id="pendulumCanvas" aria-label="Προσομοίωση απλού εκκρεμούς"></canvas>
+            <div class="pendulum-note">Άλλαξε μήκος, μάζα και αρχική γωνία. Άνοιξε τις θέσεις όταν θέλεις να συγκρίνεις τη θέση ισορροπίας με τις ακραίες θέσεις. Μετά τη μέτρηση σύρε το σώμα για να φωτιστεί η αντίστοιχη θέση στη γραφική.</div>
+          </div>
+          <div class="experiment-tools">
+            <label class="field">
+              Μήκος
+              <input id="pendulumLengthM" type="number" step="0.05" min="0.10" max="3.00" value="1.00">
+              <small>m</small>
+            </label>
+            <label class="field">
+              Γωνία
+              <input id="pendulumAngleDeg" type="number" step="1" min="1" max="25" value="10">
+              <small>°</small>
+            </label>
+            <label class="field">
+              Μάζα
+              <input id="pendulumMassG" type="number" step="10" min="10" max="1000" value="100">
+              <small>g</small>
+            </label>
+            <label class="field">
+              Διάρκεια
+              <input id="pendulumDurationS" type="number" step="1" min="5" max="60" value="20">
+              <small>s</small>
+            </label>
+            <label class="field">
+              Δt
+              <input id="pendulumDeltaTS" type="number" step="0.1" min="0.1" value="10.0">
+              <small>s</small>
+            </label>
+            <label class="field">
+              Ταλαντώσεις
+              <input id="pendulumOscillations" type="number" step="1" min="1" value="5">
+              <small>N</small>
+            </label>
+            <button id="usePendulumSelection">Χρήση A-B</button>
+            <button id="togglePendulumPositions" type="button" aria-pressed="false">Εμφάνιση θέσεων</button>
+            <button id="runPendulumTrial">Προσομοίωση</button>
+            <button id="savePendulumTrial">Αποθήκευση δοκιμής</button>
+            <button id="clearPendulumTrials">Καθαρισμός δοκιμών</button>
+            <button id="exportPendulumTrials">Εξαγωγή CSV</button>
+          </div>
+          <div class="pendulum-guide-buttons" aria-label="Οδηγοί περιόδου στο γράφημα">
+            <button type="button" data-pendulum-interval="quarter">Δείξε T/4</button>
+            <button type="button" data-pendulum-interval="half">Δείξε T/2</button>
+            <button type="button" data-pendulum-interval="one">Δείξε 1T</button>
+            <button type="button" data-pendulum-interval="five">Δείξε 5T</button>
+          </div>
+          <div class="experiment-summary" id="pendulumSummary">
+            <div class="experiment-empty">Διάλεξε μήκος και γωνία και πάτησε Προσομοίωση.</div>
+          </div>
+          <div class="experiment-study">
+            <div class="experiment-study-grid" id="pendulumProtocol"></div>
+          </div>
+          <div class="table-title">Αποθηκευμένες δοκιμές απλού εκκρεμούς</div>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>L (m)</th>
+                <th>m (g)</th>
+                <th>θ0 (°)</th>
+                <th>Δt (s)</th>
+                <th>N</th>
+                <th>T = Δt/N (s)</th>
+                <th>T θεωρ. (s)</th>
+                <th>10T (s)</th>
+              </tr>
+            </thead>
+            <tbody id="pendulumBody">
+              <tr><td colspan="9" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>
+            </tbody>
+          </table>
+          <div class="experiment-note" id="pendulumNote">
+            Το μοντέλο είναι ιδανικό: δεν περιλαμβάνει τριβές και είναι καλύτερο για μικρές γωνίες.
           </div>
         </section>
       </aside>
@@ -2816,12 +3189,13 @@ let selection = null;
 let selecting = false;
 let selectionAnchor = 0;
 let analysisSeriesIndex = 0;
-let fitType = 'linear';
+let fitType = 'none';
 let analysisCache = null;
 let activeExperimentId = localStorage.getItem('palladio-active-experiment') || '';
+if (activeExperimentId === 'b-heat') activeExperimentId = 'a-heat';
 let customView = null;
 let customYScale = null;
-let chartTool = 'select';
+let chartTool = 'pan';
 let panning = false;
 let panStartX = 0;
 let panStartY = 0;
@@ -2843,7 +3217,31 @@ let activeForceExperiment = localStorage.getItem('palladio-force-experiment') ||
 if (!['hooke', 'buoyancy', 'weight'].includes(activeForceExperiment)) activeForceExperiment = 'hooke';
 let hookeExtensionCm = Math.max(0, Number(localStorage.getItem('palladio-hooke-extension-cm') || '1.0'));
 let weightMassG = Math.max(0, Number(localStorage.getItem('palladio-weight-mass-g') || '100'));
+let weightExtensionCm = Math.max(0, Number(localStorage.getItem('palladio-weight-extension-cm') || '1.0'));
 let weightCapturedForce = Number(localStorage.getItem('palladio-weight-force') || 'NaN');
+let pendulumLengthM = Math.max(0.1, Number(localStorage.getItem('palladio-pendulum-length-m') || '1.00'));
+let pendulumAngleDeg = Math.max(1, Number(localStorage.getItem('palladio-pendulum-angle-deg') || '10'));
+let pendulumMassG = Math.max(10, Number(localStorage.getItem('palladio-pendulum-mass-g') || '100'));
+let pendulumDurationS = Math.max(5, Number(localStorage.getItem('palladio-pendulum-duration-s') || '20'));
+let pendulumDeltaTS = Math.max(0.1, Number(localStorage.getItem('palladio-pendulum-delta-t-s') || '10.0'));
+let pendulumOscillations = Math.max(1, Number(localStorage.getItem('palladio-pendulum-oscillations') || '5'));
+let pendulumPhaseStart = performance.now();
+let pendulumLiveStartMs = null;
+let pendulumLastSampleTime = -1;
+let pendulumInspectTime = null;
+let pendulumScrubbing = false;
+let pendulumShowPositions = localStorage.getItem('palladio-pendulum-show-positions') === '1';
+const SONAR_SOUND_SPEED_WATER = 1480;
+const SONAR_POSITIONS = [
+  { label: 'Θέση 1', xRatio: 0.25, depthM: 0.30, level: 0.58 },
+  { label: 'Θέση 2', xRatio: 0.50, depthM: 0.60, level: 0.75 },
+  { label: 'Θέση 3', xRatio: 0.75, depthM: 0.90, level: 0.89 }
+];
+const SONAR_BOAT_SENSOR_X_RATIO = 0.502;
+const SONAR_BOAT_SENSOR_BOTTOM_RATIO = 0.93;
+let sonarPositionIndex = Math.max(0, Math.min(SONAR_POSITIONS.length - 1, Number(localStorage.getItem('palladio-sonar-position-index') || '1')));
+let sonarDragging = false;
+let sonarDragOffsetX = 0;
 let buoyancyVolumeMl = Math.max(0, Number(localStorage.getItem('palladio-buoyancy-volume-ml') || '100'));
 let buoyancyAirForce = Number(localStorage.getItem('palladio-buoyancy-air-force') || 'NaN');
 let buoyancyLiquidForce = Number(localStorage.getItem('palladio-buoyancy-liquid-force') || 'NaN');
@@ -2871,6 +3269,14 @@ let weightTrials = (() => {
     return [];
   }
 })();
+let pendulumTrials = (() => {
+  try {
+    const saved = JSON.parse(localStorage.getItem('palladio-pendulum-trials') || '[]');
+    return Array.isArray(saved) ? saved : [];
+  } catch (error) {
+    return [];
+  }
+})();
 let buoyancyTrials = (() => {
   try {
     const saved = JSON.parse(localStorage.getItem('palladio-buoyancy-trials') || '[]');
@@ -2892,6 +3298,19 @@ const collisionCanvas = document.getElementById('collisionChart');
 const collisionCtx = collisionCanvas ? collisionCanvas.getContext('2d') : null;
 const hookeCanvas = document.getElementById('hookeChart');
 const hookeCtx = hookeCanvas ? hookeCanvas.getContext('2d') : null;
+const pendulumCanvas = document.getElementById('pendulumCanvas');
+const pendulumCtx = pendulumCanvas ? pendulumCanvas.getContext('2d') : null;
+const pendulumBackground = new Image();
+pendulumBackground.src = 'assets/pendulum-background-clean.png';
+pendulumBackground.onload = () => drawPendulumCanvas();
+const pendulumLayer = new Image();
+pendulumLayer.src = 'assets/pendulum-moving-layer.png';
+pendulumLayer.onload = () => drawPendulumCanvas();
+const sonarCanvas = document.getElementById('sonarCanvas');
+const sonarCtx = sonarCanvas ? sonarCanvas.getContext('2d') : null;
+const sonarBoatImage = new Image();
+sonarBoatImage.src = 'assets/sonar-boat-transparent-v2.png';
+sonarBoatImage.onload = () => drawSonarCanvas();
 const workspaceGrid = document.querySelector('.workspace-grid');
 const railResizer = document.getElementById('collisionRailResizer');
 const tooltip = document.getElementById('tooltip');
@@ -2974,6 +3393,20 @@ const modes = {
       { key: 'temp2', label: 'Θερμόμετρο 2', short: 'T2', unit: '°C', color: '#1769aa', enabled: true },
       { key: 'tempDelta', label: 'Διαφορά ΔT', short: 'ΔT', unit: '°C', color: '#2d9d57', enabled: false }
     ]
+  },
+  6: {
+    title: 'Απλό εκκρεμές',
+    subtitle: 'Ψηφιακή προσομοίωση απομάκρυνσης και πλάτους ως προς τον χρόνο',
+    yLabel: 'Απομάκρυνση (cm)',
+    symmetric: true,
+    minimumSpan: 30,
+    digital: true,
+    series: [
+      { key: 'pendulumDisplacementCm', label: 'Απομάκρυνση x', short: 'x', unit: 'cm', color: '#7b4db7', enabled: true },
+      { key: 'pendulumAmplitudeCm', label: 'Πλάτος A', short: 'A', unit: 'cm', color: '#e58a16', enabled: true },
+      { key: 'theta', label: 'Γωνία θ', short: 'θ', unit: '°', color: '#2d9d57', enabled: false },
+      { key: 'omegaPendulum', label: 'Γωνιακή ταχύτητα', short: 'ω', unit: '°/s', color: '#1769aa', enabled: false }
+    ]
   }
 };
 
@@ -2985,6 +3418,13 @@ const experimentCatalog = {
     running: 'Παρατήρησε αν η απόσταση μεγαλώνει ή μικραίνει όσο περνά ο χρόνος.',
     selected: 'Στο κομμάτι που διάλεξες, δες πόσο άλλαξε η απόσταση και πόσο χρόνο χρειάστηκε.'
   },
+  'a-sonar': {
+    mode: 4,
+    title: 'Sonar: μέτρηση απόστασης',
+    ready: 'Βάλε ένα επίπεδο αντικείμενο απέναντι από τον αισθητήρα υπερήχων και πάτα Έναρξη.',
+    running: 'Ο αισθητήρας στέλνει παλμό, περιμένει την ηχώ και από τον χρόνο επιστροφής βρίσκει την απόσταση.',
+    selected: 'Σύγκρινε τη μετρούμενη απόσταση με τον χρόνο πήγαινε-έλα του παλμού.'
+  },
   'a-speed': {
     mode: 4,
     title: 'Μέση ταχύτητα',
@@ -2995,10 +3435,10 @@ const experimentCatalog = {
   'a-weight': {
     mode: 2,
     forceExperiment: 'weight',
-    title: 'Βάρος και δύναμη',
-    ready: 'Κάνε μηδενισμό δύναμης, κρέμασε σώμα γνωστής μάζας και μέτρα το βάρος του.',
+    title: 'Μάζα/Βάρος - επιμήκυνση ελατηρίου',
+    ready: 'Κάνε μηδενισμό δύναμης, κρέμασε μάζα στο ελατήριο και μέτρα βάρος και επιμήκυνση.',
     running: 'Ψάξε ένα ήρεμο οριζόντιο τμήμα, όπου το βάρος μένει σχεδόν σταθερό.',
-    selected: 'Γράψε τη μάζα και σύγκρινε το πειραματικό βάρος με τη θεωρητική τιμή w = m·g.'
+    selected: 'Γράψε τη μάζα και την επιμήκυνση Δx, και σύγκρινε το πειραματικό βάρος με w = m·g.'
   },
   'a-shake': {
     mode: 0,
@@ -3006,6 +3446,20 @@ const experimentCatalog = {
     ready: 'Κράτησε τη συσκευή σταθερά, πάτα Έναρξη και κάνε μια μικρή απότομη κίνηση.',
     running: 'Παρατήρησε τις κορυφές: εκεί η επιτάχυνση αλλάζει πιο έντονα.',
     selected: 'Σύγκρινε την αρχή και το τέλος της απότομης κίνησης.'
+  },
+  'a-heat': {
+    mode: 5,
+    title: 'Θερμότητα',
+    ready: 'Βάλε το ένα θερμόμετρο στο ποτήρι και το άλλο στη λεκάνη νερού. Η διάρκεια θα μπει στα 10 λεπτά.',
+    running: 'Παρατήρησε αν οι δύο θερμοκρασίες πλησιάζουν ή απομακρύνονται με τον χρόνο.',
+    selected: 'Στο επιλεγμένο κομμάτι σύγκρινε T1, T2 και τη διαφορά ΔT.'
+  },
+  'a-pendulum': {
+    mode: 6,
+    title: 'Απλό εκκρεμές',
+    ready: 'Διάλεξε μήκος και μικρή αρχική γωνία και πάτησε Προσομοίωση.',
+    running: 'Παρατήρησε την απομάκρυνση x-t και τη σταθερή γραμμή του πλάτους A.',
+    selected: 'Στο επιλεγμένο κομμάτι σύγκρινε τη διάρκεια με T/4, T/2 ή μία πλήρη περίοδο.'
   },
   'b-uniform-motion': {
     mode: 4,
@@ -3037,13 +3491,6 @@ const experimentCatalog = {
     running: 'Περίμενε κάθε μέτρηση να γίνει ήρεμη πριν την κρατήσεις.',
     selected: 'Η διαφορά των δύο δυνάμεων δείχνει την άνωση.'
   },
-  'b-heat': {
-    mode: 5,
-    title: 'Θερμότητα',
-    ready: 'Βάλε το θερμόμετρο 1 στο ζεστό σώμα ή νερό και το θερμόμετρο 2 στο δεύτερο σημείο σύγκρισης. Η διάρκεια θα μπει στα 10 λεπτά.',
-    running: 'Παρατήρησε αν οι δύο θερμοκρασίες πλησιάζουν ή απομακρύνονται με τον χρόνο.',
-    selected: 'Στο επιλεγμένο κομμάτι σύγκρινε T1, T2 και τη διαφορά ΔT.'
-  },
   'b-rotation': {
     mode: 1,
     title: 'Περιστροφή',
@@ -3061,6 +3508,18 @@ if (activeExperimentId) {
 
 function currentMode() {
   const meta = modes[activeMode] || modes[0];
+  if (activeExperimentId === 'a-sonar' && activeMode === 4) {
+    return {
+      ...meta,
+      title: 'Sonar: χρόνος ηχούς',
+      subtitle: 'Ο αισθητήρας μετρά τον συνολικό χρόνο πήγαινε-έλα του παλμού',
+      yLabel: 'Συνολικός χρόνος ηχούς (ms)',
+      minimumSpan: 2,
+      series: [
+        { key: 'sonarEchoMs', label: 'Χρόνος ηχούς t', short: 't', unit: 'ms', color: '#1769aa', enabled: true }
+      ]
+    };
+  }
   if (activeMode !== 0 || !meta.views) return meta;
   const view = meta.views[accelDisplayMode] || meta.views.accel;
   return {
@@ -3151,6 +3610,10 @@ function splitChartPanels(width, height, xMin, xMax, timeScale, dataRows) {
 function dataValue(sample, key) {
   const source = sample || {};
   const mass = Math.max(0.001, collisionMassKg);
+  if (key === 'sonarEchoMs') {
+    const distance = Number(source.distance);
+    return isFinite(distance) ? (2 * Math.max(0, distance) / SONAR_SOUND_SPEED_WATER) * 1000 : NaN;
+  }
   if (key === 'fx') return Number(source.ax || 0) * mass;
   if (key === 'fy') return Number(source.ay || 0) * mass;
   if (key === 'fz') return Number(source.az || 0) * mass;
@@ -3308,6 +3771,10 @@ function saveWeightTrials() {
   localStorage.setItem('palladio-weight-trials', JSON.stringify(weightTrials));
 }
 
+function savePendulumTrials() {
+  localStorage.setItem('palladio-pendulum-trials', JSON.stringify(pendulumTrials));
+}
+
 function saveWeightCapture() {
   localStorage.setItem('palladio-weight-force', String(weightCapturedForce));
 }
@@ -3342,23 +3809,33 @@ function isForceExperimentMode() {
 }
 
 function isMotionExperimentMode() {
-  return activeMode === 4;
+  return activeMode === 4 && activeExperimentId !== 'a-sonar';
+}
+
+function isSonarExperimentMode() {
+  return activeMode === 4 && activeExperimentId === 'a-sonar';
 }
 
 function isHeatExperimentMode() {
-  return activeMode === 5 && activeExperimentId === 'b-heat';
+  return activeMode === 5 && activeExperimentId === 'a-heat';
+}
+
+function isPendulumExperimentMode() {
+  return activeMode === 6 && activeExperimentId === 'a-pendulum';
 }
 
 function isRightRailMode() {
-  return isCollisionExperimentMode() || isMotionExperimentMode() || isForceExperimentMode() || isHeatExperimentMode();
+  return isCollisionExperimentMode() || isMotionExperimentMode() || isForceExperimentMode() || isHeatExperimentMode() || isPendulumExperimentMode();
 }
 
 function rightRailExperimentTitle() {
   if (isHookeExperimentMode()) return 'Νόμος του Hooke';
-  if (isWeightExperimentMode()) return 'Βάρος και μάζα';
+  if (isWeightExperimentMode()) return 'Μάζα/Βάρος - επιμήκυνση';
   if (isBuoyancyExperimentMode()) return 'Άνωση';
   if (isForceExperimentMode()) return 'Πείραμα δύναμης';
   if (isHeatExperimentMode()) return 'Θερμική ισορροπία';
+  if (isPendulumExperimentMode()) return 'Απλό εκκρεμές';
+  if (isSonarExperimentMode()) return 'Sonar: μέτρηση απόστασης';
   if (isMotionExperimentMode()) return 'Ευθύγραμμη ομαλή κίνηση';
   if (isCollisionExperimentMode()) return '3ος Νόμος Newton: Κρούση και ώθηση';
   return 'Πείραμα';
@@ -3402,7 +3879,7 @@ function applyCollisionRailLayout() {
     railOpen.setAttribute('aria-label', 'Άνοιγμα πειράματος: ' + title);
     railOpen.title = title;
   }
-  ['collisionPanelToggle', 'motionPanelToggle', 'hookePanelToggle', 'weightPanelToggle', 'buoyancyPanelToggle', 'heatPanelToggle'].forEach(id => {
+  ['collisionPanelToggle', 'motionPanelToggle', 'hookePanelToggle', 'weightPanelToggle', 'buoyancyPanelToggle', 'heatPanelToggle', 'pendulumPanelToggle'].forEach(id => {
     const toggle = document.getElementById(id);
     if (toggle) toggle.textContent = collisionRailCollapsed ? 'Άνοιγμα panel' : 'Κλείσιμο panel';
   });
@@ -3707,6 +4184,366 @@ function renderMotionExperiment() {
     : usingVelocity
       ? 'Το velocity είναι το καλύτερο σημείο για να φανεί αν η κίνηση είναι όντως ομαλή και όχι απλώς “σχεδόν ευθεία” στο μάτι.'
       : 'Η επιτάχυνση εδώ είναι εργαλείο επιβεβαίωσης, όχι το πρώτο γράφημα που πρέπει να κοιτάξουν.';
+}
+
+function sonarSelectedPosition() {
+  return SONAR_POSITIONS[sonarPositionIndex] || SONAR_POSITIONS[1];
+}
+
+function sonarRoundTripTimeMs(depthM = sonarSelectedPosition().depthM) {
+  return (2 * depthM / SONAR_SOUND_SPEED_WATER) * 1000;
+}
+
+function sonarExperimentMetrics() {
+  if (!isSonarExperimentMode()) return null;
+  const position = sonarSelectedPosition();
+  const distance = position.depthM;
+  const roundTripTime = 2 * distance / SONAR_SOUND_SPEED_WATER;
+  return {
+    ready: true,
+    position,
+    distance,
+    soundSpeed: SONAR_SOUND_SPEED_WATER,
+    roundTripTime,
+    halfTime: roundTripTime / 2,
+    targetRoundTripTime: roundTripTime,
+    source: 'θέση βαρκιού στην εικόνα'
+  };
+}
+
+function renderSonarExperiment() {
+  const timeLabel = document.getElementById('sonarMainTime');
+  const metrics = sonarExperimentMetrics();
+  document.querySelectorAll('[data-sonar-position]').forEach(button => {
+    button.classList.toggle('active', Number(button.dataset.sonarPosition) === sonarPositionIndex);
+  });
+  if (!timeLabel) return;
+  if (metrics && metrics.ready) {
+    timeLabel.textContent = compactNumber(metrics.roundTripTime * 1000) + ' ms';
+  } else {
+    timeLabel.textContent = '— ms';
+  }
+  drawSonarCanvas();
+}
+
+function sonarCanvasMetrics(width, height) {
+  const position = sonarSelectedPosition();
+  const scale = Math.min(width / 1672, height / 941);
+  const waterY = height * 0.28;
+  const seabedTopY = height * 0.60;
+  const seabedBottomY = height * 0.92;
+  const boatX = width * position.xRatio;
+  const bedYAt = x => {
+    const t = Math.max(0, Math.min(1, x / width));
+    const base = waterY + (seabedBottomY - waterY) * (0.55 + 0.34 * t);
+    const shelf1 = -height * 0.055 * Math.exp(-Math.pow((t - 0.24) / 0.16, 2));
+    const shelf2 = -height * 0.025 * Math.exp(-Math.pow((t - 0.50) / 0.14, 2));
+    const trench = height * 0.055 * Math.exp(-Math.pow((t - 0.76) / 0.16, 2));
+    const ripple = Math.sin(t * Math.PI * 5.5) * height * 0.008;
+    return Math.max(seabedTopY, Math.min(seabedBottomY, base + shelf1 + shelf2 + trench + ripple));
+  };
+  const seabedY = bedYAt(boatX);
+  return { scale, boatX, waterY, seabedTopY, seabedBottomY, seabedY, bedYAt };
+}
+
+function drawSonarWaterline(ctx, width, y, scale) {
+  ctx.save();
+  ctx.strokeStyle = '#2ea7d5';
+  ctx.lineWidth = Math.max(1.2, 2 * scale);
+  ctx.beginPath();
+  ctx.moveTo(0, y);
+  for (let x = 0; x <= width + 24; x += 24) {
+    ctx.quadraticCurveTo(x + 12, y - 5 * scale, x + 24, y);
+  }
+  ctx.stroke();
+  ctx.strokeStyle = 'rgba(255,255,255,0.72)';
+  ctx.lineWidth = Math.max(0.8, 1.3 * scale);
+  ctx.beginPath();
+  ctx.moveTo(0, y + 9 * scale);
+  for (let x = 0; x <= width + 28; x += 28) {
+    ctx.quadraticCurveTo(x + 14, y + 5 * scale, x + 28, y + 9 * scale);
+  }
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawSonarSeabed(ctx, width, height, metrics) {
+  const positions = SONAR_POSITIONS;
+  const targetPoints = positions.map(position => ({
+    x: width * position.xRatio,
+    y: metrics.waterY + (metrics.seabedBottomY - metrics.waterY) * position.level,
+    position
+  }));
+  const bedYAt = metrics.bedYAt;
+  targetPoints.forEach(point => {
+    point.y = bedYAt(point.x);
+  });
+
+  ctx.save();
+  const sandGradient = ctx.createLinearGradient(0, metrics.seabedTopY, 0, height);
+  sandGradient.addColorStop(0, '#ddc995');
+  sandGradient.addColorStop(0.42, '#cba663');
+  sandGradient.addColorStop(1, '#9e7438');
+  ctx.fillStyle = sandGradient;
+  ctx.beginPath();
+  ctx.moveTo(0, bedYAt(0));
+  for (let x = 0; x <= width; x += Math.max(12, width / 80)) {
+    ctx.lineTo(x, bedYAt(x));
+  }
+  ctx.lineTo(width, height);
+  ctx.lineTo(0, height);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.strokeStyle = 'rgba(83, 93, 83, 0.22)';
+  ctx.lineWidth = Math.max(1, 1.4 * metrics.scale);
+  ctx.beginPath();
+  ctx.moveTo(0, bedYAt(0));
+  for (let x = 0; x <= width; x += Math.max(12, width / 80)) {
+    ctx.lineTo(x, bedYAt(x));
+  }
+  ctx.stroke();
+
+  ctx.globalAlpha = 0.18;
+  ctx.strokeStyle = '#7a653c';
+  for (let line = 0; line < 7; line += 1) {
+    const yOffset = 20 + line * 20;
+    ctx.beginPath();
+    for (let x = 0; x <= width; x += 18) {
+      const y = bedYAt(x) + yOffset + Math.sin(x / 45 + line) * 4;
+      if (x === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+
+  for (let i = 0; i < 34; i += 1) {
+    const x = (i * 137) % width;
+    const y = bedYAt(x) + 18 + ((i * 17) % 44);
+    const rockW = (5 + (i % 5) * 2.2) * metrics.scale;
+    ctx.fillStyle = i % 4 === 0 ? 'rgba(82, 103, 93, 0.46)' : 'rgba(117, 112, 88, 0.4)';
+    ctx.beginPath();
+    ctx.ellipse(x, y, rockW, rockW * 0.55, (i % 3) * 0.2, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  targetPoints.forEach((point, index) => {
+    const x = point.x;
+    const y = point.y;
+    const position = point.position;
+    const markerR = (index === sonarPositionIndex ? 12 : 8) * metrics.scale;
+    ctx.fillStyle = index === sonarPositionIndex ? 'rgba(23, 105, 170, 0.92)' : 'rgba(255, 255, 255, 0.74)';
+    ctx.strokeStyle = index === sonarPositionIndex ? 'rgba(255, 255, 255, 0.86)' : 'rgba(23, 105, 170, 0.42)';
+    ctx.lineWidth = Math.max(1.2, 2 * metrics.scale);
+    ctx.beginPath();
+    ctx.arc(x, y - 10 * metrics.scale, markerR, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = index === sonarPositionIndex ? 'rgba(255, 255, 255, 0.68)' : 'rgba(255, 255, 255, 0.42)';
+    ctx.strokeStyle = index === sonarPositionIndex ? 'rgba(26, 102, 199, 0.34)' : 'rgba(207, 224, 240, 0.58)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.roundRect(x - 56, y - 55, 112, 30, 10);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#173b73';
+    ctx.font = '900 12px system-ui';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(position.label, x, y - 40);
+  });
+  ctx.restore();
+}
+
+function drawSonarPulse(ctx, x, startY, endY, scale) {
+  const bottomY = Math.max(startY + 80 * scale, endY);
+  const centerX = x;
+  ctx.save();
+  ctx.shadowColor = 'rgba(30, 124, 222, 0.22)';
+  ctx.shadowBlur = 12 * scale;
+  ctx.strokeStyle = '#1d71e8';
+  ctx.lineWidth = Math.max(1.4, 3 * scale);
+  for (let y = startY + 24 * scale; y < bottomY - 42 * scale; y += 34 * scale) {
+    const w = 34 * scale + (y - startY) * 0.045;
+    ctx.beginPath();
+    ctx.arc(centerX, y, w, 0.2 * Math.PI, 0.8 * Math.PI);
+    ctx.stroke();
+  }
+  ctx.fillStyle = '#1d71e8';
+  ctx.beginPath();
+  ctx.moveTo(centerX, bottomY - 16 * scale);
+  ctx.lineTo(centerX - 14 * scale, bottomY - 48 * scale);
+  ctx.lineTo(centerX + 14 * scale, bottomY - 48 * scale);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.shadowColor = 'rgba(33, 163, 74, 0.18)';
+  ctx.strokeStyle = '#259b42';
+  ctx.lineWidth = Math.max(1.2, 2.5 * scale);
+  const returnX = centerX + 74 * scale;
+  for (let y = bottomY - 12 * scale; y > startY + 34 * scale; y -= 34 * scale) {
+    const w = 24 * scale + (bottomY - y) * 0.035;
+    ctx.beginPath();
+    ctx.arc(returnX, y, w, 1.18 * Math.PI, 1.82 * Math.PI);
+    ctx.stroke();
+  }
+  ctx.fillStyle = '#259b42';
+  ctx.beginPath();
+  ctx.moveTo(returnX, startY + 16 * scale);
+  ctx.lineTo(returnX - 11 * scale, startY + 45 * scale);
+  ctx.lineTo(returnX + 11 * scale, startY + 45 * scale);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawSonarCanvas() {
+  if (!sonarCanvas || !sonarCtx) return;
+  const rect = sonarCanvas.getBoundingClientRect();
+  const ratio = window.devicePixelRatio || 1;
+  const width = Math.max(320, Math.round(rect.width));
+  const height = Math.max(180, Math.round(rect.height));
+  sonarCanvas.width = Math.round(width * ratio);
+  sonarCanvas.height = Math.round(height * ratio);
+  sonarCtx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  sonarCtx.clearRect(0, 0, width, height);
+
+  const metrics = sonarCanvasMetrics(width, height);
+  const scale = metrics.scale;
+
+  const sky = sonarCtx.createLinearGradient(0, 0, 0, metrics.waterY);
+  sky.addColorStop(0, '#fbfdff');
+  sky.addColorStop(0.58, '#f3faff');
+  sky.addColorStop(1, '#e3f6ff');
+  sonarCtx.fillStyle = sky;
+  sonarCtx.fillRect(0, 0, width, metrics.waterY + 10 * scale);
+
+  const water = sonarCtx.createLinearGradient(0, metrics.waterY, 0, height);
+  water.addColorStop(0, '#8ce4f1');
+  water.addColorStop(0.22, '#4fc9e4');
+  water.addColorStop(0.62, '#168fc6');
+  water.addColorStop(1, '#086fa8');
+  sonarCtx.fillStyle = water;
+  sonarCtx.fillRect(0, metrics.waterY, width, height - metrics.waterY);
+
+  sonarCtx.save();
+  sonarCtx.globalAlpha = 0.13;
+  sonarCtx.fillStyle = '#ffffff';
+  for (let i = 0; i < 6; i += 1) {
+    const x = width * (0.12 + i * 0.16);
+    const beamW = width * 0.08;
+    const beam = sonarCtx.createLinearGradient(x, metrics.waterY, x, height);
+    beam.addColorStop(0, 'rgba(255,255,255,0.72)');
+    beam.addColorStop(1, 'rgba(255,255,255,0)');
+    sonarCtx.fillStyle = beam;
+    sonarCtx.beginPath();
+    sonarCtx.moveTo(x, metrics.waterY);
+    sonarCtx.lineTo(x + beamW, metrics.waterY);
+    sonarCtx.lineTo(x + beamW * 0.55, height);
+    sonarCtx.lineTo(x - beamW * 0.2, height);
+    sonarCtx.closePath();
+    sonarCtx.fill();
+  }
+  sonarCtx.restore();
+
+  drawSonarWaterline(sonarCtx, width, metrics.waterY, scale);
+  drawSonarSeabed(sonarCtx, width, height, metrics);
+
+  const beamCenter = metrics.boatX;
+  const beamBottom = metrics.seabedY;
+  const overlayCard = document.querySelector('.sonar-overlay-card');
+  if (overlayCard) {
+    const cardW = Math.min(190, width * 0.28);
+    const cardH = 72;
+    const cardLeft = Math.max(14, Math.min(width - cardW - 14, beamCenter + 92 * scale));
+    const cardTop = Math.max(metrics.waterY + 22 * scale, Math.min(height - cardH - 18, metrics.waterY + 118 * scale));
+    overlayCard.style.setProperty('--sonar-card-left', cardLeft + 'px');
+    overlayCard.style.setProperty('--sonar-card-top', cardTop + 'px');
+  }
+  let boatPlacement = null;
+  if (sonarBoatImage.complete && sonarBoatImage.naturalWidth) {
+    const boatW = Math.min(width * 0.36, sonarBoatImage.naturalWidth * scale * 1.05);
+    const boatH = sonarBoatImage.naturalHeight * (boatW / sonarBoatImage.naturalWidth);
+    boatPlacement = {
+      w: boatW,
+      h: boatH,
+      x: beamCenter - boatW * SONAR_BOAT_SENSOR_X_RATIO,
+      y: metrics.waterY - boatH + 38 * scale
+    };
+  }
+  const beamTop = boatPlacement
+    ? boatPlacement.y + boatPlacement.h * SONAR_BOAT_SENSOR_BOTTOM_RATIO + 12 * scale
+    : metrics.waterY + 58 * scale;
+  drawSonarPulse(sonarCtx, beamCenter, beamTop, beamBottom, scale);
+
+  if (boatPlacement) {
+    sonarCtx.save();
+    sonarCtx.shadowColor = 'rgba(24, 71, 102, 0.14)';
+    sonarCtx.shadowBlur = 10 * scale;
+    sonarCtx.shadowOffsetY = 3 * scale;
+    sonarCtx.drawImage(sonarBoatImage, boatPlacement.x, boatPlacement.y, boatPlacement.w, boatPlacement.h);
+    sonarCtx.restore();
+  }
+
+}
+
+function sonarCanvasPoint(event) {
+  const rect = sonarCanvas.getBoundingClientRect();
+  return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+}
+
+function setSonarPositionFromX(x) {
+  const rect = sonarCanvas.getBoundingClientRect();
+  const width = Math.max(320, Math.round(rect.width));
+  const height = Math.max(180, Math.round(rect.height));
+  const metrics = sonarCanvasMetrics(width, height);
+  const nearest = SONAR_POSITIONS.reduce((best, position, index) => {
+    const px = width * position.xRatio;
+    const distance = Math.abs(px - x);
+    return distance < best.distance ? { index, distance } : best;
+  }, { index: sonarPositionIndex, distance: Infinity });
+  sonarPositionIndex = nearest.index;
+  localStorage.setItem('palladio-sonar-position-index', String(sonarPositionIndex));
+  if (rows.length) {
+    rows = [];
+    lastData = {};
+    updateTable();
+    updateAnalysis();
+    draw();
+  }
+  renderSonarExperiment();
+}
+
+function startSonarDrag(event) {
+  if (!isSonarExperimentMode() || !sonarCanvas) return;
+  event.preventDefault();
+  const point = sonarCanvasPoint(event);
+  sonarDragging = true;
+  sonarDragOffsetX = point.x;
+  sonarCanvas.classList.add('dragging');
+  setSonarPositionFromX(point.x);
+  if (sonarCanvas.setPointerCapture && event.pointerId !== undefined) {
+    sonarCanvas.setPointerCapture(event.pointerId);
+  }
+}
+
+function moveSonarDrag(event) {
+  if (!sonarDragging) return;
+  event.preventDefault();
+  const point = sonarCanvasPoint(event);
+  if (Math.abs(point.x - sonarDragOffsetX) > 4) setSonarPositionFromX(point.x);
+}
+
+function finishSonarDrag(event) {
+  if (!sonarDragging) return;
+  sonarDragging = false;
+  sonarCanvas.classList.remove('dragging');
+  if (sonarCanvas.releasePointerCapture && sonarCanvas.hasPointerCapture && event.pointerId !== undefined &&
+      sonarCanvas.hasPointerCapture(event.pointerId)) {
+    sonarCanvas.releasePointerCapture(event.pointerId);
+  }
 }
 
 function collisionFit(trials) {
@@ -4056,7 +4893,9 @@ function renderWeightExperiment() {
   const note = document.getElementById('weightNote');
   const protocol = document.getElementById('weightProtocol');
   const massInput = document.getElementById('weightMassG');
+  const extensionInput = document.getElementById('weightExtensionCm');
   massInput.value = weightMassG.toFixed(0);
+  extensionInput.value = weightExtensionCm.toFixed(1);
 
   if (!isWeightExperimentMode()) {
     panel.hidden = true;
@@ -4075,10 +4914,10 @@ function renderWeightExperiment() {
     : 'Επίλεξε με A-B ένα σταθερό plateau βάρους';
 
   protocol.innerHTML =
-    '<section class="experiment-study-card"><h5>Στόχος</h5><p>Να ελέγξουν οι μαθητές ότι το βάρος είναι ανάλογο της μάζας και περιγράφεται από τη σχέση w = m·g.</p></section>' +
-    '<section class="experiment-study-card"><h5>Στήσιμο</h5><p>Κρέμασε γνωστή μάζα στον αισθητήρα δύναμης. Κάνε tare πριν βάλεις το σώμα και περίμενε να σταθεροποιηθεί η ένδειξη.</p></section>' +
-    '<section class="experiment-study-card"><h5>Βήματα</h5><ol><li>Γράψε τη μάζα του σώματος σε g.</li><li>Επίλεξε στο γράφημα ένα οριζόντιο plateau.</li><li>Πάτησε “Μέτρηση βάρους” και έπειτα “Αποθήκευση δοκιμής”.</li><li>Επανάλαβε για διαφορετικές μάζες και σύγκρινε wπ με wθ.</li></ol></section>' +
-    '<section class="experiment-study-card"><h5>Σύγκριση</h5><p>Το dashboard υπολογίζει wθ = m·9,81 και gπ = wπ/m. Αν οι μετρήσεις είναι καλές, το gπ πλησιάζει τα 9,81 m/s².</p></section>';
+    '<section class="experiment-study-card"><h5>Στόχος</h5><p>Να συνδέσουν οι μαθητές τη μάζα με το βάρος και να δουν ότι μεγαλύτερο βάρος προκαλεί μεγαλύτερη επιμήκυνση στο ελατήριο.</p></section>' +
+    '<section class="experiment-study-card"><h5>Στήσιμο</h5><p>Κρέμασε μάζα στο ελατήριο και σύνδεσε τη διάταξη με τον αισθητήρα δύναμης. Κάνε tare πριν βάλεις τη μάζα και μέτρα το αρχικό μήκος του ελατηρίου.</p></section>' +
+    '<section class="experiment-study-card"><h5>Βήματα</h5><ol><li>Γράψε τη μάζα του σώματος σε g.</li><li>Επίλεξε στο γράφημα ένα οριζόντιο plateau βάρους.</li><li>Μέτρησε την επιμήκυνση Δx του ελατηρίου σε cm.</li><li>Πάτησε “Μέτρηση βάρους” και έπειτα “Αποθήκευση δοκιμής”.</li><li>Επανάλαβε για διαφορετικές μάζες.</li></ol></section>' +
+    '<section class="experiment-study-card"><h5>Σύγκριση</h5><p>Το dashboard υπολογίζει wθ = m·9,81 και gπ = wπ/m. Στον πίνακα φαίνεται μαζί και η επιμήκυνση Δx για να συγκρίνεται με το βάρος.</p></section>';
 
   body.innerHTML = weightTrials.length
     ? weightTrials.map((trial, index) => {
@@ -4086,13 +4925,14 @@ function renderWeightExperiment() {
           '<td>' + (index + 1) + '</td>' +
           '<td>' + trial.massG.toFixed(1) + '</td>' +
           '<td>' + trial.massKg.toFixed(4) + '</td>' +
+          '<td>' + (isFinite(trial.extensionCm) ? trial.extensionCm.toFixed(1) : '—') + '</td>' +
           '<td>' + trial.measuredWeight.toFixed(4) + '</td>' +
           '<td>' + trial.theoreticalWeight.toFixed(4) + '</td>' +
           '<td>' + trial.experimentalG.toFixed(2) + '</td>' +
           '<td>' + trial.errorPercent.toFixed(1) + '</td>' +
           '</tr>';
       }).join('')
-    : '<tr><td colspan="7" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>';
+    : '<tr><td colspan="8" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>';
 
   const cards = [];
   if (current) {
@@ -4103,7 +4943,8 @@ function renderWeightExperiment() {
   }
   cards.push(
     '<div class="summary-card"><span>Αποθηκευμένο wπ</span><strong>' + (hasCapture ? compactNumber(Math.abs(weightCapturedForce)) : '—') + '</strong><small>N πειραματικό βάρος</small></div>',
-    '<div class="summary-card"><span>Μάζα</span><strong>' + compactNumber(weightMassG) + '</strong><small>g</small></div>'
+    '<div class="summary-card"><span>Μάζα</span><strong>' + compactNumber(weightMassG) + '</strong><small>g</small></div>',
+    '<div class="summary-card"><span>Επιμήκυνση Δx</span><strong>' + compactNumber(weightExtensionCm) + '</strong><small>cm</small></div>'
   );
   if (preview) {
     cards.push(
@@ -4124,7 +4965,7 @@ function renderWeightExperiment() {
   summary.innerHTML = cards.length
     ? cards.join('')
     : '<div class="experiment-empty">Επίλεξε πρώτα σταθερό plateau και γράψε τη μάζα.</div>';
-  note.textContent = 'Για τη θεωρητική τιμή χρησιμοποιείται g = 9,81 m/s². Η μάζα πρέπει να μπει σε g, αλλά ο υπολογισμός γίνεται σε kg.';
+  note.textContent = 'Για τη θεωρητική τιμή χρησιμοποιείται g = 9,81 m/s². Η επιμήκυνση Δx είναι η διαφορά από το αρχικό μήκος του ελατηρίου χωρίς μάζα.';
 }
 
 function renderBuoyancyExperiment() {
@@ -4307,6 +5148,443 @@ function renderCollisionExperiment() {
   drawCollisionExperimentChart(collisionTrials, fit);
 }
 
+function pendulumPeriod(lengthM) {
+  return 2 * Math.PI * Math.sqrt(Math.max(0.01, lengthM) / 9.81);
+}
+
+function pendulumSample(time, lengthM = pendulumLengthM, angleDeg = pendulumAngleDeg) {
+  const period = pendulumPeriod(lengthM);
+  const theta = angleDeg * Math.cos(2 * Math.PI * time / period);
+  const omega = -angleDeg * (2 * Math.PI / period) * Math.sin(2 * Math.PI * time / period);
+  const amplitudeCm = lengthM * (angleDeg * Math.PI / 180) * 100;
+  const displacementCm = lengthM * (theta * Math.PI / 180) * 100;
+  return {
+    pendulumDisplacementCm: displacementCm,
+    pendulumAmplitudeCm: amplitudeCm,
+    theta,
+    omegaPendulum: omega
+  };
+}
+
+function pendulumVisualGeometry(width, height) {
+  const source = { x: 0, y: 92, w: 1672, h: 849 };
+  const scale = Math.min(width / source.w, height / source.h);
+  const drawW = source.w * scale;
+  const drawH = source.h * scale;
+  const offsetX = (width - drawW) / 2;
+  const offsetY = Math.max(12, (height - drawH) * 0.18);
+  const mapPoint = (x, y) => ({ x: offsetX + (x - source.x) * scale, y: offsetY + (y - source.y) * scale });
+  const pivot = mapPoint(974, 214);
+  const lengthRatio = (Math.max(0.1, Math.min(3, pendulumLengthM)) - 0.1) / 2.9;
+  const minLength = Math.max(92, 165 * scale);
+  const bobMassScale = Math.max(0.68, Math.min(1.75, Math.sqrt(pendulumMassG / 100)));
+  const bobRadius = 62 * scale * bobMassScale;
+  const frameLimit = height - pivot.y - 118 - bobRadius;
+  const illustrationLimit = 560 * scale;
+  const maxLength = Math.max(minLength + 150, Math.min(frameLimit, illustrationLimit));
+  const lengthPx = minLength + (maxLength - minLength) * lengthRatio;
+  const maxTheta = pendulumAngleDeg * Math.PI / 180;
+  return { pivot, lengthPx, maxTheta, scale, image: { ...source, offsetX, offsetY, drawW, drawH } };
+}
+
+function currentPendulumDisplayTime() {
+  if (pendulumInspectTime !== null) return pendulumInspectTime;
+  if (running && pendulumLiveStartMs !== null) {
+    return Math.min(pendulumDurationS, Math.max(0, (performance.now() - pendulumLiveStartMs) / 1000));
+  }
+  return rows.length ? rows[rows.length - 1].time : 0;
+}
+
+function pendulumIntervalInfo(delta) {
+  const period = pendulumPeriod(pendulumLengthM);
+  if (!isFinite(delta) || delta <= 0 || !isFinite(period) || period <= 0) return null;
+  const ratio = delta / period;
+  const whole = Math.round(ratio);
+  if (whole >= 1 && Math.abs(ratio - whole) <= 0.08) {
+    return {
+      label: whole === 1 ? 'περίπου 1 πλήρης ταλάντωση' : 'περίπου ' + whole + ' πλήρεις ταλαντώσεις',
+      detail: 'Μπορείς να βάλεις N = ' + whole + ' και να υπολογίσεις T = Δt / N.',
+      oscillations: whole
+    };
+  }
+  const targets = [
+    { value: 0.25, label: 'περίπου T/4', detail: 'Χρόνος από τη θέση ισορροπίας σε μία ακραία θέση, ή αντίστροφα.' },
+    { value: 0.5, label: 'περίπου T/2', detail: 'Χρόνος από την ακραία θέση Α στην ακραία θέση Β.' },
+    { value: 0.75, label: 'περίπου 3T/4', detail: 'Τρία τέταρτα μιας πλήρους ταλάντωσης.' }
+  ];
+  const nearest = targets.reduce((best, item) => {
+    return Math.abs(ratio - item.value) < Math.abs(ratio - best.value) ? item : best;
+  }, targets[0]);
+  if (Math.abs(ratio - nearest.value) <= 0.08) return nearest;
+  return {
+    label: compactNumber(ratio) + ' T',
+    detail: 'Δεν είναι καθαρός χαρακτηριστικός χρόνος. Διάλεξε από κορυφή σε κορυφή για πλήρη περίοδο.',
+    oscillations: null
+  };
+}
+
+function resetPendulumRows() {
+  rows = [];
+  lastSampleId = -1;
+  sampleEpochMs = null;
+  pendulumLastSampleTime = -1;
+  pendulumInspectTime = null;
+  pendulumScrubbing = false;
+  timeWindow = Math.max(5, pendulumDurationS);
+  document.getElementById('timeWindow').value = String(timeWindow);
+  customView = null;
+  selection = null;
+  analysisCache = null;
+  lastData = {};
+  updateTable();
+  updateAnalysis();
+  updateZoomStatus();
+  draw();
+}
+
+function startPendulumLive(reset = false) {
+  if (reset || !rows.length || (rows.length && rows[rows.length - 1].time >= pendulumDurationS)) {
+    resetPendulumRows();
+  }
+  const currentTime = rows.length ? rows[rows.length - 1].time : 0;
+  pendulumInspectTime = null;
+  pendulumScrubbing = false;
+  pendulumLiveStartMs = performance.now() - currentTime * 1000;
+  pendulumPhaseStart = pendulumLiveStartMs;
+  setRunning(true);
+}
+
+function appendPendulumLiveSamples() {
+  if (!isPendulumExperimentMode() || !running || pendulumLiveStartMs === null) return;
+  const sampleRate = 25;
+  const step = 1 / sampleRate;
+  const duration = Math.max(5, pendulumDurationS);
+  const elapsed = Math.min(duration, (performance.now() - pendulumLiveStartMs) / 1000);
+  let nextTime = pendulumLastSampleTime < 0 ? 0 : pendulumLastSampleTime + step;
+  let added = false;
+  while (nextTime <= elapsed + 1e-9) {
+    rows.push({
+      time: nextTime,
+      sample: {
+        mode: 6,
+        ...pendulumSample(nextTime)
+      }
+    });
+    pendulumLastSampleTime = nextTime;
+    nextTime += step;
+    added = true;
+  }
+  if (rows.length > maxSamples) rows.splice(0, rows.length - maxSamples);
+  if (rows.length) lastData = rows[rows.length - 1].sample;
+  if (added) {
+    updateTable();
+    updateAnalysis();
+    updateStudentGuide();
+    draw();
+    renderPendulumExperiment();
+  }
+  if (elapsed >= duration) {
+    setRunning(false);
+    pendulumLiveStartMs = null;
+    showToast('Η ψηφιακή μέτρηση εκκρεμούς ολοκληρώθηκε.');
+  }
+}
+
+function drawPendulumCanvas() {
+  if (!pendulumCanvas || !pendulumCtx) return;
+  const rect = pendulumCanvas.getBoundingClientRect();
+  const ratio = window.devicePixelRatio || 1;
+  const width = Math.max(260, Math.round(rect.width));
+  const height = Math.max(220, Math.round(rect.height));
+  pendulumCanvas.width = Math.round(width * ratio);
+  pendulumCanvas.height = Math.round(height * ratio);
+  pendulumCtx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  pendulumCtx.clearRect(0, 0, width, height);
+
+  const elapsed = currentPendulumDisplayTime();
+  const sample = pendulumSample(elapsed);
+  const theta = sample.theta * Math.PI / 180;
+  const geometry = pendulumVisualGeometry(width, height);
+  const pivot = geometry.pivot;
+  const lengthPx = geometry.lengthPx;
+  const bob = {
+    x: pivot.x + Math.sin(theta) * lengthPx,
+    y: pivot.y + Math.cos(theta) * lengthPx
+  };
+
+  const maxTheta = geometry.maxTheta;
+  const equilibrium = { x: pivot.x, y: pivot.y + lengthPx };
+  const leftExtreme = {
+    x: pivot.x - Math.sin(maxTheta) * lengthPx,
+    y: pivot.y + Math.cos(maxTheta) * lengthPx
+  };
+  const rightExtreme = {
+    x: pivot.x + Math.sin(maxTheta) * lengthPx,
+    y: pivot.y + Math.cos(maxTheta) * lengthPx
+  };
+
+  pendulumCtx.fillStyle = '#ffffff';
+  pendulumCtx.fillRect(0, 0, width, height);
+  if (pendulumBackground.complete && pendulumBackground.naturalWidth) {
+    const image = geometry.image;
+    pendulumCtx.drawImage(pendulumBackground, image.x, image.y, image.w, image.h, image.offsetX, image.offsetY, image.drawW, image.drawH);
+  } else {
+    pendulumCtx.fillStyle = '#f8fbff';
+    pendulumCtx.fillRect(0, 0, width, height);
+  }
+
+  if (pendulumShowPositions) {
+    pendulumCtx.save();
+    pendulumCtx.strokeStyle = 'rgba(123, 96, 186, 0.26)';
+    pendulumCtx.lineWidth = 1.2;
+    pendulumCtx.setLineDash([4, 7]);
+    pendulumCtx.beginPath();
+    pendulumCtx.arc(pivot.x, pivot.y, lengthPx, Math.PI / 2 - maxTheta, Math.PI / 2 + maxTheta);
+    pendulumCtx.stroke();
+    pendulumCtx.setLineDash([]);
+    [
+      { point: leftExtreme, color: 'rgba(123, 96, 186, 0.42)' },
+      { point: equilibrium, color: 'rgba(45, 157, 87, 0.5)' },
+      { point: rightExtreme, color: 'rgba(123, 96, 186, 0.42)' }
+    ].forEach(({ point, color }) => {
+      pendulumCtx.fillStyle = color;
+      pendulumCtx.beginPath();
+      pendulumCtx.arc(point.x, point.y, 3, 0, Math.PI * 2);
+      pendulumCtx.fill();
+    });
+    pendulumCtx.restore();
+
+    pendulumCtx.strokeStyle = 'rgba(94, 118, 139, 0.3)';
+    pendulumCtx.lineWidth = 1;
+    pendulumCtx.setLineDash([4, 7]);
+    pendulumCtx.beginPath();
+    pendulumCtx.moveTo(pivot.x, pivot.y + 10);
+    pendulumCtx.lineTo(equilibrium.x, equilibrium.y + 14);
+    pendulumCtx.stroke();
+    pendulumCtx.setLineDash([]);
+
+    [
+      { point: leftExtreme, label: 'Α.Θ.Α', dx: -18, dy: 18, color: '#6f45a7' },
+      { point: equilibrium, label: 'Θ.Ι.', dx: 0, dy: 28, color: '#24804a' },
+      { point: rightExtreme, label: 'Α.Θ.Β', dx: 18, dy: 18, color: '#6f45a7' }
+    ].forEach(marker => {
+      const labelX = Math.max(18, Math.min(width - 18, marker.point.x + marker.dx));
+      const labelY = Math.max(16, Math.min(height - 74, marker.point.y + marker.dy));
+      pendulumCtx.fillStyle = marker.color;
+      pendulumCtx.beginPath();
+      pendulumCtx.arc(marker.point.x, marker.point.y, 3.2, 0, Math.PI * 2);
+      pendulumCtx.fill();
+      pendulumCtx.font = '900 11px system-ui';
+      pendulumCtx.textAlign = 'center';
+      pendulumCtx.textBaseline = 'middle';
+      pendulumCtx.lineWidth = 3;
+      pendulumCtx.strokeStyle = 'rgba(255, 255, 255, 0.92)';
+      pendulumCtx.strokeText(marker.label, labelX, labelY);
+      pendulumCtx.fillStyle = marker.color;
+      pendulumCtx.fillText(marker.label, labelX, labelY);
+    });
+  }
+
+  if (pendulumLayer.complete && pendulumLayer.naturalWidth) {
+    const bobMassScale = Math.max(0.68, Math.min(1.75, Math.sqrt(pendulumMassG / 100)));
+    const bobSource = { x: 35, y: 388, w: 90, h: 132, centerX: 75, centerY: 468 };
+    const bobW = bobSource.w * geometry.scale * bobMassScale;
+    const bobH = bobSource.h * geometry.scale * bobMassScale;
+    const bobCenterY = lengthPx;
+    const bobCenterOffsetX = (bobSource.centerX - bobSource.x) * geometry.scale * bobMassScale;
+    const bobCenterOffsetY = (bobSource.centerY - bobSource.y) * geometry.scale * bobMassScale;
+    pendulumCtx.save();
+    pendulumCtx.translate(pivot.x, pivot.y);
+    pendulumCtx.rotate(theta);
+    pendulumCtx.drawImage(pendulumLayer, 65, 0, 20, 425, -10 * geometry.scale, 0, 20 * geometry.scale, Math.max(1, lengthPx - bobCenterOffsetY + 2));
+    pendulumCtx.drawImage(pendulumLayer, bobSource.x, bobSource.y, bobSource.w, bobSource.h, -bobCenterOffsetX, bobCenterY - bobCenterOffsetY, bobW, bobH);
+    pendulumCtx.restore();
+  } else {
+    pendulumCtx.strokeStyle = '#53677d';
+    pendulumCtx.lineWidth = 2.2;
+    pendulumCtx.beginPath();
+    pendulumCtx.moveTo(pivot.x, pivot.y);
+    pendulumCtx.lineTo(bob.x, bob.y);
+    pendulumCtx.stroke();
+    pendulumCtx.fillStyle = '#7b4db7';
+    pendulumCtx.strokeStyle = '#3b2562';
+    pendulumCtx.lineWidth = 2;
+    pendulumCtx.beginPath();
+    pendulumCtx.arc(bob.x, bob.y, 11, 0, Math.PI * 2);
+    pendulumCtx.fill();
+    pendulumCtx.stroke();
+  }
+
+  pendulumCtx.fillStyle = 'rgba(255, 255, 255, 0.72)';
+  pendulumCtx.strokeStyle = '#d5e0ea';
+  pendulumCtx.lineWidth = 1;
+  pendulumCtx.beginPath();
+  pendulumCtx.roundRect(12, height - 48, 178, 34, 9);
+  pendulumCtx.fill();
+  pendulumCtx.stroke();
+
+  pendulumCtx.fillStyle = '#26384a';
+  pendulumCtx.font = '800 11.5px system-ui';
+  pendulumCtx.textAlign = 'left';
+  pendulumCtx.fillText('L = ' + pendulumLengthM.toFixed(2) + ' m', 24, height - 34);
+  pendulumCtx.fillText('m = ' + pendulumMassG.toFixed(0) + ' g · T = ' + pendulumPeriod(pendulumLengthM).toFixed(2) + ' s', 24, height - 19);
+  if (!running && rows.length) {
+    pendulumCtx.fillStyle = 'rgba(255, 255, 255, 0.72)';
+    pendulumCtx.strokeStyle = '#d5e0ea';
+    pendulumCtx.lineWidth = 1;
+    pendulumCtx.beginPath();
+    pendulumCtx.roundRect(width - 136, height - 48, 124, 34, 9);
+    pendulumCtx.fill();
+    pendulumCtx.stroke();
+    pendulumCtx.textAlign = 'right';
+    pendulumCtx.fillStyle = pendulumInspectTime !== null ? '#1b4f9f' : '#52667d';
+    pendulumCtx.fillText('t = ' + elapsed.toFixed(2) + ' s', width - 24, height - 34);
+    pendulumCtx.fillText('x = ' + sample.pendulumDisplacementCm.toFixed(1) + ' cm', width - 24, height - 19);
+  }
+}
+
+function pendulumCanvasPoint(event) {
+  const rect = pendulumCanvas.getBoundingClientRect();
+  return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+}
+
+function pendulumBobAtTime(time) {
+  const rect = pendulumCanvas.getBoundingClientRect();
+  const width = Math.max(260, Math.round(rect.width));
+  const height = Math.max(220, Math.round(rect.height));
+  const geometry = pendulumVisualGeometry(width, height);
+  const theta = pendulumSample(time).theta * Math.PI / 180;
+  return {
+    x: geometry.pivot.x + Math.sin(theta) * geometry.lengthPx,
+    y: geometry.pivot.y + Math.cos(theta) * geometry.lengthPx
+  };
+}
+
+function setPendulumInspectFromPoint(point) {
+  const rect = pendulumCanvas.getBoundingClientRect();
+  const width = Math.max(260, Math.round(rect.width));
+  const height = Math.max(220, Math.round(rect.height));
+  const geometry = pendulumVisualGeometry(width, height);
+  const dx = point.x - geometry.pivot.x;
+  const dy = Math.max(1, point.y - geometry.pivot.y);
+  const theta = Math.max(-geometry.maxTheta, Math.min(geometry.maxTheta, Math.atan2(dx, dy)));
+  const ratio = Math.max(-1, Math.min(1, theta / geometry.maxTheta));
+  const period = pendulumPeriod(pendulumLengthM);
+  const firstHalfTime = Math.acos(ratio) * period / (Math.PI * 2);
+  const secondHalfTime = period - firstHalfTime;
+  const previousTime = pendulumInspectTime === null ? currentPendulumDisplayTime() % period : pendulumInspectTime;
+  const firstDistance = Math.abs(firstHalfTime - previousTime);
+  const secondDistance = Math.abs(secondHalfTime - previousTime);
+  pendulumInspectTime = firstDistance < secondDistance
+    ? firstHalfTime
+    : (secondDistance < firstDistance ? secondHalfTime : (previousTime >= period / 2 ? secondHalfTime : firstHalfTime));
+  if (pendulumInspectTime >= period - 0.01) pendulumInspectTime = period;
+  if (rows.length) pendulumInspectTime = Math.min(rows[rows.length - 1].time, pendulumInspectTime);
+  drawPendulumCanvas();
+  draw();
+  renderPendulumExperiment();
+}
+
+function startPendulumScrub(event) {
+  if (!isPendulumExperimentMode() || running || !rows.length || !pendulumCanvas) return;
+  const point = pendulumCanvasPoint(event);
+  const bob = pendulumBobAtTime(currentPendulumDisplayTime());
+  const distance = Math.hypot(point.x - bob.x, point.y - bob.y);
+  if (distance > 46) return;
+  event.preventDefault();
+  pendulumScrubbing = true;
+  pendulumCanvas.style.cursor = 'grabbing';
+  setPendulumInspectFromPoint(point);
+  if (pendulumCanvas.setPointerCapture && event.pointerId !== undefined) {
+    pendulumCanvas.setPointerCapture(event.pointerId);
+  }
+}
+
+function movePendulumScrub(event) {
+  if (!pendulumScrubbing) return;
+  event.preventDefault();
+  setPendulumInspectFromPoint(pendulumCanvasPoint(event));
+}
+
+function finishPendulumScrub(event) {
+  if (!pendulumScrubbing) return;
+  pendulumScrubbing = false;
+  pendulumCanvas.style.cursor = 'grab';
+  if (pendulumCanvas.releasePointerCapture && pendulumCanvas.hasPointerCapture && event.pointerId !== undefined &&
+      pendulumCanvas.hasPointerCapture(event.pointerId)) {
+    pendulumCanvas.releasePointerCapture(event.pointerId);
+  }
+}
+
+function renderPendulumExperiment() {
+  const panel = document.getElementById('pendulumExperiment');
+  const summary = document.getElementById('pendulumSummary');
+  const status = document.getElementById('pendulumStatus');
+  const body = document.getElementById('pendulumBody');
+  const protocol = document.getElementById('pendulumProtocol');
+  if (!isPendulumExperimentMode()) {
+    panel.hidden = true;
+    applyCollisionRailLayout();
+    return;
+  }
+
+  panel.hidden = false;
+  applyCollisionRailLayout();
+  document.getElementById('pendulumLengthM').value = pendulumLengthM.toFixed(2);
+  document.getElementById('pendulumAngleDeg').value = pendulumAngleDeg.toFixed(0);
+  document.getElementById('pendulumMassG').value = pendulumMassG.toFixed(0);
+  document.getElementById('pendulumDurationS').value = pendulumDurationS.toFixed(0);
+  document.getElementById('pendulumDeltaTS').value = pendulumDeltaTS.toFixed(1);
+  document.getElementById('pendulumOscillations').value = pendulumOscillations.toFixed(0);
+  const positionsToggle = document.getElementById('togglePendulumPositions');
+  if (positionsToggle) {
+    positionsToggle.textContent = pendulumShowPositions ? 'Απόκρυψη θέσεων' : 'Εμφάνιση θέσεων';
+    positionsToggle.setAttribute('aria-pressed', pendulumShowPositions ? 'true' : 'false');
+  }
+  const period = pendulumPeriod(pendulumLengthM);
+  const measuredPeriod = pendulumDeltaTS / pendulumOscillations;
+  const selectedDelta = selection ? Math.abs(selection.end - selection.start) : null;
+  const selectedInfo = selectedDelta !== null ? pendulumIntervalInfo(selectedDelta) : null;
+  const inspectSample = pendulumInspectTime !== null ? pendulumSample(pendulumInspectTime) : null;
+  status.textContent = inspectSample
+    ? 'Σώμα: t ' + compactNumber(pendulumInspectTime) + ' s · x ' + compactNumber(inspectSample.pendulumDisplacementCm) + ' cm'
+    : 'T θεωρ. ' + compactNumber(period) + ' s';
+  summary.innerHTML = [
+    '<div class="summary-card"><span>Μήκος L</span><strong>' + compactNumber(pendulumLengthM) + '</strong><small>m</small></div>',
+    '<div class="summary-card"><span>Μάζα m</span><strong>' + compactNumber(pendulumMassG) + '</strong><small>g · δεν αλλάζει το T</small></div>',
+    '<div class="summary-card"><span>Πλάτος A</span><strong>' + compactNumber(pendulumLengthM * (pendulumAngleDeg * Math.PI / 180) * 100) + '</strong><small>cm από τη θέση ισορροπίας</small></div>',
+    (inspectSample
+      ? '<div class="summary-card"><span>Θέση σώματος</span><strong>' + compactNumber(inspectSample.pendulumDisplacementCm) + '</strong><small>cm στη στιγμή t = ' + compactNumber(pendulumInspectTime) + ' s</small></div>'
+      : ''),
+    '<div class="summary-card"><span>T από μέτρηση</span><strong>' + compactNumber(measuredPeriod) + '</strong><small>s = Δt / N</small></div>',
+    '<div class="summary-card"><span>T θεωρητική</span><strong>' + compactNumber(period) + '</strong><small>s = 2π√(L/g), ανεξάρτητη από m</small></div>',
+    '<div class="summary-card"><span>T/2</span><strong>' + compactNumber(period / 2) + '</strong><small>ακραία θέση σε αντίθετη ακραία</small></div>',
+    '<div class="summary-card"><span>T/4</span><strong>' + compactNumber(period / 4) + '</strong><small>ισορροπία προς ακραία θέση</small></div>' +
+    (selectedDelta !== null
+      ? '<div class="summary-card"><span>Επιλεγμένο Δt A-B</span><strong>' + compactNumber(selectedDelta) + '</strong><small>s από τη γραφική</small></div>' +
+        (selectedInfo
+          ? '<div class="summary-card"><span>Το A-B μοιάζει με</span><strong>' + selectedInfo.label + '</strong><small>' + selectedInfo.detail + '</small></div>'
+          : '')
+      : '')
+  ].join('');
+  protocol.innerHTML =
+    '<section class="experiment-study-card"><h5>Στόχος</h5><p>Να καταλάβουν οι μαθητές ότι περίοδος T είναι ο χρόνος για μία πλήρη ταλάντωση.</p></section>' +
+    '<section class="experiment-study-card"><h5>Απομάκρυνση και πλάτος</h5><p>Η απομάκρυνση x δείχνει πόσο μακριά βρίσκεται το σώμα από τη θέση ισορροπίας κάθε στιγμή. Το πλάτος A είναι η μεγαλύτερη απομάκρυνση και φαίνεται ως σταθερή γραμμή στο γράφημα.</p></section>' +
+    '<section class="experiment-study-card"><h5>Μάζα</h5><p>Άλλαξε τη μάζα και παρατήρησε ότι η θεωρητική περίοδος δεν αλλάζει. Στο ιδανικό απλό εκκρεμές η περίοδος εξαρτάται κυρίως από το μήκος και όχι από τη μάζα.</p></section>' +
+    '<section class="experiment-study-card"><h5>Υπολογισμός</h5><p>Αν μετρήσεις συνολικό χρόνο Δt για N πλήρεις ταλαντώσεις, τότε T = Δt / N. Μετράμε πολλές ταλαντώσεις για να μειώσουμε το λάθος.</p></section>' +
+    '<section class="experiment-study-card"><h5>Χαρακτηριστικοί χρόνοι</h5><p>Στο σχήμα βλέπεις τη θέση ισορροπίας και τις ακραίες θέσεις Α και Β. Από τη θέση ισορροπίας σε ακραία θέση χρειάζεται T/4. Από την ακραία θέση Α στην ακραία θέση Β χρειάζεται T/2. Για να επιστρέψει στην ίδια ακραία θέση χρειάζεται T.</p></section>' +
+    '<section class="experiment-study-card"><h5>Βήματα</h5><ol><li>Πάτησε Προσομοίωση.</li><li>Όταν σταματήσει, σύρε το σώμα στο σχήμα και παρατήρησε ποιο σημείο φωτίζεται στη γραφική.</li><li>Πάτησε έναν οδηγό T/4, T/2, 1T ή 5T και δες το αντίστοιχο κομμάτι στη γραφική.</li><li>Για υπολογισμό περιόδου διάλεξε με A-B πολλές πλήρεις ταλαντώσεις.</li><li>Πάτησε “Χρήση A-B”, γράψε το N και σύγκρινε T = Δt/N με τη θεωρητική τιμή.</li></ol></section>';
+  body.innerHTML = pendulumTrials.length
+    ? pendulumTrials.map((trial, index) => '<tr><td>' + (index + 1) + '</td><td>' +
+        trial.lengthM.toFixed(2) + '</td><td>' + (trial.massG || pendulumMassG).toFixed(0) + '</td><td>' +
+        trial.angleDeg.toFixed(0) + '</td><td>' +
+        (trial.deltaT || 0).toFixed(2) + '</td><td>' + (trial.oscillations || 0).toFixed(0) + '</td><td>' +
+        (trial.measuredPeriod || trial.period).toFixed(3) + '</td><td>' +
+        trial.period.toFixed(3) + '</td><td>' + (trial.period * 10).toFixed(3) + '</td></tr>').join('')
+    : '<tr><td colspan="9" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>';
+  drawPendulumCanvas();
+}
+
 function latestFiniteValue(key) {
   if (lastData && isFinite(Number(lastData[key]))) return Number(lastData[key]);
   for (let index = rows.length - 1; index >= 0; index--) {
@@ -4352,9 +5630,9 @@ function renderHeatExperiment() {
     : '<div class="experiment-empty">Πάτα Έναρξη και περίμενε να εμφανιστούν οι δύο θερμοκρασίες.</div>';
 
   protocol.innerHTML =
-    '<section class="experiment-study-card"><h5>Στόχος</h5><p>Να παρατηρήσουν οι μαθητές ότι δύο νερά διαφορετικής θερμοκρασίας τείνουν προς θερμική ισορροπία.</p></section>' +
-    '<section class="experiment-study-card"><h5>Στήσιμο</h5><p>Βάλε τον DS18B20 T1 στο κρύο νερό και τον DS18B20 T2 στο ζεστό νερό. Οι μεταλλικές άκρες να είναι μέσα στο νερό, χωρίς να ακουμπούν έντονα στα τοιχώματα.</p></section>' +
-    '<section class="experiment-study-card"><h5>Βήματα</h5><ol><li>Διάλεξε διάρκεια 10 λεπτών ή μεγαλύτερη.</li><li>Πάτα Έναρξη και άφησε τους αισθητήρες ακίνητους.</li><li>Παρατήρησε αν οι καμπύλες T1 και T2 πλησιάζουν.</li><li>Χρησιμοποίησε τη γραμμή ΔT για να δεις αν η διαφορά θερμοκρασίας μικραίνει.</li></ol></section>' +
+    '<section class="experiment-study-card"><h5>Στόχος</h5><p>Να παρατηρήσουν οι μαθητές ότι δύο σώματα σε θερμική επαφή ανταλλάσσουν θερμότητα και τείνουν προς θερμική ισορροπία.</p></section>' +
+    '<section class="experiment-study-card"><h5>Στήσιμο</h5><p>Βάλε νερό διαφορετικής θερμοκρασίας στο εσωτερικό ποτήρι και στη λεκάνη. Το ποτήρι πρέπει να είναι μέσα στο νερό της λεκάνης ώστε να υπάρχει θερμική επαφή μέσω του τοιχώματος.</p></section>' +
+    '<section class="experiment-study-card"><h5>Βήματα</h5><ol><li>Τοποθέτησε τον DS18B20 T1 στο νερό του ποτηριού και τον DS18B20 T2 στο νερό της λεκάνης.</li><li>Διάλεξε διάρκεια 10 λεπτών ή μεγαλύτερη.</li><li>Πάτα Έναρξη και άφησε τους αισθητήρες ακίνητους.</li><li>Παρατήρησε αν οι καμπύλες T1 και T2 πλησιάζουν και αν το |ΔT| μικραίνει.</li></ol></section>' +
     '<section class="experiment-study-card"><h5>Τι κρατάμε</h5><p>Η θερμική ισορροπία φαίνεται όταν οι θερμοκρασίες τείνουν να γίνουν ίσες ή όταν η διαφορά τους αλλάζει πολύ αργά.</p></section>';
 
   note.textContent = hasValues
@@ -4364,7 +5642,9 @@ function renderHeatExperiment() {
 
 function setMode(mode, source = 'sensor', options = {}) {
   const shouldReset = options.reset !== false;
-  fetch(apiUrl('/set-mode?mode=' + mode)).catch(() => {});
+  if (!modes[mode] || !modes[mode].digital) {
+    fetch(apiUrl('/set-mode?mode=' + mode)).catch(() => {});
+  }
   activeMode = mode;
   if (source === 'sensor') {
     activeExperimentId = '';
@@ -4381,8 +5661,12 @@ function setMode(mode, source = 'sensor', options = {}) {
 
 function updateModeUi() {
   const meta = currentMode();
+  document.body.classList.toggle('sonar-mode', isSonarExperimentMode());
   document.getElementById('chartTitle').textContent = meta.title;
   document.getElementById('chartSubtitle').textContent = meta.subtitle;
+  document.getElementById('chartHint').textContent = isSonarExperimentMode()
+    ? 'Στο νερό ο ήχος ταξιδεύει περίπου με v = 1480 m/s. Οι μαθητές χρησιμοποιούν τον συνολικό χρόνο ηχούς t και υπολογίζουν d = 1480 · t / 2.'
+    : 'Σύρε στο γράφημα για μετακίνηση στον χρόνο. Ροδέλα για zoom που εστιάζει στην κυματομορφή. Shift + σύρσιμο για επιλογή A-B.';
   modeButtons.forEach(button => {
     button.classList.toggle('active', Number(button.dataset.mode) === activeMode);
   });
@@ -4404,10 +5688,12 @@ function updateModeUi() {
   renderWeightExperiment();
   renderBuoyancyExperiment();
   renderMotionExperiment();
+  renderSonarExperiment();
   renderCollisionExperiment();
   renderHeatExperiment();
+  renderPendulumExperiment();
   updateStudentGuide();
-  draw();
+  resizeCanvas();
 }
 
 function updateExperimentUi() {
@@ -4441,7 +5727,21 @@ function selectExperiment(experimentId) {
 }
 
 function applyExperimentDefaults(experimentId) {
-  if (experimentId !== 'b-heat') return;
+  if (experimentId === 'a-pendulum') {
+    setRunning(false);
+    resetPendulumRows();
+    renderPendulumExperiment();
+    showToast('Απλό εκκρεμές: ψηφιακή προσομοίωση χωρίς M5.');
+    return;
+  }
+  if (experimentId === 'a-sonar') {
+    setCollisionRailCollapsed(true);
+    resetZoom(false);
+    renderSonarExperiment();
+    showToast('Sonar: μέτρα τον συνολικό χρόνο ηχούς και υπολόγισε την απόσταση.');
+    return;
+  }
+  if (experimentId !== 'a-heat') return;
   const timeSelect = document.getElementById('timeWindow');
   const rateSelect = document.getElementById('sampleRate');
   timeWindow = 600;
@@ -4487,6 +5787,14 @@ function modePrompt() {
       ready: 'Τοποθέτησε τα δύο DS18B20 στα σημεία που θέλεις να συγκρίνεις και πάτα Έναρξη.',
       running: 'Παρατήρησε τις δύο καμπύλες και τη διαφορά θερμοκρασίας.',
       selected: 'Δες πόσο άλλαξε η θερμοκρασία στο επιλεγμένο χρονικό διάστημα.'
+    };
+  }
+  if (activeMode === 6) {
+    return {
+      title: 'Πειραματίσου με απλό εκκρεμές',
+      ready: 'Διάλεξε μήκος και γωνία και πάτησε Προσομοίωση. Δεν χρειάζεται M5.',
+      running: 'Παρατήρησε την περιοδική καμπύλη x-t και τη γραμμή A-t του πλάτους.',
+      selected: 'Σύγκρινε τη διάρκεια που επέλεξες με T/4, T/2 ή T.'
     };
   }
   return {
@@ -4790,8 +6098,43 @@ function clampView(start, end) {
   return { start: nextStart, end: nextEnd };
 }
 
-function setCustomView(start, end) {
+function focusYScaleOnVisibleWaveform() {
+  if (!chartGeometry || chartGeometry.split) {
+    customYScale = null;
+    return;
+  }
+  const series = enabledSeries();
+  const dataRows = visibleRows();
+  const values = [];
+  dataRows.forEach(row => {
+    series.forEach(item => {
+      const value = rowValue(row, item);
+      if (isFinite(value)) values.push(value);
+    });
+  });
+  if (!values.length) {
+    customYScale = null;
+    return;
+  }
+  const meta = currentMode();
+  let min = Math.min(...values);
+  let max = Math.max(...values);
+  const rawSpan = Math.max(1e-9, max - min);
+  if (meta.symmetric) {
+    const bound = Math.max((meta.minimumSpan || 1) / 12, Math.abs(min), Math.abs(max)) * 1.18;
+    min = -bound;
+    max = bound;
+  } else {
+    const padding = Math.max((meta.minimumSpan || 1) / 30, rawSpan * 0.18);
+    min -= padding;
+    max += padding;
+  }
+  customYScale = clampYScale(min, max);
+}
+
+function setCustomView(start, end, focusWaveform = false) {
   customView = clampView(start, end);
+  if (focusWaveform) focusYScaleOnVisibleWaveform();
   hoverPoint = null;
   tooltip.hidden = true;
   updateAnalysis();
@@ -4835,7 +6178,7 @@ function zoomAt(centerTime, factor) {
   const ratio = span > 0 ? (centerTime - view.start) / span : 0.5;
   const start = centerTime - nextSpan * ratio;
   setRunning(false);
-  setCustomView(start, start + nextSpan);
+  setCustomView(start, start + nextSpan, true);
 }
 
 function zoomYAt(centerValue, factor) {
@@ -5589,8 +6932,10 @@ function updateAnalysis() {
     renderWeightExperiment();
     renderBuoyancyExperiment();
     renderMotionExperiment();
+    renderSonarExperiment();
     renderCollisionExperiment();
     renderHeatExperiment();
+    renderPendulumExperiment();
     updateStudentGuide();
     return;
   }
@@ -5637,8 +6982,10 @@ function updateAnalysis() {
   renderWeightExperiment();
   renderBuoyancyExperiment();
   renderMotionExperiment();
+  renderSonarExperiment();
   renderCollisionExperiment();
   renderHeatExperiment();
+  renderPendulumExperiment();
   updateStudentGuide();
 }
 
@@ -5726,6 +7073,83 @@ function resizeCanvas() {
   draw();
   drawHookeExperimentChart(isHookeExperimentMode() ? hookeTrials : [], hookeFit(hookeTrials));
   drawCollisionExperimentChart(isCollisionExperimentMode() ? collisionTrials : [], collisionFit(collisionTrials));
+  if (isPendulumExperimentMode()) drawPendulumCanvas();
+  if (isSonarExperimentMode()) drawSonarCanvas();
+}
+
+function drawPendulumTimeGuides(pad, plotW, plotH, xMin, xMax) {
+  if (!isPendulumExperimentMode()) return;
+  const period = pendulumPeriod(pendulumLengthM);
+  const guides = [
+    { time: period / 4, label: 'T/4', color: '#2d9d57' },
+    { time: period / 2, label: 'T/2', color: '#1769aa' },
+    { time: period, label: 'T', color: '#7b4db7' }
+  ];
+  ctx.save();
+  ctx.font = '800 12px system-ui';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  guides.forEach(guide => {
+    if (guide.time < xMin || guide.time > xMax) return;
+    const x = pad.left + (guide.time - xMin) * plotW / (xMax - xMin);
+    ctx.strokeStyle = guide.color;
+    ctx.lineWidth = 1.4;
+    ctx.setLineDash([4, 5]);
+    ctx.beginPath();
+    ctx.moveTo(x, pad.top);
+    ctx.lineTo(x, pad.top + plotH);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#ffffff';
+    ctx.strokeStyle = guide.color;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.roundRect(x - 18, pad.top + 8, 36, 22, 8);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = guide.color;
+    ctx.fillText(guide.label, x, pad.top + 13);
+  });
+  ctx.restore();
+}
+
+function drawPendulumScrubHighlight(pad, plotW, plotH, xMin, xMax, scale, selectedSeries) {
+  if (!isPendulumExperimentMode() || pendulumInspectTime === null) return;
+  const time = pendulumInspectTime;
+  if (time < xMin || time > xMax) return;
+  const x = pad.left + (time - xMin) * plotW / (xMax - xMin);
+  const sample = pendulumSample(time);
+
+  ctx.save();
+  ctx.strokeStyle = 'rgba(27, 79, 159, 0.8)';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([6, 5]);
+  ctx.beginPath();
+  ctx.moveTo(x, pad.top);
+  ctx.lineTo(x, pad.top + plotH);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  selectedSeries.forEach(series => {
+    const value = sample[series.key];
+    if (!isFinite(value)) return;
+    const y = pad.top + (scale.max - value) * plotH / (scale.max - scale.min);
+    if (y < pad.top || y > pad.top + plotH) return;
+    ctx.fillStyle = '#ffffff';
+    ctx.strokeStyle = series.color;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(x, y, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+  });
+
+  ctx.fillStyle = '#1b4f9f';
+  ctx.font = '800 12px system-ui';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'bottom';
+  ctx.fillText('t = ' + time.toFixed(2) + ' s', x, Math.max(pad.top + 18, pad.top + 2));
+  ctx.restore();
 }
 
 function drawPanelFrame(panel, width, height, viewSpan) {
@@ -5852,8 +7276,12 @@ function drawSeriesInPanel(panel, dataRows) {
     const y = pad.top + (scale.max - value) * panel.plotH / (scale.max - scale.min);
     points.push({ x, y });
   });
-  drawDataPath(points);
-  ctx.stroke();
+  if (points.length) {
+    drawDataPath(points);
+    ctx.stroke();
+  }
+
+  drawPendulumScrubHighlight(pad, panel.plotW, panel.plotH, xMin, xMax, scale, panel.series);
 
   if (hoverPoint && dataRows.length) {
     const hoverTime = timeAtX(hoverPoint.x, hoverPoint.y);
@@ -5946,6 +7374,12 @@ function draw() {
   const height = rect.height;
   if (!width || !height) return;
 
+  ctx.save();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.restore();
+  ctx.beginPath();
+  ctx.setLineDash([]);
   ctx.clearRect(0, 0, width, height);
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, width, height);
@@ -6015,6 +7449,8 @@ function draw() {
   ctx.strokeStyle = '#657685';
   ctx.lineWidth = 1.3;
   ctx.strokeRect(pad.left, pad.top, plotW, plotH);
+
+  drawPendulumTimeGuides(pad, plotW, plotH, xMin, xMax);
 
   ctx.fillStyle = '#344553';
   ctx.font = '600 13px system-ui';
@@ -6099,8 +7535,10 @@ function draw() {
       const y = pad.top + (scale.max - value) * plotH / (scale.max - scale.min);
       points.push({ x, y });
     });
-    drawDataPath(points);
-    ctx.stroke();
+    if (points.length) {
+      drawDataPath(points);
+      ctx.stroke();
+    }
   });
 
   if (analysisCache && analysisCache.fit && analysisCache.points.length >= 2 &&
@@ -6157,6 +7595,8 @@ function draw() {
       ctx.fillText(marker.label, x, labelY - 1);
     });
   }
+
+  drawPendulumScrubHighlight(pad, plotW, plotH, xMin, xMax, scale, selectedSeries);
 
   if (hoverPoint && dataRows.length) {
     const hoverTime = xMin + (hoverPoint.x - pad.left) * (xMax - xMin) / plotW;
@@ -6249,6 +7689,30 @@ function timeAtX(x, y) {
 }
 
 function setRunning(value) {
+  if (value && isSonarExperimentMode()) {
+    rows = [{
+      time: 0,
+      sample: { mode: 4, distance: sonarSelectedPosition().depthM }
+    }];
+    lastData = rows[0].sample;
+    updateTable();
+    updateAnalysis();
+    draw();
+    renderSonarExperiment();
+    value = false;
+    showToast('Κρατήθηκε χρόνος ηχούς για ' + sonarSelectedPosition().label + '.');
+  }
+  if (value && isPendulumExperimentMode()) {
+    const currentTime = rows.length ? rows[rows.length - 1].time : 0;
+    if (!rows.length || currentTime >= pendulumDurationS || pendulumLiveStartMs === null) {
+      if (!rows.length || currentTime >= pendulumDurationS) resetPendulumRows();
+      pendulumLiveStartMs = performance.now() - (rows.length ? rows[rows.length - 1].time : 0) * 1000;
+      pendulumPhaseStart = pendulumLiveStartMs;
+    }
+  }
+  if (!value && isPendulumExperimentMode()) {
+    pendulumLiveStartMs = null;
+  }
   running = value;
   const button = document.getElementById('toggle');
   const status = document.getElementById('sessionStatus');
@@ -6270,8 +7734,8 @@ function setChartTool(tool) {
   });
   const hints = {
     inspect: 'Μετακίνησε πάνω στη γραφική για να διαβάσεις μια τιμή.',
-    select: 'Σύρε πάνω στη γραφική για να διαλέξεις το κομμάτι που σε ενδιαφέρει.',
-    pan: 'Σύρε για να μετακινήσεις το γράφημα. Χρησιμοποίησε + και − για μεγέθυνση.'
+    select: 'Σύρε πάνω στη γραφική για να διαλέξεις το κομμάτι A-B που σε ενδιαφέρει.',
+    pan: 'Σύρε στο γράφημα για μετακίνηση στον χρόνο. Ροδέλα για zoom που εστιάζει στην κυματομορφή. Shift + σύρσιμο για επιλογή A-B.'
   };
   document.getElementById('chartHint').textContent = hints[tool];
   canvas.style.cursor = tool === 'select' ? 'crosshair' : (tool === 'pan' ? 'grab' : 'default');
@@ -6305,11 +7769,11 @@ function updatePinch() {
   const midpointX = (points[0].x + points[1].x) / 2;
   const currentMidpoint = timeAtX(midpointX, (points[0].y + points[1].y) / 2);
   const start = currentMidpoint - nextSpan * initialRatio;
-  setCustomView(start, start + nextSpan);
+  setCustomView(start, start + nextSpan, true);
 }
 
 function startChartInteraction(event) {
-  if (!chartGeometry || !rows.length) return;
+  if (!chartGeometry) return;
   const point = pointerPosition(event);
   if (!pointInsidePlot(point)) return;
   if (event.pointerType === 'touch') {
@@ -6331,11 +7795,12 @@ function startChartInteraction(event) {
 
   setRunning(false);
 
-  if (chartTool === 'select') {
+  const wantsSelection = chartTool === 'select' || event.shiftKey;
+  if (wantsSelection) {
     selecting = true;
     selectionAnchor = timeAtX(point.x, point.y);
     selection = { start: selectionAnchor, end: selectionAnchor };
-  } else if (chartTool === 'pan') {
+  } else {
     panning = true;
     panStartX = point.x;
     panStartY = point.y;
@@ -6376,10 +7841,12 @@ function moveChartInteraction(event) {
     const span = panStartView.end - panStartView.start;
     const shift = (panStartX - point.x) * span / chartGeometry.plotW;
     customView = clampView(panStartView.start + shift, panStartView.end + shift);
-    if (panStartYScale && !chartGeometry.split) {
+    if (event.shiftKey && panStartYScale && !chartGeometry.split) {
       const ySpan = panStartYScale.max - panStartYScale.min;
       const yShift = (point.y - panStartY) * ySpan / chartGeometry.plotH;
       customYScale = clampYScale(panStartYScale.min + yShift, panStartYScale.max + yShift);
+    } else {
+      focusYScaleOnVisibleWaveform();
     }
     hoverPoint = null;
     tooltip.hidden = true;
@@ -6412,7 +7879,7 @@ function finishChartInteraction(event) {
 }
 
 function handleWheel(event) {
-  if (!chartGeometry || !rows.length) return;
+  if (!chartGeometry) return;
   const point = pointerPosition(event);
   if (!pointInsidePlot(point) && !pointInsideYZoomZone(point)) return;
   event.preventDefault();
@@ -6700,6 +8167,13 @@ document.getElementById('weightMassG').addEventListener('change', event => {
   renderWeightExperiment();
 });
 
+document.getElementById('weightExtensionCm').addEventListener('change', event => {
+  weightExtensionCm = Math.max(0, Number(event.target.value) || 0);
+  localStorage.setItem('palladio-weight-extension-cm', String(weightExtensionCm));
+  event.target.value = weightExtensionCm.toFixed(1);
+  renderWeightExperiment();
+});
+
 document.getElementById('captureWeightTrial').addEventListener('click', () => {
   const current = weightCurrentMetrics();
   if (!current) {
@@ -6714,16 +8188,25 @@ document.getElementById('captureWeightTrial').addEventListener('click', () => {
 
 document.getElementById('saveWeightTrial').addEventListener('click', () => {
   const massG = Math.max(0, Number(document.getElementById('weightMassG').value) || 0);
+  const extensionCm = Math.max(0, Number(document.getElementById('weightExtensionCm').value) || 0);
   const result = weightResult(weightCapturedForce, massG);
   if (!result) {
     showToast('Χρειάζονται μέτρηση βάρους και μάζα μεγαλύτερη από 0 g.', true);
     return;
   }
+  if (extensionCm <= 0) {
+    showToast('Δώσε επιμήκυνση Δx μεγαλύτερη από 0 cm.', true);
+    return;
+  }
   weightMassG = massG;
+  weightExtensionCm = extensionCm;
   localStorage.setItem('palladio-weight-mass-g', String(weightMassG));
+  localStorage.setItem('palladio-weight-extension-cm', String(weightExtensionCm));
   weightTrials.push({
     massG: result.massG,
     massKg: result.massKg,
+    extensionCm,
+    extensionM: extensionCm / 100,
     measuredWeight: result.measuredWeight,
     theoreticalWeight: result.theoreticalWeight,
     experimentalG: result.experimentalG,
@@ -6732,27 +8215,29 @@ document.getElementById('saveWeightTrial').addEventListener('click', () => {
   });
   saveWeightTrials();
   renderWeightExperiment();
-  showToast('Αποθηκεύτηκε δοκιμή: wπ = ' + compactNumber(result.measuredWeight) + ' N');
+  showToast('Αποθηκεύτηκε δοκιμή: m = ' + compactNumber(massG) + ' g, Δx = ' + compactNumber(extensionCm) + ' cm');
 });
 
 document.getElementById('clearWeightTrials').addEventListener('click', () => {
   weightTrials = [];
   saveWeightTrials();
   renderWeightExperiment();
-  showToast('Οι δοκιμές w = mg διαγράφηκαν.');
+  showToast('Οι δοκιμές μάζας/βάρους - επιμήκυνσης διαγράφηκαν.');
 });
 
 document.getElementById('exportWeightTrials').addEventListener('click', () => {
   if (!weightTrials.length) {
-    showToast('Δεν υπάρχουν δοκιμές w = mg για εξαγωγή.', true);
+    showToast('Δεν υπάρχουν δοκιμές μάζας/βάρους - επιμήκυνσης για εξαγωγή.', true);
     return;
   }
   const csvRows = [
-    ['trial', 'mass_g', 'mass_kg', 'measured_weight_N', 'theoretical_weight_N', 'experimental_g_m_per_s2', 'difference_N', 'error_percent'],
+    ['trial', 'mass_g', 'mass_kg', 'extension_cm', 'extension_m', 'measured_weight_N', 'theoretical_weight_N', 'experimental_g_m_per_s2', 'difference_N', 'error_percent'],
     ...weightTrials.map((trial, index) => [
       String(index + 1),
       trial.massG.toFixed(3),
       trial.massKg.toFixed(6),
+      isFinite(trial.extensionCm) ? trial.extensionCm.toFixed(3) : '',
+      isFinite(trial.extensionM) ? trial.extensionM.toFixed(5) : '',
       trial.measuredWeight.toFixed(6),
       trial.theoreticalWeight.toFixed(6),
       trial.experimentalG.toFixed(6),
@@ -6934,6 +8419,170 @@ document.getElementById('exportCollisionTrials').addEventListener('click', () =>
   URL.revokeObjectURL(url);
 });
 
+function updatePendulumInputState() {
+  pendulumLengthM = Math.max(0.1, Math.min(3, Number(document.getElementById('pendulumLengthM').value) || 1));
+  pendulumAngleDeg = Math.max(1, Math.min(25, Number(document.getElementById('pendulumAngleDeg').value) || 10));
+  pendulumMassG = Math.max(10, Math.min(1000, Number(document.getElementById('pendulumMassG').value) || 100));
+  pendulumDurationS = Math.max(5, Math.min(60, Number(document.getElementById('pendulumDurationS').value) || 20));
+  pendulumDeltaTS = Math.max(0.1, Number(document.getElementById('pendulumDeltaTS').value) || pendulumDeltaTS);
+  pendulumOscillations = Math.max(1, Math.round(Number(document.getElementById('pendulumOscillations').value) || pendulumOscillations));
+  localStorage.setItem('palladio-pendulum-length-m', String(pendulumLengthM));
+  localStorage.setItem('palladio-pendulum-angle-deg', String(pendulumAngleDeg));
+  localStorage.setItem('palladio-pendulum-mass-g', String(pendulumMassG));
+  localStorage.setItem('palladio-pendulum-duration-s', String(pendulumDurationS));
+  localStorage.setItem('palladio-pendulum-delta-t-s', String(pendulumDeltaTS));
+  localStorage.setItem('palladio-pendulum-oscillations', String(pendulumOscillations));
+  renderPendulumExperiment();
+}
+
+['pendulumLengthM', 'pendulumAngleDeg', 'pendulumMassG', 'pendulumDurationS', 'pendulumDeltaTS', 'pendulumOscillations'].forEach(id => {
+  document.getElementById(id).addEventListener('change', updatePendulumInputState);
+});
+
+document.getElementById('usePendulumSelection').addEventListener('click', () => {
+  if (!selection) {
+    showToast('Πρώτα επίλεξε με A-B ένα χρονικό διάστημα στο γράφημα.', true);
+    return;
+  }
+  pendulumDeltaTS = Math.abs(selection.end - selection.start);
+  const info = pendulumIntervalInfo(pendulumDeltaTS);
+  if (info && info.oscillations) {
+    pendulumOscillations = info.oscillations;
+    document.getElementById('pendulumOscillations').value = pendulumOscillations.toFixed(0);
+    localStorage.setItem('palladio-pendulum-oscillations', String(pendulumOscillations));
+  }
+  document.getElementById('pendulumDeltaTS').value = pendulumDeltaTS.toFixed(2);
+  localStorage.setItem('palladio-pendulum-delta-t-s', String(pendulumDeltaTS));
+  renderPendulumExperiment();
+  showToast(info && info.oscillations
+    ? 'Το Δt και το N από την επιλογή A-B μπήκαν στον υπολογισμό.'
+    : 'Το A-B δείχνει χαρακτηριστικό χρόνο, όχι πλήρη ταλάντωση για το N.');
+});
+
+function selectPendulumGuideInterval(kind) {
+  const period = pendulumPeriod(pendulumLengthM);
+  const intervals = {
+    quarter: { start: period / 4, end: period / 2, label: 'T/4: ισορροπία προς ακραία θέση' },
+    half: { start: 0, end: period / 2, label: 'T/2: ακραία θέση προς αντίθετη ακραία' },
+    one: { start: 0, end: period, label: '1T: μία πλήρης ταλάντωση', oscillations: 1 },
+    five: { start: 0, end: period * 5, label: '5T: πέντε πλήρεις ταλαντώσεις', oscillations: 5 }
+  };
+  const interval = intervals[kind];
+  if (!interval) return;
+  const end = interval.end;
+  if (end > pendulumDurationS) {
+    pendulumDurationS = Math.min(60, Math.ceil(end + 1));
+    document.getElementById('pendulumDurationS').value = pendulumDurationS.toFixed(0);
+    localStorage.setItem('palladio-pendulum-duration-s', String(pendulumDurationS));
+    timeWindow = Math.max(timeWindow, pendulumDurationS);
+    document.getElementById('timeWindow').value = String(timeWindow);
+  }
+  selection = { start: interval.start, end: interval.end };
+  if (interval.oscillations) {
+    pendulumDeltaTS = interval.end - interval.start;
+    pendulumOscillations = interval.oscillations;
+    document.getElementById('pendulumDeltaTS').value = pendulumDeltaTS.toFixed(2);
+    document.getElementById('pendulumOscillations').value = pendulumOscillations.toFixed(0);
+    localStorage.setItem('palladio-pendulum-delta-t-s', String(pendulumDeltaTS));
+    localStorage.setItem('palladio-pendulum-oscillations', String(pendulumOscillations));
+  }
+  customView = { start: 0, end: Math.max(pendulumDurationS, interval.end + period / 4) };
+  updateAnalysis();
+  updateZoomStatus();
+  draw();
+  renderPendulumExperiment();
+  showToast('Επιλέχθηκε στο γράφημα: ' + interval.label + '.');
+}
+
+document.querySelectorAll('[data-pendulum-interval]').forEach(button => {
+  button.addEventListener('click', () => selectPendulumGuideInterval(button.dataset.pendulumInterval));
+});
+
+document.querySelectorAll('[data-sonar-position]').forEach(button => {
+  button.addEventListener('click', () => {
+    sonarPositionIndex = Math.max(0, Math.min(SONAR_POSITIONS.length - 1, Number(button.dataset.sonarPosition) || 0));
+    localStorage.setItem('palladio-sonar-position-index', String(sonarPositionIndex));
+    rows = [];
+    lastData = {};
+    updateTable();
+    updateAnalysis();
+    renderSonarExperiment();
+    draw();
+  });
+});
+
+document.getElementById('togglePendulumPositions').addEventListener('click', () => {
+  pendulumShowPositions = !pendulumShowPositions;
+  localStorage.setItem('palladio-pendulum-show-positions', pendulumShowPositions ? '1' : '0');
+  drawPendulumCanvas();
+  renderPendulumExperiment();
+});
+
+document.getElementById('runPendulumTrial').addEventListener('click', () => {
+  updatePendulumInputState();
+  startPendulumLive(true);
+  renderPendulumExperiment();
+  showToast('Ξεκίνησε ζωντανή ψηφιακή μέτρηση απλού εκκρεμούς.');
+});
+
+document.getElementById('savePendulumTrial').addEventListener('click', () => {
+  updatePendulumInputState();
+  const period = pendulumPeriod(pendulumLengthM);
+  const measuredPeriod = pendulumDeltaTS / pendulumOscillations;
+  pendulumTrials.push({
+    lengthM: pendulumLengthM,
+    massG: pendulumMassG,
+    angleDeg: pendulumAngleDeg,
+    durationS: pendulumDurationS,
+    deltaT: pendulumDeltaTS,
+    oscillations: pendulumOscillations,
+    measuredPeriod,
+    period
+  });
+  savePendulumTrials();
+  renderPendulumExperiment();
+  showToast('Αποθηκεύτηκε δοκιμή: T = Δt/N = ' + compactNumber(measuredPeriod) + ' s');
+});
+
+document.getElementById('clearPendulumTrials').addEventListener('click', () => {
+  pendulumTrials = [];
+  savePendulumTrials();
+  renderPendulumExperiment();
+  showToast('Οι δοκιμές εκκρεμούς διαγράφηκαν.');
+});
+
+document.getElementById('exportPendulumTrials').addEventListener('click', () => {
+  if (!pendulumTrials.length) {
+    showToast('Δεν υπάρχουν δοκιμές εκκρεμούς για εξαγωγή.', true);
+    return;
+  }
+  const csvRows = [
+    ['trial', 'length_m', 'mass_g', 'angle_deg', 'duration_s', 'delta_t_s', 'oscillations', 'measured_period_s', 'theoretical_period_s', 'half_period_s', 'quarter_period_s', 'ten_periods_s'],
+    ...pendulumTrials.map((trial, index) => [
+      String(index + 1),
+      trial.lengthM.toFixed(4),
+      (trial.massG || pendulumMassG).toFixed(3),
+      trial.angleDeg.toFixed(2),
+      trial.durationS.toFixed(2),
+      (trial.deltaT || 0).toFixed(4),
+      String(trial.oscillations || 0),
+      (trial.measuredPeriod || trial.period).toFixed(6),
+      trial.period.toFixed(6),
+      (trial.period / 2).toFixed(6),
+      (trial.period / 4).toFixed(6),
+      (trial.period * 10).toFixed(6)
+    ])
+  ];
+  const csv = csvRows.map(row => row.join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'palladio-pendulum.csv';
+  link.click();
+  URL.revokeObjectURL(url);
+});
+
 document.getElementById('collisionPanelToggle').addEventListener('click', () => {
   setCollisionRailCollapsed(!collisionRailCollapsed);
 });
@@ -6958,6 +8607,10 @@ document.getElementById('heatPanelToggle').addEventListener('click', () => {
   setCollisionRailCollapsed(!collisionRailCollapsed);
 });
 
+document.getElementById('pendulumPanelToggle').addEventListener('click', () => {
+  setCollisionRailCollapsed(!collisionRailCollapsed);
+});
+
 document.getElementById('collisionRailOpen').addEventListener('click', () => {
   setCollisionRailCollapsed(false);
 });
@@ -6979,7 +8632,27 @@ canvas.addEventListener('mouseleave', () => {
   draw();
 });
 
+if (pendulumCanvas) {
+  pendulumCanvas.addEventListener('pointerdown', startPendulumScrub);
+  pendulumCanvas.addEventListener('pointermove', movePendulumScrub);
+  pendulumCanvas.addEventListener('pointerup', finishPendulumScrub);
+  pendulumCanvas.addEventListener('pointercancel', finishPendulumScrub);
+}
+if (sonarCanvas) {
+  sonarCanvas.addEventListener('pointerdown', startSonarDrag);
+  sonarCanvas.addEventListener('pointermove', moveSonarDrag);
+  sonarCanvas.addEventListener('pointerup', finishSonarDrag);
+  sonarCanvas.addEventListener('pointercancel', finishSonarDrag);
+}
+
 async function poll() {
+  if (currentMode().digital) {
+    document.getElementById('network').textContent = 'Ψηφιακό πείραμα · χωρίς M5';
+    statusDot.classList.remove('offline');
+    appendPendulumLiveSamples();
+    setTimeout(poll, 40);
+    return;
+  }
   try {
     const response = await fetch(apiUrl('/samples?since=' + lastSampleId), { cache: 'no-store' });
     if (!response.ok) throw new Error('HTTP ' + response.status);
@@ -7008,13 +8681,19 @@ async function poll() {
 }
 
 window.addEventListener('resize', resizeCanvas);
+function animatePendulum() {
+  if (isPendulumExperimentMode() && !collisionRailCollapsed) drawPendulumCanvas();
+  requestAnimationFrame(animatePendulum);
+}
 updateModeUi();
+if (isPendulumExperimentMode() && !rows.length) resetPendulumRows();
 updateReadouts({});
-setChartTool('select');
+setChartTool('pan');
 setRunning(running);
 updateZoomStatus();
 applyCollisionRailLayout();
 resizeCanvas();
+animatePendulum();
 poll();
 </script>
 </body>
