@@ -848,31 +848,3 @@ class UltrasonicPage(ctk.CTkFrame):
 if __name__ == "__main__":
     app = M5App()
     app.mainloop()
-    def export_csv(self):
-        file = filedialog.asksaveasfilename(defaultextension=".csv")
-        if file:
-            with open(file, 'w', newline='') as f:
-                writer = csv.writer(f)
-                writer.writerow(["Time", "ωx", "ωy", "ωz"])
-                for t, x, y, z in zip(self.time_data, self.wx_data, self.wy_data, self.wz_data):
-                    writer.writerow([t, x, y, z])
-
-    def clear_data(self):
-        self.wx_data.clear()
-        self.wy_data.clear()
-        self.wz_data.clear()
-        self.zonly_data.clear()
-        self.time_data.clear()
-        self.sample_count = 0
-        self.line_wx.set_data([], [])
-        self.line_wy.set_data([], [])
-        self.line_wz.set_data([], [])
-        self.line_wz_only.set_data([], [])
-        self.canvas.draw()
-        for row in self.tree.get_children():
-            self.tree.delete(row)
-
-# ---------- RUN ----------
-if __name__ == "__main__":
-    app = M5App()
-    app.mainloop()

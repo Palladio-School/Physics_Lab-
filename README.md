@@ -26,8 +26,72 @@
 - ✅ HX711 Module + Load Cell (optional)
 - ✅ HC-SR04 Ultrasonic Sensor (optional)
 - ✅ Breadboard and Jumper Wires
-- ✅ Wi-Fi Network (for UDP communication)
+- ✅ Laptop with Wi-Fi (connects directly to the M5StickC Plus2 hotspot)
 
 ---
 
+## Run the Web Dashboard
 
+The recommended classroom flow is now browser-based:
+
+1. Upload `Physics_Lab/Physics_Lab.ino` to the M5StickC Plus2.
+2. Power on the M5StickC Plus2.
+3. Connect the laptop, tablet, or phone to this Wi-Fi network:
+
+```text
+PhysicsLab-M5
+```
+
+4. Open this address in a browser:
+
+```text
+http://192.168.4.1
+```
+
+The dashboard runs directly from the M5StickC Plus2 and includes live charts,
+mode switching, pause/resume, clear, and CSV export.
+
+## Run the Legacy Desktop App
+
+1. Install Python 3.
+2. Create and activate a virtual environment:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+3. Install the app dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+4. Start the desktop app:
+
+```bash
+python physics_lab_with_angular_velocity.py
+```
+
+## Wireless Classroom Mode Details
+
+The M5StickC Plus2 creates its own Wi-Fi network, so no school Wi-Fi
+credentials or fixed computer IP address are needed.
+
+The browser dashboard reads live JSON data from:
+
+```text
+http://192.168.4.1/data
+```
+
+The M5StickC Plus2 also keeps sending UDP broadcast packets to `192.168.4.255`
+for compatibility with the legacy Python app. The Python app listens on these
+UDP ports:
+
+- `4210` acceleration / force from accelerometer
+- `4211` angular velocity
+- `4213` load cell force
+- `4215` ultrasonic motion
+
+Use the `WiFi Info` mode on the M5StickC Plus2 to confirm the hotspot name and
+device IP address.
