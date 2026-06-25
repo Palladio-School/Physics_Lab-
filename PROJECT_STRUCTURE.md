@@ -23,6 +23,7 @@ New work should state which flow it changes.
 
 - `README.md` - main project entry point for teachers, developers, and maintainers.
 - `PROJECT_STRUCTURE.md` - this technical map.
+- `HARDWARE_API.md` - hardware wiring notes, firmware API reference, UDP compatibility, and verification checklist.
 - `requirements.txt` - Python dependencies for the legacy desktop app only.
 - `physics_lab_with_angular_velocity.py` - legacy desktop application.
 - `case2.stl`, `cover.stl` - 3D-printing assets for the device/case.
@@ -149,7 +150,6 @@ http://localhost:8000
 
 ## Suggested Next PRs
 
-1. Hardware and API documentation.
-2. Student/teacher UI flow documentation.
-3. Polling and performance cleanup.
-4. Controlled `docs/index.html` modularization.
+1. Student/teacher UI flow documentation.
+2. Polling and performance cleanup.
+3. Controlled `docs/index.html` modularization.
