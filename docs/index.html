@@ -3559,6 +3559,35 @@ function apiUrl(path) {
   return deviceBaseUrl + (path.startsWith('/') ? path : '/' + path);
 }
 
+function fetchJson(path) {
+  return fetch(apiUrl(path), { cache: 'no-store' }).then(response => {
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    return response.json();
+  });
+}
+
+function syncSampleRate(rate) {
+  const numericRate = Number(rate);
+  if (!Number.isFinite(numericRate) || numericRate <= 0) return;
+  sampleRateHz = numericRate;
+  const rateSelect = document.getElementById('sampleRate');
+  if (!rateSelect) return;
+  const hasOption = Array.from(rateSelect.options).some(option => option.value === String(numericRate));
+  if (hasOption) rateSelect.value = String(numericRate);
+}
+
+function nextHardwarePollDelay(receivedSamples = false) {
+  if (!running) return IDLE_HARDWARE_POLL_MS;
+  const sampleInterval = 1000 / Math.max(1, sampleRateHz);
+  const multiplier = receivedSamples ? 0.55 : 0.9;
+  return Math.round(Math.max(MIN_HARDWARE_POLL_MS, Math.min(MAX_HARDWARE_POLL_MS, sampleInterval * multiplier)));
+}
+
+function schedulePoll(delayMs) {
+  clearTimeout(pollTimerId);
+  pollTimerId = setTimeout(poll, delayMs);
+}
+
 const maxSamples = 6000;
 let running = false;
 let rows = [];
@@ -3687,10 +3716,22 @@ const activePointers = new Map();
 let pinchState = null;
 let lastSampleId = -1;
 let sampleEpochMs = null;
+let sampleRateHz = 10;
+let samplesEndpointAvailable = true;
+let lastSamplesEndpointAttempt = 0;
+let consecutivePollFailures = 0;
+let pollTimerId = null;
 let toastTimer = null;
 let railResizeActive = false;
 let liveUiFramePending = false;
 let lastLiveAnalysisUpdate = 0;
+
+const DIGITAL_POLL_MS = 40;
+const SAMPLE_ENDPOINT_RETRY_MS = 5000;
+const OFFLINE_POLL_MS = 1000;
+const IDLE_HARDWARE_POLL_MS = 300;
+const MIN_HARDWARE_POLL_MS = 40;
+const MAX_HARDWARE_POLL_MS = 500;
 
 const canvas = document.getElementById('chart');
 const ctx = canvas.getContext('2d');
@@ -6540,6 +6581,7 @@ function applyExperimentDefaults(experimentId) {
     const rateSelect = document.getElementById('sampleRate');
     if (rateSelect && rateSelect.value !== '10') {
       rateSelect.value = '10';
+      syncSampleRate(10);
       fetch(apiUrl('/settings?rate=10'), { cache: 'no-store' }).catch(() => {});
     }
   }
@@ -6564,6 +6606,7 @@ function applyExperimentDefaults(experimentId) {
   timeSelect.value = '600';
   if (rateSelect.value !== '1') {
     rateSelect.value = '1';
+    syncSampleRate(1);
     fetch(apiUrl('/settings?rate=1'), { cache: 'no-store' }).catch(() => {});
   }
   resetZoom(false);
@@ -6782,9 +6825,7 @@ function addRow(data, deferUpdate, deferReadout) {
     resetMeasurement();
     updateModeUi();
   }
-  if (data.sampleRate) {
-    document.getElementById('sampleRate').value = String(data.sampleRate);
-  }
+  syncSampleRate(data.sampleRate);
   const sampleId = Number(data.sampleId);
   const sampleMs = Number(data.sampleMs);
   if (!Number.isFinite(sampleId) || sampleId <= lastSampleId) return;
@@ -8787,9 +8828,10 @@ document.getElementById('clear').addEventListener('click', resetMeasurement);
 
 document.getElementById('sampleRate').addEventListener('change', async event => {
   const requestedRate = Number(event.target.value);
+  syncSampleRate(requestedRate);
   try {
-    const response = await fetch(apiUrl('/settings?rate=' + requestedRate), { cache: 'no-store' });
-    if (!response.ok) throw new Error('HTTP ' + response.status);
+    const data = await fetchJson('/settings?rate=' + requestedRate);
+    syncSampleRate(data.sampleRate || requestedRate);
     resetMeasurement();
     showToast('Ρυθμός δειγματοληψίας: ' + requestedRate + ' Hz');
   } catch (error) {
@@ -9525,33 +9567,49 @@ async function poll() {
     document.getElementById('network').textContent = 'Ψηφιακό πείραμα · χωρίς M5';
     statusDot.classList.remove('offline');
     appendPendulumLiveSamples();
-    setTimeout(poll, 40);
+    consecutivePollFailures = 0;
+    schedulePoll(DIGITAL_POLL_MS);
     return;
   }
+  let nextDelay = nextHardwarePollDelay();
   try {
-    const response = await fetch(apiUrl('/samples?since=' + lastSampleId), { cache: 'no-store' });
-    if (!response.ok) throw new Error('HTTP ' + response.status);
-    const batch = await response.json();
-    document.getElementById('network').textContent = batch.ap + ' · ' + batch.ip;
-    statusDot.classList.remove('offline');
-    if (batch.sampleRate) {
-      document.getElementById('sampleRate').value = String(batch.sampleRate);
-    }
-    addRows(batch.samples);
-  } catch (error) {
-    try {
-      const response = await fetch(apiUrl('/data'), { cache: 'no-store' });
-      if (!response.ok) throw new Error('HTTP ' + response.status);
-      const data = await response.json();
+    const now = performance.now();
+    const shouldTrySamples = samplesEndpointAvailable || now - lastSamplesEndpointAttempt > SAMPLE_ENDPOINT_RETRY_MS;
+    if (shouldTrySamples) {
+      try {
+        lastSamplesEndpointAttempt = now;
+        const batch = await fetchJson('/samples?since=' + lastSampleId);
+        samplesEndpointAvailable = true;
+        consecutivePollFailures = 0;
+        document.getElementById('network').textContent = batch.ap + ' · ' + batch.ip;
+        statusDot.classList.remove('offline');
+        syncSampleRate(batch.sampleRate);
+        addRows(batch.samples);
+        nextDelay = nextHardwarePollDelay(Array.isArray(batch.samples) && batch.samples.length > 0);
+      } catch (samplesError) {
+        samplesEndpointAvailable = false;
+        const data = await fetchJson('/data');
+        consecutivePollFailures = 0;
+        document.getElementById('network').textContent = data.ap + ' · ' + data.ip;
+        statusDot.classList.remove('offline');
+        addRow(data);
+        nextDelay = nextHardwarePollDelay();
+      }
+    } else {
+      const data = await fetchJson('/data');
+      consecutivePollFailures = 0;
       document.getElementById('network').textContent = data.ap + ' · ' + data.ip;
       statusDot.classList.remove('offline');
       addRow(data);
-    } catch (fallbackError) {
-      document.getElementById('network').textContent = 'Αναμονή για το M5Stick';
-      statusDot.classList.add('offline');
+      nextDelay = nextHardwarePollDelay();
     }
+  } catch (error) {
+    consecutivePollFailures += 1;
+    document.getElementById('network').textContent = 'Αναμονή για το M5Stick';
+    statusDot.classList.add('offline');
+    nextDelay = Math.min(OFFLINE_POLL_MS * consecutivePollFailures, OFFLINE_POLL_MS * 3);
   } finally {
-    setTimeout(poll, 30);
+    schedulePoll(nextDelay);
   }
 }
 

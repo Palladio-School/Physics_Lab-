@@ -345,7 +345,9 @@ The full dashboard:
 - defaults to `http://192.168.4.1`;
 - polls `/samples?since=<lastSampleId>`;
 - falls back to `/data` if `/samples` fails;
-- schedules polling every 30 ms in hardware-backed modes;
+- schedules polling adaptively from the active sample rate instead of using a fixed 30 ms hardware loop;
+- polls more slowly while measurement is idle and backs off when the M5 is offline;
+- temporarily uses `/data` first when `/samples` is unavailable, then retries `/samples` periodically;
 - uses firmware `sampleId` and `sampleMs` to avoid duplicate samples and browser-time drift;
 - sends `/set-mode`, `/settings`, and `/calibrate` through simple GET requests.
 
