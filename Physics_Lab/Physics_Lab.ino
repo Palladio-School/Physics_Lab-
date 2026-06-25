@@ -23,8 +23,8 @@ WiFiUDP udp;
 WebServer server(80);
 
 // Pins
-#define TRIG_PIN 26  // G26
-#define ECHO_PIN 0   // G0
+#define TRIG_PIN 26  // G26, DFRobot URM10 TRIG
+#define ECHO_PIN 25  // G25, DFRobot URM10 ECHO
 #define DT 36        // HX711 DOUT primary candidate
 #define DT_ALT 25    // HX711 DOUT alternate candidate for the shared G36/G25 port
 #define SCK 26       // HX711 SCK
@@ -375,10 +375,15 @@ void configureModeHardware() {
     sampleIntervalMs = 100;
   } else if (mode == 4) {
     pinMode(TRIG_PIN, OUTPUT);
+    digitalWrite(TRIG_PIN, LOW);
     pinMode(ECHO_PIN, INPUT);
   } else if (mode == 5) {
+    pinMode(TRIG_PIN, INPUT);
+    pinMode(ECHO_PIN, INPUT);
     tempSensor1.begin();
     tempSensor2.begin();
+    tempSensor1.setResolution(11);
+    tempSensor2.setResolution(11);
   }
 }
 
@@ -483,6 +488,104 @@ float getFilteredDistanceCM() {
   else smoothed_distance = 0.6 * smoothed_distance + 0.4 * d;
 
   return smoothed_distance;
+}
+
+bool detectTemperatureSensors() {
+  pinMode(TRIG_PIN, INPUT);
+  pinMode(ECHO_PIN, INPUT);
+  tempSensor1.begin();
+  tempSensor2.begin();
+  delay(30);
+  return tempSensor1.getDeviceCount() > 0 && tempSensor2.getDeviceCount() > 0;
+}
+
+bool detectHx711OnPin(uint8_t dataPin) {
+  HX711 probe;
+  probe.begin(dataPin, SCK);
+  for (uint8_t attempt = 0; attempt < 6; attempt++) {
+    if (probe.is_ready()) return true;
+    delay(20);
+  }
+  return false;
+}
+
+bool detectForceSensor() {
+  if (detectHx711OnPin(DT)) {
+    activeHx711DtPin = DT;
+    return true;
+  }
+  if (detectHx711OnPin(DT_ALT)) {
+    activeHx711DtPin = DT_ALT;
+    return true;
+  }
+  return false;
+}
+
+bool detectUltrasonicSensor() {
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
+  for (uint8_t attempt = 0; attempt < 3; attempt++) {
+    digitalWrite(TRIG_PIN, LOW);
+    delayMicroseconds(2);
+    digitalWrite(TRIG_PIN, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(TRIG_PIN, LOW);
+    long duration = pulseIn(ECHO_PIN, HIGH, 25000);
+    float distanceCm = duration * 0.0343 / 2.0;
+    if (distanceCm >= 2 && distanceCm <= 250) return true;
+    delay(60);
+  }
+  return false;
+}
+
+void autoDetectSensorMode() {
+  M5.Lcd.fillScreen(BLACK);
+  M5.Lcd.setTextSize(2);
+  M5.Lcd.setTextColor(CYAN, BLACK);
+  M5.Lcd.setCursor(0, 0);
+  M5.Lcd.println("Detecting...");
+
+  bool heatFound = detectTemperatureSensors();
+  bool forceFound = false;
+  bool ultraFound = false;
+
+  if (!heatFound) {
+    forceFound = detectForceSensor();
+    if (!forceFound) ultraFound = detectUltrasonicSensor();
+  }
+
+  uint8_t detectedMode = 0;
+  uint8_t foundCount = 0;
+  if (heatFound) {
+    detectedMode = 5;
+    foundCount++;
+  }
+  if (forceFound) {
+    detectedMode = 2;
+    foundCount++;
+  }
+  if (ultraFound) {
+    detectedMode = 4;
+    foundCount++;
+  }
+
+  if (foundCount == 1) {
+    applyMode(detectedMode);
+    M5.Lcd.setCursor(0, 24);
+    M5.Lcd.setTextColor(GREEN, BLACK);
+    if (detectedMode == 5) M5.Lcd.println("Auto: Heat");
+    else if (detectedMode == 2) M5.Lcd.println("Auto: Force");
+    else if (detectedMode == 4) M5.Lcd.println("Auto: Sonar");
+    delay(900);
+    return;
+  }
+
+  applyMode(0);
+  M5.Lcd.setCursor(0, 24);
+  M5.Lcd.setTextColor(YELLOW, BLACK);
+  if (foundCount == 0) M5.Lcd.println("Manual mode");
+  else M5.Lcd.println("Sensor conflict");
+  delay(900);
 }
 
 bool sampleCurrentMode(unsigned long now) {
@@ -653,18 +756,14 @@ void setup() {
 
   startAccessPoint();
   startWebServer();
-  pinMode(TRIG_PIN, OUTPUT);
-  pinMode(ECHO_PIN, INPUT);
 
   tempSensor1.begin();
   tempSensor2.begin();
   tempSensor1.setResolution(11);
   tempSensor2.setResolution(11);
 
-  beginForceScale(DT, true);
-
   udp.begin(accelPort);
-  displayMode();
+  autoDetectSensorMode();
   prev_time = millis();
   lastSampleDue = 0;
 }
@@ -681,28 +780,11 @@ void loop() {
   }
 
   if (M5.BtnA.wasPressed()) {
-    mode = (mode + 1) % (maxMode + 1);
-    prev_distance = -1;
-    prev_velocity = 0;
-    smoothed_distance = -1;
-    prev_time = now;
-    lastSampleDue = 0;
-    clearSampleBuffer();
-    M5.Lcd.fillScreen(BLACK);
-    displayMode();
+    applyMode((mode + 1) % (maxMode + 1));
   }
 
   if (M5.BtnB.wasPressed()) {
-    mode--;
-    if (mode < 0) mode = maxMode;
-    prev_distance = -1;
-    prev_velocity = 0;
-    smoothed_distance = -1;
-    prev_time = now;
-    lastSampleDue = 0;
-    clearSampleBuffer();
-    M5.Lcd.fillScreen(BLACK);
-    displayMode();
+    applyMode(mode == 0 ? maxMode : mode - 1);
   }
 
   if (lastSampleDue == 0 || now - lastSampleDue >= sampleIntervalMs) {

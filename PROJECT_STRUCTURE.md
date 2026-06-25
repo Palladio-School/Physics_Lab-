@@ -86,7 +86,7 @@ Because it is currently a large single HTML file, changes should be narrow and e
 | Acceleration | M5StickC Plus2 IMU | Built-in sensor. |
 | Gyroscope | M5StickC Plus2 IMU | Built-in sensor. |
 | Force / load cell | HX711 + load cell | Uses `DT`, `DT_ALT`, and `SCK` candidates. |
-| Ultrasonic motion | HC-SR04-compatible sensor | Uses trigger/echo pins and firmware-side timing. |
+| Ultrasonic motion | DFRobot URM10 ultrasonic sensor | Uses trigger/echo pins and firmware-side timing. |
 | Heat / thermal equilibrium | DS18B20 sensors | Uses two OneWire data pins. |
 | Pendulum simulation | No M5 required | Digital dashboard experiment. |
 
@@ -94,13 +94,15 @@ Current pin definitions in `Physics_Lab.ino`:
 
 ```cpp
 #define TRIG_PIN 26
-#define ECHO_PIN 0
+#define ECHO_PIN 25
 #define DT 36
 #define DT_ALT 25
 #define SCK 26
 #define TEMP1_PIN 25
 #define TEMP2_PIN 26
 ```
+
+Firmware startup performs conservative sensor auto-detection. It selects Heat when both DS18B20 sensors are found, Force when HX711 is found, and Ultrasonic when the URM10 responds to trigger/echo timing. Manual selection remains available from the dashboard and M5 buttons.
 
 Pin sharing is intentional in the current firmware mode layout, but it should be documented in a classroom wiring guide before hardware kits are handed out broadly.
 

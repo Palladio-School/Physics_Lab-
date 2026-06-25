@@ -28,7 +28,7 @@ The selected device URL is stored in browser `localStorage` under `palladio-devi
 | `1` | `Gyroscope` | Rotation / angular velocity | Built-in M5StickC Plus2 IMU |
 | `2` | `Load Cell` | Force, Hooke's law, buoyancy force readings | HX711 + load cell |
 | `3` | `WiFi Info` | Device network status on the M5 display | M5StickC Plus2 only |
-| `4` | `Ultrasonic` | Distance, speed, acceleration, sonar-style activities | HC-SR04-compatible ultrasonic sensor |
+| `4` | `Ultrasonic` | Distance, speed, acceleration, sonar-style activities | DFRobot URM10 ultrasonic sensor |
 | `5` | `Temperature` | Heat / thermal-equilibrium activities | Two DS18B20 temperature sensors |
 
 The M5 buttons also cycle modes:
@@ -44,7 +44,7 @@ Current firmware definitions:
 
 ```cpp
 #define TRIG_PIN 26
-#define ECHO_PIN 0
+#define ECHO_PIN 25
 #define DT 36
 #define DT_ALT 25
 #define SCK 26
@@ -54,8 +54,8 @@ Current firmware definitions:
 
 | Sensor | Signal | M5 pin | Notes |
 | --- | --- | --- | --- |
-| HC-SR04 | Trigger | `G26` | Shared with HX711 SCK and DS18B20 T2 in the current firmware. |
-| HC-SR04 | Echo | `G0` | Input. Confirm voltage compatibility for the exact ultrasonic module before classroom use. |
+| DFRobot URM10 | Trigger | `G26` | Shared with HX711 SCK and DS18B20 T2 in the current firmware. |
+| DFRobot URM10 | Echo | `G25` | Input. Powered from 3V in the current classroom wiring. Shared with HX711 alternate DOUT and DS18B20 T1. |
 | HX711 | DOUT primary | `G36` | Firmware starts here. |
 | HX711 | DOUT alternate | `G25` | Firmware can switch here if the primary path looks unavailable. |
 | HX711 | SCK | `G26` | Shared with ultrasonic trigger and DS18B20 T2. |
@@ -63,6 +63,9 @@ Current firmware definitions:
 | DS18B20 T2 | Data | `G26` | Shared with HX711 SCK and ultrasonic trigger. |
 
 Because some pins are shared, treat the current setup as one active external sensor family at a time unless a final wiring harness proves otherwise.
+In particular, the DFRobot URM10 and the two DS18B20 temperature sensors both occupy `G25/G26`; disconnect one sensor family before testing the other.
+
+On startup the firmware runs a conservative sensor auto-detection pass. It checks for two DS18B20 sensors first, then HX711, then URM10. If exactly one sensor family is found, the M5 selects that mode automatically. If nothing is found or the wiring is ambiguous, it falls back to manual mode selection.
 
 ## Hardware Notes By Experiment
 
@@ -104,7 +107,7 @@ Mode:
 Current firmware behavior:
 
 - Trigger pin: `G26`.
-- Echo pin: `G0`.
+- Echo pin: `G25`.
 - Sends a 10 microsecond trigger pulse.
 - Uses `pulseIn(ECHO_PIN, HIGH, 30000)`.
 - Converts duration to distance with speed of sound in air: `duration * 0.0343 / 2`.
@@ -115,7 +118,7 @@ Current firmware behavior:
 
 Open verification items:
 
-- Confirm the exact ultrasonic module voltage level on `ECHO_PIN`.
+- Confirm the URM10 is powered from the M5 `3V` pin so the echo signal stays 3.3 V logic compatible.
 - Test known distances in the intended classroom range.
 - Confirm that smoothing is appropriate for fast-motion experiments.
 
@@ -371,7 +374,7 @@ Before broad classroom use, verify with the actual hardware kit:
 ## Known Hardware/API Risks
 
 - Several external sensor definitions share pins (`G25`, `G26`). Do not assume simultaneous external sensor wiring until a final harness is tested.
-- HC-SR04 echo voltage must be checked against the M5 input tolerance for the actual module.
+- URM10 echo voltage must be checked against the M5 input tolerance if the wiring changes from the current 3V setup.
 - Load-cell calibration factor is currently code-defined and should be validated against known masses.
 - Polling every 30 ms is UI-side behavior; firmware sample IDs protect data quality, but performance should still be measured on classroom devices.
 - `/data` returns one flat object for all sensor families, so consumers should read only the fields relevant to the active mode.

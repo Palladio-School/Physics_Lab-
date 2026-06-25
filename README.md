@@ -8,7 +8,7 @@ The repository also keeps the earlier Python desktop application for reference a
 
 - Live acceleration and gyroscope measurements from the M5StickC Plus2.
 - Load-cell force measurements through an HX711 module.
-- Ultrasonic distance, velocity, and acceleration measurements through an HC-SR04-style sensor.
+- Ultrasonic distance, velocity, and acceleration measurements through a DFRobot URM10 ultrasonic sensor.
 - Temperature / thermal-equilibrium measurements through DS18B20 sensors.
 - A browser dashboard with experiment selection, live graphs, CSV export, worksheet/report flows, calibration controls, and sampling-rate controls.
 - A legacy Python desktop app that can still listen to UDP broadcasts from the M5.
@@ -125,17 +125,20 @@ Core hardware:
 Optional experiment hardware:
 
 - HX711 module and load cell for force / Hooke-law style experiments
-- HC-SR04 or compatible ultrasonic sensor for distance and motion
+- DFRobot URM10 ultrasonic sensor for distance and motion
 - DS18B20 temperature sensors for thermal-equilibrium experiments
 - Breadboard and jumper wires
 
 Current firmware pin notes:
 
-- HC-SR04: `TRIG_PIN = 26`, `ECHO_PIN = 0`
+- DFRobot URM10: `TRIG_PIN = 26`, `ECHO_PIN = 25`
 - HX711: `DT = 36`, `DT_ALT = 25`, `SCK = 26`
 - DS18B20: `TEMP1_PIN = 25`, `TEMP2_PIN = 26`
 
+On startup the firmware attempts to detect the connected external sensor family and selects the matching mode automatically: DS18B20 heat first, then HX711 force, then URM10 ultrasonic. Manual mode selection from the dashboard or M5 buttons remains available.
+
 Some pins are shared across experiment modes. Treat this as a documented hardware constraint until the wiring plan is finalized per lab setup.
+With the current wiring, the DFRobot URM10 and the two DS18B20 sensors both use `G25/G26`, so do not keep them connected at the same time.
 
 ## Run The Legacy Desktop App
 

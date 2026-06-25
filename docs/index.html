@@ -2845,7 +2845,7 @@ tbody tr:last-child td { border-bottom: 0; }
           </div>
           <div class="sonar-intro-card">
             <strong>Θεωρητική ιδέα - σύμβαση</strong>
-            <p>Ο HC-SR04 μετρά πραγματικό χρόνο ηχούς στον αέρα. Στο πείραμα τον χρησιμοποιούμε ως μοντέλο sonar και υπολογίζουμε σαν ο ήχος να ταξίδευε στο νερό: d = υ · Δt / 2, με υ ≈ 1480 m/s.</p>
+            <p>Ο DFRobot URM10 μετρά πραγματικό χρόνο ηχούς στον αέρα. Στο πείραμα τον χρησιμοποιούμε ως μοντέλο sonar και υπολογίζουμε σαν ο ήχος να ταξίδευε στο νερό: d = υ · Δt / 2, με υ ≈ 1480 m/s.</p>
           </div>
         </div>
         <section class="chart-panel">
@@ -2975,7 +2975,7 @@ tbody tr:last-child td { border-bottom: 0; }
             <div class="worksheet-head">
               <div>
                 <h3>Φύλλο εργασίας: χρόνος ηχούς</h3>
-                <p>Χρησιμοποίησε τον πραγματικό χρόνο Δt από τον HC-SR04 και τη σύμβαση του πειράματος για να υπολογίσεις την απόσταση σαν sonar στο νερό.</p>
+                <p>Χρησιμοποίησε τον πραγματικό χρόνο Δt από τον DFRobot URM10 και τη σύμβαση του πειράματος για να υπολογίσεις την απόσταση σαν sonar στο νερό.</p>
               </div>
               <span class="worksheet-chip">d = υ · Δt / 2</span>
             </div>
@@ -2985,7 +2985,7 @@ tbody tr:last-child td { border-bottom: 0; }
                   <h4>Οδηγίες</h4>
                   <ol>
                     <li>Διάλεξε μία θέση του σκάφους.</li>
-                    <li>Πάτα Έναρξη για να κρατήσεις τον πραγματικό χρόνο ηχούς Δt από τον HC-SR04.</li>
+                    <li>Πάτα Έναρξη για να κρατήσεις τον πραγματικό χρόνο ηχούς Δt από τον DFRobot URM10.</li>
                     <li>Μετέτρεψε μόνος σου τα ms σε s.</li>
                     <li>Με τη σύμβαση “σαν να ήμασταν στο νερό”, υπολόγισε την απόσταση με d = 1480 · Δt / 2.</li>
                     <li>Σύγκρινε τις τρεις θέσεις και γράψε συμπέρασμα.</li>
@@ -3007,7 +3007,7 @@ tbody tr:last-child td { border-bottom: 0; }
                     <thead>
                       <tr>
                         <th>Θέση</th>
-                        <th>Δt HC-SR04 (ms)</th>
+                        <th>Δt URM10 (ms)</th>
                         <th>Δt (s)</th>
                         <th>d μαθητή (m)</th>
                       </tr>
@@ -3355,7 +3355,7 @@ tbody tr:last-child td { border-bottom: 0; }
             </div>
           </div>
           <div class="motion-illustration">
-            <img src="assets/uniform-motion-editorial-hcsr04-track.png" alt="Μοντέρνα εικονογράφηση πειράματος ευθύγραμμης ομαλής κίνησης με αισθητήρα υπερήχων HC-SR04, εργαστηριακό χάρακα και αμαξίδιο">
+            <img src="assets/uniform-motion-editorial-hcsr04-track.png" alt="Μοντέρνα εικονογράφηση πειράματος ευθύγραμμης ομαλής κίνησης με αισθητήρα υπερήχων DFRobot URM10, εργαστηριακό χάρακα και αμαξίδιο">
             <div class="motion-image-note">Ο αισθητήρας υπερήχων μετρά την απόσταση από το αμαξίδιο. Στην ευθύγραμμη ομαλή κίνηση οι ίσοι χρόνοι αντιστοιχούν σε ίσες μετατοπίσεις.</div>
           </div>
           <div class="experiment-summary" id="motionSummary">
@@ -3862,8 +3862,8 @@ const experimentCatalog = {
   'a-sonar': {
     mode: 4,
     title: 'SONAR: Μέτρηση απόστασης με ήχο',
-    ready: 'Βάλε ένα επίπεδο αντικείμενο απέναντι από τον HC-SR04, διάλεξε θέση σκάφους και πάτα Έναρξη για να κρατήσεις τον χρόνο ηχούς.',
-    running: 'Ο HC-SR04 μετρά πραγματικό χρόνο ηχούς στον αέρα. Στο σενάριο τον ερμηνεύουμε σαν μέτρηση sonar στο νερό.',
+    ready: 'Βάλε ένα επίπεδο αντικείμενο απέναντι από τον DFRobot URM10, διάλεξε θέση σκάφους και πάτα Έναρξη για να κρατήσεις τον χρόνο ηχούς.',
+    running: 'Ο DFRobot URM10 μετρά πραγματικό χρόνο ηχούς στον αέρα. Στο σενάριο τον ερμηνεύουμε σαν μέτρηση sonar στο νερό.',
     selected: 'Χρησιμοποίησε το Δt που κρατήθηκε και υπολόγισε την απόσταση με d = 1480 · Δt / 2.'
   },
   'a-speed': {
@@ -4669,7 +4669,7 @@ function sonarDisplayEchoMs(index = sonarPositionIndex) {
 function sonarCaptureCurrentMeasurement() {
   const echoMs = sonarCurrentEchoMs();
   if (!Number.isFinite(echoMs)) {
-    showToast('Δεν υπάρχει ακόμα πραγματική μέτρηση HC-SR04 για να κρατηθεί.', true);
+    showToast('Δεν υπάρχει ακόμα πραγματική μέτρηση URM10 για να κρατηθεί.', true);
     return false;
   }
   sonarMeasuredEchoMs[sonarPositionIndex] = echoMs;
@@ -4681,7 +4681,7 @@ function sonarCaptureCurrentMeasurement() {
   updateAnalysis();
   draw();
   renderSonarExperiment();
-  showToast('Κρατήθηκε πραγματικός χρόνος HC-SR04 για ' + sonarSelectedPosition().label + '.');
+  showToast('Κρατήθηκε πραγματικός χρόνος URM10 για ' + sonarSelectedPosition().label + '.');
   return true;
 }
 
@@ -4702,8 +4702,8 @@ function sonarExperimentMetrics() {
     halfTime: roundTripTime / 2,
     targetRoundTripTime: 2 * distance / SONAR_SOUND_SPEED_WATER,
     source: Number.isFinite(sonarMeasuredEchoMs[sonarPositionIndex])
-      ? 'κρατημένη μέτρηση HC-SR04'
-      : 'ζωντανή μέτρηση HC-SR04'
+      ? 'κρατημένη μέτρηση URM10'
+      : 'ζωντανή μέτρηση URM10'
   };
 }
 
@@ -4794,17 +4794,17 @@ function saveSonarWorksheetAndPrint() {
     '<h1>Αναφορά πειράματος Sonar</h1><div class="meta">Palladio Physics Lab · ' + new Date().toLocaleString('el-GR') + '</div>' +
     '<div class="box"><strong>Κεντρική ερώτηση</strong><p>Πώς μπορούμε να υπολογίσουμε μια απόσταση όταν μετράμε τον συνολικό χρόνο που χρειάζεται ένας ηχητικός παλμός για να πάει σε ένα εμπόδιο και να επιστρέψει;</p></div>' +
     '<div class="grid">' +
-    '<div class="box"><strong>Στόχος</strong><p>Να χρησιμοποιήσω πραγματικό χρόνο ηχούς από HC-SR04 και να υπολογίσω απόσταση με τη σύμβαση ότι ο ήχος ταξιδεύει στο νερό.</p></div>' +
-    '<div class="box"><strong>Υλικά / εργαλεία</strong><p>Palladio Physics Lab, M5Stick, αισθητήρας HC-SR04, επίπεδο εμπόδιο, τρεις θέσεις σκάφους, αριθμομηχανή.</p></div>' +
+    '<div class="box"><strong>Στόχος</strong><p>Να χρησιμοποιήσω πραγματικό χρόνο ηχούς από DFRobot URM10 και να υπολογίσω απόσταση με τη σύμβαση ότι ο ήχος ταξιδεύει στο νερό.</p></div>' +
+    '<div class="box"><strong>Υλικά / εργαλεία</strong><p>Palladio Physics Lab, M5Stick, αισθητήρας DFRobot URM10, επίπεδο εμπόδιο, τρεις θέσεις σκάφους, αριθμομηχανή.</p></div>' +
     '</div>' +
     '<h2>Θεωρητική ιδέα</h2>' +
-    '<p>Ο HC-SR04 μετρά πραγματικό χρόνο ηχούς στον αέρα. Στο πείραμα κάνουμε τη σύμβαση ότι αυτός ο χρόνος είναι χρόνος sonar μέσα στο νερό.</p>' +
+    '<p>Ο DFRobot URM10 μετρά πραγματικό χρόνο ηχούς στον αέρα. Στο πείραμα κάνουμε τη σύμβαση ότι αυτός ο χρόνος είναι χρόνος sonar μέσα στο νερό.</p>' +
     '<p>Ο ήχος διανύει τη διαδρομή αισθητήρας → στόχος → αισθητήρας. Άρα ο συνολικός χρόνος Δt αντιστοιχεί σε διπλάσια απόσταση από αυτή που ζητάμε.</p>' +
     '<p><span class="formula">d = υ · Δt / 2</span> με ταχύτητα ήχου στο νερό περίπου υ = 1480 m/s.</p>' +
     '<h2>Διαδικασία</h2>' +
-    '<ol><li>Διάλεξα μία θέση του σκάφους.</li><li>Μέτρησα με τον HC-SR04 τον συνολικό χρόνο ηχούς Δt σε ms.</li><li>Μετέτρεψα τα ms σε s.</li><li>Υπολόγισα την απόσταση d με τη σύμβαση του νερού.</li><li>Σύγκρινα τις τρεις θέσεις.</li></ol>' +
+    '<ol><li>Διάλεξα μία θέση του σκάφους.</li><li>Μέτρησα με τον DFRobot URM10 τον συνολικό χρόνο ηχούς Δt σε ms.</li><li>Μετέτρεψα τα ms σε s.</li><li>Υπολόγισα την απόσταση d με τη σύμβαση του νερού.</li><li>Σύγκρινα τις τρεις θέσεις.</li></ol>' +
     '<h2>Μετρήσεις και υπολογισμοί</h2>' +
-    '<table><thead><tr><th>Θέση</th><th>Δt HC-SR04 (ms)</th><th>Δt (s)</th><th>d μαθητή (m)</th></tr></thead><tbody>' + rowsHtml + '</tbody></table>' +
+    '<table><thead><tr><th>Θέση</th><th>Δt URM10 (ms)</th><th>Δt (s)</th><th>d μαθητή (m)</th></tr></thead><tbody>' + rowsHtml + '</tbody></table>' +
     '<h2>Ερωτήσεις</h2>' +
     '<div class="box"><strong>1. Γιατί διαιρούμε τον συνολικό χρόνο με το 2;</strong><div class="answer-line"></div></div>' +
     '<div class="box"><strong>2. Ποια θέση αντιστοιχεί στο μεγαλύτερο βάθος;</strong><div class="answer-line"></div></div>' +
@@ -6491,7 +6491,7 @@ function updateModeUi() {
   if (workspaceTitle) workspaceTitle.textContent = experiment ? experiment.title : 'Εργαστήριο μέτρησης';
   if (workspaceSubtitle) {
     workspaceSubtitle.textContent = isSonarExperimentMode()
-      ? 'Ο HC-SR04 μετρά πραγματικό χρόνο ηχούς στον αέρα. Στο σενάριο τον χρησιμοποιούμε σαν sonar στο νερό.'
+      ? 'Ο DFRobot URM10 μετρά πραγματικό χρόνο ηχούς στον αέρα. Στο σενάριο τον χρησιμοποιούμε σαν sonar στο νερό.'
       : 'Διάλεξε πείραμα από την τάξη σου, πάτα Έναρξη και παρατήρησε τι αλλάζει στο γράφημα.';
   }
   document.body.classList.toggle('sonar-mode', isSonarExperimentMode());
