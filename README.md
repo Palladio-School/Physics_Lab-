@@ -29,6 +29,7 @@ The repository also keeps the earlier Python desktop application for reference a
 | `requirements.txt` | Python dependencies for the legacy desktop app. |
 | `case2.stl`, `cover.stl` | 3D-printable case/cover assets. |
 | `PROJECT_STRUCTURE.md` | More detailed technical structure and known hot spots. |
+| `HARDWARE_API.md` | Hardware wiring notes, firmware API reference, UDP compatibility, and verification checklist. |
 
 ## Run The Web Dashboard
 
@@ -155,3 +156,4 @@ python physics_lab_with_angular_velocity.py
 - The legacy Python app and current browser dashboard now describe different generations of the project; keep future changes explicit about which path they affect.
 
 See `PROJECT_STRUCTURE.md` for the fuller technical map.
+See `HARDWARE_API.md` for the hardware and API reference.
