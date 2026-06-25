@@ -25,13 +25,16 @@ WebServer server(80);
 // Pins
 #define TRIG_PIN 26  // G26
 #define ECHO_PIN 0   // G0
-#define DT 36        // HX711 DOUT (virtual, reused)
-#define SCK 26       // HX711 SCK (shared with TRIG)
+#define DT 36        // HX711 DOUT primary candidate
+#define DT_ALT 25    // HX711 DOUT alternate candidate for the shared G36/G25 port
+#define SCK 26       // HX711 SCK
 #define TEMP1_PIN 25 // DS18B20 T1 data
 #define TEMP2_PIN 26 // DS18B20 T2 data
 
 HX711 scale;
 const float SCALE_FACTOR = 48163.7;
+uint8_t activeHx711DtPin = DT;
+uint8_t hx711RawZeroCount = 0;
 OneWire oneWireTemp1(TEMP1_PIN);
 OneWire oneWireTemp2(TEMP2_PIN);
 DallasTemperature tempSensor1(&oneWireTemp1);
@@ -80,6 +83,12 @@ float rawGx = 0, rawGy = 0, rawGz = 0;
 float accelOffsetX = 0, accelOffsetY = 0, accelOffsetZ = 0;
 float gyroOffsetX = 0, gyroOffsetY = 0, gyroOffsetZ = 0;
 
+void applyCalibration(String target);
+void applySampleRate(uint16_t requestedRate);
+void applyMode(uint8_t requestedMode);
+void beginForceScale(uint8_t dataPin, bool tareScale);
+void tryAlternateForceDataPin();
+
 // Display helpers
 void drawFooter() {
   M5.Lcd.setTextSize(1);
@@ -102,6 +111,18 @@ void drawBattery(float voltage) {
   M5.Lcd.setTextColor(GREEN, BLACK);
   M5.Lcd.setCursor(x - 50, y);
   M5.Lcd.printf("%.2fV", voltage);
+}
+
+void beginForceScale(uint8_t dataPin, bool tareScale) {
+  activeHx711DtPin = dataPin;
+  hx711RawZeroCount = 0;
+  scale.begin(activeHx711DtPin, SCK);
+  scale.set_scale(SCALE_FACTOR);
+  if (tareScale) scale.tare(10);
+}
+
+void tryAlternateForceDataPin() {
+  beginForceScale(activeHx711DtPin == DT ? DT_ALT : DT, false);
 }
 
 void displayMode() {
@@ -140,6 +161,15 @@ const char* getModeName() {
 void clearSampleBuffer() {
   sampleBufferHead = 0;
   sampleBufferCount = 0;
+}
+
+void resetModeState() {
+  prev_distance = -1;
+  prev_velocity = 0;
+  smoothed_distance = -1;
+  prev_time = millis();
+  lastSampleDue = 0;
+  clearSampleBuffer();
 }
 
 void recordSample(uint8_t sampleMode, unsigned long timestampMs, unsigned long id) {
@@ -287,6 +317,26 @@ void handleSamples() {
     }
   }
 
+  if (!includeAll && sampleSequence <= since) {
+    char emptyJson[256];
+    snprintf(
+      emptyJson,
+      sizeof(emptyJson),
+      "{\"mode\":%d,\"modeName\":\"%s\",\"ap\":\"%s\",\"ip\":\"%s\",\"battery\":%.2f,"
+      "\"sampleRate\":%u,\"latestId\":%lu,\"bufferCount\":%u,\"samples\":[]}",
+      mode,
+      getModeName(),
+      apSsid,
+      WiFi.softAPIP().toString().c_str(),
+      lastBatteryVoltage,
+      sampleRateHz,
+      sampleSequence,
+      sampleBufferCount
+    );
+    server.send(200, "application/json", emptyJson);
+    return;
+  }
+
   char header[256];
   snprintf(
     header,
@@ -318,40 +368,41 @@ void handleSamples() {
   server.sendContent("");
 }
 
+void configureModeHardware() {
+  if (mode == 2) {
+    beginForceScale(activeHx711DtPin, false);
+    sampleRateHz = 10;
+    sampleIntervalMs = 100;
+  } else if (mode == 4) {
+    pinMode(TRIG_PIN, OUTPUT);
+    pinMode(ECHO_PIN, INPUT);
+  } else if (mode == 5) {
+    tempSensor1.begin();
+    tempSensor2.begin();
+  }
+}
+
 void handleSetMode() {
   if (server.hasArg("mode")) {
     int requestedMode = server.arg("mode").toInt();
-    if (requestedMode >= 0 && requestedMode <= maxMode) {
-      mode = requestedMode;
-      prev_distance = -1;
-      prev_velocity = 0;
-      smoothed_distance = -1;
-      prev_time = millis();
-      lastSampleDue = 0;
-      clearSampleBuffer();
-      M5.Lcd.fillScreen(BLACK);
-      displayMode();
-    }
+    if (requestedMode >= 0 && requestedMode <= maxMode) applyMode((uint8_t)requestedMode);
   }
   handleData();
 }
 
 void handleSettings() {
   if (server.hasArg("rate")) {
-    int requestedRate = server.arg("rate").toInt();
-    if (requestedRate == 1 || requestedRate == 2 ||
-        requestedRate == 5 || requestedRate == 10 || requestedRate == 20 ||
-        requestedRate == 50 || requestedRate == 100) {
-      sampleRateHz = requestedRate;
-      sampleIntervalMs = 1000UL / sampleRateHz;
-      lastSampleDue = 0;
-    }
+    applySampleRate((uint16_t)server.arg("rate").toInt());
   }
   handleData();
 }
 
 void handleCalibrate() {
-  String target = server.arg("target");
+  applyCalibration(server.arg("target"));
+  handleData();
+}
+
+void applyCalibration(String target) {
   if (target == "accel") {
     accelOffsetX = rawAx;
     accelOffsetY = rawAy;
@@ -365,6 +416,7 @@ void handleCalibrate() {
   } else if (target == "force") {
     scale.tare(10);
     latestForce = 0;
+    hx711RawZeroCount = 0;
   } else if (target == "distance") {
     distanceOffset += latestDistance;
     latestDistance = 0;
@@ -374,7 +426,25 @@ void handleCalibrate() {
     prev_velocity = 0;
     prev_time = millis();
   }
-  handleData();
+}
+
+void applySampleRate(uint16_t requestedRate) {
+  if (requestedRate == 1 || requestedRate == 2 ||
+      requestedRate == 5 || requestedRate == 10 || requestedRate == 20 ||
+      requestedRate == 50 || requestedRate == 100) {
+    sampleRateHz = requestedRate;
+    sampleIntervalMs = 1000UL / sampleRateHz;
+    lastSampleDue = 0;
+  }
+}
+
+void applyMode(uint8_t requestedMode) {
+  if (requestedMode > maxMode) return;
+  mode = requestedMode;
+  configureModeHardware();
+  resetModeState();
+  M5.Lcd.fillScreen(BLACK);
+  displayMode();
 }
 
 void startWebServer() {
@@ -397,6 +467,8 @@ void startWebServer() {
 
 // ULTRASONIC FILTERED READING
 float getFilteredDistanceCM() {
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
   digitalWrite(TRIG_PIN, LOW); delayMicroseconds(2);
   digitalWrite(TRIG_PIN, HIGH); delayMicroseconds(10);
   digitalWrite(TRIG_PIN, LOW);
@@ -471,12 +543,30 @@ bool sampleCurrentMode(unsigned long now) {
   }
 
   if (mode == 2) {
-    if (!scale.is_ready()) return false;
-    latestForce = scale.get_units(1);
+    if (!scale.is_ready()) {
+      if (activeHx711DtPin == DT) tryAlternateForceDataPin();
+      M5.Lcd.fillRect(0, 20, 160, 100, BLACK);
+      M5.Lcd.setCursor(0, 40);
+      M5.Lcd.setTextColor(RED, BLACK);
+      M5.Lcd.setTextSize(2);
+      M5.Lcd.printf("HX711\nnot ready\nD:%u", activeHx711DtPin);
+      drawFooter();
+      return false;
+    }
+    long rawForce = scale.read_average(1);
+    long forceDelta = rawForce - scale.get_offset();
+    latestForce = forceDelta / SCALE_FACTOR;
+    if (rawForce == 0) {
+      hx711RawZeroCount++;
+      if (hx711RawZeroCount > 10) tryAlternateForceDataPin();
+    } else {
+      hx711RawZeroCount = 0;
+    }
+    M5.Lcd.fillRect(0, 20, 160, 100, BLACK);
     M5.Lcd.setCursor(0, 40);
     M5.Lcd.setTextColor(YELLOW, BLACK);
-    M5.Lcd.setTextSize(2);
-    M5.Lcd.printf("Force: %.2f N", latestForce);
+    M5.Lcd.setTextSize(1);
+    M5.Lcd.printf("F: %.3f N\nraw:%ld\nD:%u d:%ld", latestForce, rawForce, activeHx711DtPin, forceDelta);
     drawFooter();
 
     char buf[32];
@@ -571,9 +661,7 @@ void setup() {
   tempSensor1.setResolution(11);
   tempSensor2.setResolution(11);
 
-  scale.begin(DT, SCK);
-  scale.set_scale(SCALE_FACTOR);
-  scale.tare();
+  beginForceScale(DT, true);
 
   udp.begin(accelPort);
   displayMode();

@@ -151,12 +151,12 @@ button:focus-visible, select:focus-visible {
   flex-wrap: wrap;
 }
 .student-flow {
+  display: none;
   padding: 14px 16px;
   border: 1px solid #d5e4ef;
   border-radius: 14px;
   background: linear-gradient(180deg, #ffffff, #f8fbff);
   box-shadow: var(--shadow);
-  display: grid;
   grid-template-columns: minmax(220px, 1fr) auto;
   gap: 12px;
   align-items: center;
@@ -370,7 +370,8 @@ input[type="number"] {
   padding-left: 4px;
 }
 .split-chart-field[hidden],
-.split-chart-toggle[hidden] {
+.split-chart-toggle[hidden],
+.hooke-chart-toggle[hidden] {
   display: none;
 }
 .tool-group {
@@ -397,6 +398,9 @@ input[type="number"] {
   background: #fff;
   color: var(--blue-dark);
   box-shadow: 0 2px 7px rgba(37, 55, 84, 0.12);
+}
+.hooke-chart-toggle button {
+  min-width: 52px;
 }
 .chart-actions .tool-group,
 .chart-actions .zoom-status {
@@ -640,20 +644,304 @@ input[type="number"] {
   aspect-ratio: 1672 / 941;
   height: auto;
   min-height: 0;
+  padding: 12px;
+  background: #fff;
+  border: 0;
+  border-radius: 0;
 }
 .sonar-mode .sonar-main-view {
   display: block;
+  border: 0;
+  border-radius: 10px;
 }
 .sonar-mode .sonar-main-view canvas {
   display: block;
+  border-radius: 10px;
+}
+.sonar-mode .chart-foot {
+  display: none;
 }
 .sonar-mode .legend,
 .sonar-mode .split-chart-toggle,
 .sonar-mode .split-chart-field {
   display: none;
 }
+.sonar-mode .chart-head {
+  display: none;
+}
+.sonar-intro {
+  display: none;
+}
+.sonar-mode .sonar-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+  margin: 0 0 10px;
+}
+.sonar-intro-card {
+  padding: 11px 12px;
+  border: 1px solid #dce7f1;
+  border-radius: 12px;
+  background: #fbfdff;
+}
+.sonar-intro-card strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #23415f;
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.sonar-intro-card p {
+  margin: 0;
+  color: #4c6077;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.sonar-worksheet-panel {
+  display: none;
+}
+.sonar-mode .sonar-worksheet-panel {
+  display: block;
+}
+.worksheet-card {
+  padding: 14px;
+  border: 1px solid #dce7f1;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #ffffff, #fbfdff);
+}
+.worksheet-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: flex-start;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e6edf5;
+}
+.worksheet-head h3 {
+  margin: 0 0 4px;
+  color: var(--ink);
+  font-size: 18px;
+}
+.worksheet-head p {
+  margin: 0;
+  color: #5f7187;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.worksheet-chip {
+  flex: 0 0 auto;
+  min-height: 42px;
+  padding: 0 14px;
+  border: 1px solid #cfe0f2;
+  border-radius: 12px;
+  background: #edf5ff;
+  color: #173b73;
+  display: inline-flex;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 950;
+  white-space: nowrap;
+}
+.worksheet-grid {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.78fr) minmax(460px, 1.22fr);
+  gap: 10px;
+  margin-top: 10px;
+  align-items: stretch;
+}
+.worksheet-column {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 10px;
+  align-content: start;
+}
+.worksheet-block {
+  padding: 11px 12px;
+  border: 1px solid #e1e9f2;
+  border-radius: 12px;
+  background: #fff;
+}
+.worksheet-block.compact {
+  padding: 11px 12px;
+}
+.worksheet-block.worksheet-conclusion-block {
+  display: flex;
+  flex-direction: column;
+}
+.worksheet-block h4 {
+  margin: 0 0 7px;
+  color: #23415f;
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.worksheet-block p,
+.worksheet-block li {
+  color: #465b72;
+  font-size: 12.5px;
+  line-height: 1.42;
+}
+.worksheet-block ol {
+  margin: 0;
+  padding-left: 18px;
+}
+.worksheet-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border: 1px solid #dce7f1;
+  border-radius: 12px;
+}
+.worksheet-table th,
+.worksheet-table td {
+  padding: 8px;
+  border-bottom: 1px solid #e6edf5;
+  color: #465b72;
+  font-size: 13px;
+  text-align: left;
+}
+.worksheet-table th {
+  background: #f3f7fb;
+  color: #5c7087;
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.worksheet-table tr:last-child td {
+  border-bottom: 0;
+}
+.worksheet-table tr.active td {
+  background: #f1f7ff;
+}
+.worksheet-table input {
+  width: 100%;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid #cfe0f2;
+  border-radius: 9px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 850;
+}
+.worksheet-conclusion {
+  width: 100%;
+  flex: 1;
+  min-height: 76px;
+  resize: vertical;
+  padding: 10px 12px;
+  border: 1px solid #cfe0f2;
+  border-radius: 10px;
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.worksheet-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+.worksheet-actions button {
+  min-height: 42px;
+  min-width: min(100%, 330px);
+  padding: 0 16px;
+  border-radius: 11px;
+  font-size: 14px;
+  font-weight: 900;
+}
+@media (max-width: 900px) {
+  .sonar-mode .sonar-intro { grid-template-columns: 1fr; }
+  .hooke-overview { grid-template-columns: 1fr; }
+  .hooke-illustration { max-width: 320px; }
+  .hooke-intro { grid-template-columns: 1fr; }
+  .worksheet-grid { grid-template-columns: 1fr; }
+  .worksheet-head { flex-direction: column; }
+  .worksheet-chip { align-self: flex-start; }
+  .worksheet-actions { justify-content: stretch; }
+  .worksheet-actions button { width: 100%; }
+}
 .workspace-grid.rail-hidden {
   grid-template-columns: minmax(0, 1fr);
+}
+.hooke-mode .workspace-grid {
+  grid-template-columns: minmax(0, 1fr);
+  display: contents;
+}
+.hooke-mode .workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.hooke-mode .workspace-heading {
+  order: -2;
+}
+.hooke-mode .workspace-main {
+  display: contents;
+}
+.hooke-mode .workspace-rail {
+  order: -1;
+}
+.hooke-mode .instrument-bar {
+  order: 0;
+}
+.hooke-mode .chart-panel {
+  order: 1;
+}
+.hooke-mode .chart-actions .hooke-chart-toggle {
+  display: inline-flex;
+}
+.hooke-mode .workspace-grid.rail-collapsed {
+  grid-template-columns: minmax(0, 1fr);
+}
+.hooke-mode .rail-resizer,
+.hooke-mode .experiment-tabs,
+.hooke-mode .experiment-collapsed-toggle {
+  display: none !important;
+}
+.hooke-mode .workspace-rail {
+  grid-column: 1;
+  width: 100%;
+}
+.hooke-mode .workspace-rail .experiment-panel {
+  position: static;
+  top: auto;
+}
+.hooke-mode .workspace-grid.rail-collapsed #hookeExperiment {
+  display: block !important;
+}
+.hooke-mode .workspace-grid.rail-collapsed .experiment-panel[hidden] {
+  display: none !important;
+}
+.hooke-mode #hookeExperiment .experiment-toggle {
+  display: none;
+}
+.hooke-mode #hookeExperiment {
+  margin-bottom: 14px;
+}
+.hooke-mode #hookeExperiment .experiment-head {
+  align-items: flex-start;
+}
+.hooke-mode #hookeExperiment .experiment-head-actions {
+  display: none;
+}
+.hooke-mode .table-panel {
+  display: none;
+}
+.hooke-worksheet-panel {
+  display: none;
+}
+.hooke-mode .hooke-worksheet-panel {
+  display: block;
+  order: 2;
+}
+.hooke-internal-hidden {
+  display: none !important;
 }
 canvas {
   width: 100%;
@@ -1266,12 +1554,20 @@ canvas {
   font-weight: 800;
   line-height: 1.35;
 }
+.hooke-overview {
+  display: grid;
+  grid-template-columns: minmax(210px, 300px) minmax(0, 1fr);
+  gap: 14px;
+  align-items: stretch;
+  padding: 0 16px 14px;
+}
 .hooke-illustration {
-  margin: 0 16px 12px;
+  margin: 0;
   border: 1px solid #dce7f1;
   border-radius: 12px;
   background: linear-gradient(180deg, #ffffff, #f7fbff);
   overflow: hidden;
+  align-self: start;
 }
 .hooke-illustration img {
   display: block;
@@ -1286,6 +1582,32 @@ canvas {
   font-size: 12px;
   font-weight: 800;
   line-height: 1.35;
+}
+.hooke-intro {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+.hooke-intro-card {
+  padding: 12px 13px;
+  border: 1px solid #dce7f1;
+  border-radius: 12px;
+  background: #fbfdff;
+}
+.hooke-intro-card strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #23415f;
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.hooke-intro-card p {
+  margin: 0;
+  color: #4c6077;
+  font-size: 13px;
+  line-height: 1.45;
 }
 .motion-illustration {
   margin: 0 16px 12px;
@@ -2338,7 +2660,7 @@ tbody tr:last-child td { border-bottom: 0; }
             <small>Αισθητήρας υπερήχων</small>
           </button>
           <button data-experiment="a-sonar" type="button">
-            Sonar: μέτρηση απόστασης
+            SONAR: Μέτρηση απόστασης με ήχο
             <small>Αρχή λειτουργίας υπερήχων</small>
           </button>
           <button data-experiment="a-speed" type="button">
@@ -2348,10 +2670,6 @@ tbody tr:last-child td { border-bottom: 0; }
           <button data-experiment="a-weight" type="button">
             Μάζα/Βάρος - επιμήκυνση ελατηρίου
             <small>Αισθητήρας δύναμης</small>
-          </button>
-          <button data-experiment="a-shake" type="button">
-            Απότομη κίνηση και επιτάχυνση
-            <small>Επιταχυνσιόμετρο</small>
           </button>
           <button data-experiment="a-heat" type="button">
             Θερμότητα
@@ -2369,10 +2687,6 @@ tbody tr:last-child td { border-bottom: 0; }
           <button data-experiment="b-uniform-motion" type="button">
             Ευθύγραμμη ομαλή κίνηση
             <small>Θέση - χρόνος</small>
-          </button>
-          <button data-experiment="b-accelerated-motion" type="button">
-            Επιταχυνόμενη κίνηση
-            <small>Ταχύτητα - επιτάχυνση</small>
           </button>
           <button data-experiment="b-hooke" type="button">
             Νόμος του Hooke
@@ -2413,8 +2727,8 @@ tbody tr:last-child td { border-bottom: 0; }
   <main class="workspace">
     <header class="workspace-heading">
       <div>
-        <h2>Εργαστήριο μέτρησης</h2>
-        <p>Διάλεξε πείραμα από την τάξη σου, πάτα Έναρξη και παρατήρησε τι αλλάζει στο γράφημα.</p>
+        <h2 id="workspaceTitle">Εργαστήριο μέτρησης</h2>
+        <p id="workspaceSubtitle">Διάλεξε πείραμα από την τάξη σου, πάτα Έναρξη και παρατήρησε τι αλλάζει στο γράφημα.</p>
       </div>
       <span class="live-chip paused" id="sessionStatus">● ΕΤΟΙΜΟ</span>
     </header>
@@ -2524,6 +2838,16 @@ tbody tr:last-child td { border-bottom: 0; }
 
     <div class="workspace-grid">
       <div class="workspace-main">
+        <div class="sonar-intro" id="sonarIntro">
+          <div class="sonar-intro-card">
+            <strong>Κεντρική ερώτηση</strong>
+            <p>Πώς μπορούμε να υπολογίσουμε μια απόσταση όταν μετράμε τον συνολικό χρόνο που χρειάζεται ένας ηχητικός παλμός για να πάει σε ένα εμπόδιο και να επιστρέψει;</p>
+          </div>
+          <div class="sonar-intro-card">
+            <strong>Θεωρητική ιδέα - σύμβαση</strong>
+            <p>Ο HC-SR04 μετρά πραγματικό χρόνο ηχούς στον αέρα. Στο πείραμα τον χρησιμοποιούμε ως μοντέλο sonar και υπολογίζουμε σαν ο ήχος να ταξίδευε στο νερό: d = υ · Δt / 2, με υ ≈ 1480 m/s.</p>
+          </div>
+        </div>
         <section class="chart-panel">
           <div class="chart-head">
             <div class="title">
@@ -2539,6 +2863,10 @@ tbody tr:last-child td { border-bottom: 0; }
                 Δίπλα
                 <select id="splitSeriesSelect"></select>
               </label>
+              <div class="tool-group hooke-chart-toggle" id="hookeChartToggle" aria-label="Γράφημα Hooke" hidden>
+                <button class="active" data-hooke-chart="time" type="button">F-t</button>
+                <button data-hooke-chart="extension" type="button">F-Δx</button>
+              </div>
               <div class="tool-group" aria-label="Λειτουργία δείκτη">
                 <button data-chart-tool="inspect" title="Ανάγνωση τιμών">Τιμή</button>
                 <button class="active" data-chart-tool="select" title="Επιλογή διαστήματος">Επίλεξε κομμάτι</button>
@@ -2575,44 +2903,131 @@ tbody tr:last-child td { border-bottom: 0; }
           </div>
         </section>
 
-        <section class="static-gauge-panel" id="staticGaugePanel" hidden>
-          <div class="static-gauge-head">
-            <div>
-              <h3>Στατική ένδειξη δύναμης</h3>
-              <p>Για Hooke, άνωση και βάρος: περίμενε να σταθεροποιηθεί και αποθήκευσε το plateau.</p>
+        <section class="hooke-worksheet-panel" id="hookeWorksheetPanel" aria-label="Φύλλο εργασίας νόμου του Hooke">
+          <div class="worksheet-card">
+            <div class="worksheet-head">
+              <div>
+                <h3>Φύλλο εργασίας: Νόμος του Hooke</h3>
+                <p>Χρησιμοποίησε τη δύναμη από την κυψέλη φορτίου και τη δική σου μέτρηση επιμήκυνσης για να ελέγξεις αν F και Δx είναι ανάλογα.</p>
+              </div>
+              <span class="worksheet-chip">F = k · Δx</span>
             </div>
-            <span class="stability-pill" id="gaugeStability">Αναμονή</span>
-          </div>
-          <div class="static-gauge-body">
-            <div class="gauge-face">
-              <svg class="gauge-arc" viewBox="0 0 220 136" aria-label="Gauge δύναμης">
-                <path class="gauge-track" d="M 28 104 A 82 82 0 0 1 192 104"></path>
-                <path class="gauge-value-arc" id="gaugeValueArc" d="M 28 104 A 82 82 0 0 1 192 104" pathLength="100"></path>
-                <line class="gauge-needle" id="gaugeNeedle" x1="110" y1="104" x2="110" y2="38"></line>
-                <circle cx="110" cy="104" r="7" fill="#26384a"></circle>
-                <text class="gauge-value" id="gaugeValue" x="110" y="78">—</text>
-                <text class="gauge-unit" id="gaugeUnit" x="110" y="94">N</text>
-              </svg>
-            </div>
-            <div class="gauge-card">
-              <span>Μέση τιμή</span>
-              <strong id="gaugeMean">—</strong>
-              <small>Μέσος όρος των τελευταίων σταθερών δειγμάτων</small>
-            </div>
-            <div class="gauge-card">
-              <span>Τυπική απόκλιση</span>
-              <strong id="gaugeStdDev">—</strong>
-              <small>Μικρή τιμή σημαίνει ήρεμη μέτρηση</small>
-            </div>
-            <div class="gauge-card">
-              <span>Δείγματα</span>
-              <strong id="gaugeSamples">0</strong>
-              <small id="gaugeHint">Περίμενε να γεμίσει η ένδειξη</small>
+            <div class="worksheet-grid">
+              <div class="worksheet-column">
+                <div class="worksheet-block compact">
+                  <h4>Οδηγίες</h4>
+                  <ol>
+                    <li>Κάνε tare στην κυψέλη φορτίου χωρίς φορτίο.</li>
+                    <li>Κρέμασε μία μάζα στο ελατήριο και περίμενε να σταθεροποιηθεί η δύναμη.</li>
+                    <li>Επίλεξε στο γράφημα F-t ένα καθαρό, οριζόντιο κομμάτι A-B.</li>
+                    <li>Μέτρησε με χάρακα την επιμήκυνση Δx και γράψ' την σε cm.</li>
+                    <li>Αποθήκευσε τη δοκιμή και επανάλαβε για διαφορετικές μάζες.</li>
+                  </ol>
+                </div>
+                <div class="worksheet-block compact">
+                  <h4>Ερωτήσεις</h4>
+                  <ol>
+                    <li>Όταν αυξάνεται η δύναμη, τι συμβαίνει στην επιμήκυνση;</li>
+                    <li>Τα σημεία F-Δx θα μπορούσαν να σχηματίζουν περίπου ευθεία;</li>
+                    <li>Τι σημαίνει φυσικά η σταθερά k του ελατηρίου;</li>
+                  </ol>
+                </div>
+              </div>
+              <div class="worksheet-column">
+                <div class="worksheet-block">
+                  <h4>Πίνακας μετρήσεων</h4>
+                  <div class="experiment-tools">
+                    <label class="field">
+                      Δx
+                      <input id="hookeExtensionCm" type="number" step="0.1" min="0" value="1.0">
+                      <small>cm</small>
+                    </label>
+                    <button id="saveHookeTrial">Αποθήκευση δοκιμής</button>
+                    <button id="clearHookeTrials">Καθαρισμός δοκιμών</button>
+                    <button id="exportHookeTrials">Εξαγωγή CSV</button>
+                  </div>
+                  <table class="worksheet-table">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Δx (cm)</th>
+                        <th>Δx (m)</th>
+                        <th>Fmean (N)</th>
+                        <th>k = F/Δx (N/m)</th>
+                      </tr>
+                    </thead>
+                    <tbody id="hookeBody">
+                      <tr><td colspan="5" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="worksheet-block compact worksheet-conclusion-block">
+                  <h4>Συμπέρασμα</h4>
+                  <textarea class="worksheet-conclusion" id="hookeConclusion" placeholder="Γράψε αν οι μετρήσεις σου δείχνουν ότι η δύναμη είναι ανάλογη της επιμήκυνσης."></textarea>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        <section class="analysis-panel">
+        <section class="sonar-worksheet-panel" id="sonarWorksheetPanel" aria-label="Φύλλο εργασίας sonar">
+          <div class="worksheet-card">
+            <div class="worksheet-head">
+              <div>
+                <h3>Φύλλο εργασίας: χρόνος ηχούς</h3>
+                <p>Χρησιμοποίησε τον πραγματικό χρόνο Δt από τον HC-SR04 και τη σύμβαση του πειράματος για να υπολογίσεις την απόσταση σαν sonar στο νερό.</p>
+              </div>
+              <span class="worksheet-chip">d = υ · Δt / 2</span>
+            </div>
+            <div class="worksheet-grid">
+              <div class="worksheet-column">
+                <div class="worksheet-block compact">
+                  <h4>Οδηγίες</h4>
+                  <ol>
+                    <li>Διάλεξε μία θέση του σκάφους.</li>
+                    <li>Πάτα Έναρξη για να κρατήσεις τον πραγματικό χρόνο ηχούς Δt από τον HC-SR04.</li>
+                    <li>Μετέτρεψε μόνος σου τα ms σε s.</li>
+                    <li>Με τη σύμβαση “σαν να ήμασταν στο νερό”, υπολόγισε την απόσταση με d = 1480 · Δt / 2.</li>
+                    <li>Σύγκρινε τις τρεις θέσεις και γράψε συμπέρασμα.</li>
+                  </ol>
+                </div>
+                <div class="worksheet-block compact">
+                  <h4>Ερωτήσεις</h4>
+                  <ol>
+                    <li>Γιατί διαιρούμε τον συνολικό χρόνο με το 2;</li>
+                    <li>Ποια θέση έχει το μεγαλύτερο βάθος; Πώς το καταλαβαίνεις από το Δt;</li>
+                    <li>Ο αισθητήρας μετρά απευθείας απόσταση ή χρόνο;</li>
+                  </ol>
+                </div>
+              </div>
+              <div class="worksheet-column">
+                <div class="worksheet-block">
+                  <h4>Πίνακας μετρήσεων</h4>
+                  <table class="worksheet-table">
+                    <thead>
+                      <tr>
+                        <th>Θέση</th>
+                        <th>Δt HC-SR04 (ms)</th>
+                        <th>Δt (s)</th>
+                        <th>d μαθητή (m)</th>
+                      </tr>
+                    </thead>
+                    <tbody id="sonarWorksheetRows"></tbody>
+                  </table>
+                </div>
+                <div class="worksheet-block compact worksheet-conclusion-block">
+                  <h4>Συμπέρασμα</h4>
+                  <textarea class="worksheet-conclusion" id="sonarConclusion" placeholder="Γράψε τι παρατηρείς για τη σχέση ανάμεσα στο Δt και στο βάθος."></textarea>
+                  <div class="worksheet-actions">
+                    <button id="saveSonarWorksheet" type="button">Αποθήκευση φύλλου εργασίας σε PDF</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="analysis-panel" hidden>
           <div class="analysis-head">
             <div>
               <h3>Τι δείχνει το γράφημα;</h3>
@@ -2668,65 +3083,34 @@ tbody tr:last-child td { border-bottom: 0; }
           <div class="experiment-head">
             <div>
               <h3>Νόμος του Hooke</h3>
-              <p>Διάλεξε ένα σταθερό τμήμα δύναμης με A-B, γράψε την επιμήκυνση του ελατηρίου και αποθήκευσε το ζεύγος F-Δx.</p>
+              <p>Το load cell δίνει τη δύναμη F. Οι μαθητές μετρούν την επιμήκυνση Δx και αποθηκεύουν τα ζεύγη F-Δx.</p>
             </div>
             <div class="experiment-head-actions">
               <span class="experiment-status" id="hookeStatus">Περίμενε επιλογή A-B σε σταθερό τμήμα δύναμης</span>
               <button class="experiment-toggle" id="hookePanelToggle" type="button">Κλείσιμο panel</button>
             </div>
           </div>
-          <div class="hooke-illustration">
-            <img src="assets/hooke-setup-illustration.png" alt="Σχολική εικονογράφηση πειράματος νόμου του Hooke με ορθοστάτη, κίτρινο κουτί αισθητήρα, M5Stick, ελατήριο και βαρίδι">
-            <div class="hooke-image-note">Το ελατήριο κρεμιέται από τον αισθητήρα δύναμης. Για κάθε βαρίδι μετράς τη δύναμη και την επιμήκυνση Δx.</div>
-          </div>
-          <div class="experiment-tools">
-            <label class="field">
-              Δx
-              <input id="hookeExtensionCm" type="number" step="0.1" min="0" value="1.0">
-              <small>cm</small>
-            </label>
-            <button id="saveHookeTrial">Αποθήκευση δοκιμής</button>
-            <button id="clearHookeTrials">Καθαρισμός δοκιμών</button>
-            <button id="exportHookeTrials">Εξαγωγή δοκιμών CSV</button>
-          </div>
-          <div class="experiment-summary" id="hookeSummary">
-            <div class="experiment-empty">Επίλεξε πρώτα σταθερό plateau δύναμης και αποθήκευσε 2 ή περισσότερες δοκιμές.</div>
-          </div>
-          <div class="experiment-plot">
-            <div class="experiment-plot-card">
-              <div class="experiment-plot-head">
-                <div>
-                  <h4>Mini plot F ως προς Δx</h4>
-                  <p>Για ιδανικό ελατήριο περιμένουμε περίπου ευθεία. Η κλίση της δίνει τη σταθερά του ελατηρίου `k`.</p>
-                </div>
-                <span class="experiment-plot-tag">Hooke</span>
+          <div class="hooke-overview">
+            <div class="hooke-illustration">
+              <img src="assets/hooke-setup-illustration.png" alt="Σχολική εικονογράφηση πειράματος νόμου του Hooke με ορθοστάτη, κίτρινο κουτί αισθητήρα, M5Stick, ελατήριο και βαρίδι">
+              <div class="hooke-image-note">Το ελατήριο κρεμιέται από τον αισθητήρα δύναμης.</div>
+            </div>
+            <div class="hooke-intro">
+              <div class="hooke-intro-card">
+                <strong>Κεντρική ερώτηση</strong>
+                <p>Πώς αλλάζει η επιμήκυνση ενός ελατηρίου όταν αυξάνεται η δύναμη που του ασκούμε;</p>
               </div>
-              <div class="experiment-plot-wrap">
-                <canvas id="hookeChart" aria-label="Μικρό γράφημα δύναμης ως προς επιμήκυνση"></canvas>
+              <div class="hooke-intro-card">
+                <strong>Θεωρητική ιδέα</strong>
+                <p>Στην ελαστική περιοχή η δύναμη είναι ανάλογη της επιμήκυνσης: F = k · Δx. Αν το γράφημα F-Δx είναι περίπου ευθεία, το ελατήριο υπακούει στον νόμο του Hooke.</p>
               </div>
             </div>
           </div>
-          <div class="experiment-study">
-            <div class="experiment-study-grid" id="hookeProtocol"></div>
-          </div>
-          <div class="table-title">Αποθηκευμένες δοκιμές Hooke</div>
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Δx (cm)</th>
-                <th>Fmean (N)</th>
-                <th>Fmax (N)</th>
-                <th>σF (N)</th>
-                <th>k = F/Δx (N/m)</th>
-              </tr>
-            </thead>
-            <tbody id="hookeBody">
-              <tr><td colspan="6" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>
-            </tbody>
-          </table>
-          <div class="experiment-note" id="hookeNote">
-            Η πιο καθαρή μέτρηση βγαίνει όταν το ελατήριο έχει ηρεμήσει και το A-B καλύπτει μόνο το σταθερό τμήμα.
+          <div class="hooke-internal-hidden">
+            <div id="hookeSummary"></div>
+            <div id="hookeProtocol"></div>
+            <canvas id="hookeChart" aria-label="Κρυφό βοηθητικό γράφημα Hooke"></canvas>
+            <div id="hookeNote"></div>
           </div>
         </section>
         <section class="experiment-panel" id="weightExperiment" hidden>
@@ -3207,6 +3591,8 @@ let timeScaleMode = localStorage.getItem('palladio-time-scale') || 'auto';
 let valueScaleMode = localStorage.getItem('palladio-value-scale') || 'auto';
 let splitChart = localStorage.getItem('palladio-split-chart') === '1';
 let splitSeriesIndex = Math.max(0, Number(localStorage.getItem('palladio-split-series-index') || '1'));
+let hookeChartView = localStorage.getItem('palladio-hooke-chart-view') || 'time';
+if (hookeChartView !== 'time' && hookeChartView !== 'extension') hookeChartView = 'time';
 let smoothingWindow = Math.max(1, Number(localStorage.getItem('palladio-smoothing-window') || '1'));
 if (![1, 3, 5, 9, 15, 21].includes(smoothingWindow)) smoothingWindow = 1;
 let curveMode = localStorage.getItem('palladio-curve-mode') || 'smooth';
@@ -3232,6 +3618,7 @@ let pendulumInspectTime = null;
 let pendulumScrubbing = false;
 let pendulumShowPositions = localStorage.getItem('palladio-pendulum-show-positions') === '1';
 const SONAR_SOUND_SPEED_WATER = 1480;
+const SONAR_SOUND_SPEED_AIR = 343;
 const SONAR_POSITIONS = [
   { label: 'Θέση 1', xRatio: 0.25, depthM: 0.30, level: 0.58 },
   { label: 'Θέση 2', xRatio: 0.50, depthM: 0.60, level: 0.75 },
@@ -3242,6 +3629,17 @@ const SONAR_BOAT_SENSOR_BOTTOM_RATIO = 0.93;
 let sonarPositionIndex = Math.max(0, Math.min(SONAR_POSITIONS.length - 1, Number(localStorage.getItem('palladio-sonar-position-index') || '1')));
 let sonarDragging = false;
 let sonarDragOffsetX = 0;
+let sonarMeasuredEchoMs = Array(SONAR_POSITIONS.length).fill(NaN);
+let sonarWorksheetAnswers = {
+  seconds: Array(SONAR_POSITIONS.length).fill(''),
+  distance: Array(SONAR_POSITIONS.length).fill(''),
+  conclusion: ''
+};
+SONAR_POSITIONS.forEach((_, index) => {
+  localStorage.removeItem('palladio-sonar-seconds-' + index);
+  localStorage.removeItem('palladio-sonar-distance-' + index);
+});
+localStorage.removeItem('palladio-sonar-conclusion');
 let buoyancyVolumeMl = Math.max(0, Number(localStorage.getItem('palladio-buoyancy-volume-ml') || '100'));
 let buoyancyAirForce = Number(localStorage.getItem('palladio-buoyancy-air-force') || 'NaN');
 let buoyancyLiquidForce = Number(localStorage.getItem('palladio-buoyancy-liquid-force') || 'NaN');
@@ -3291,6 +3689,8 @@ let lastSampleId = -1;
 let sampleEpochMs = null;
 let toastTimer = null;
 let railResizeActive = false;
+let liveUiFramePending = false;
+let lastLiveAnalysisUpdate = 0;
 
 const canvas = document.getElementById('chart');
 const ctx = canvas.getContext('2d');
@@ -3420,10 +3820,10 @@ const experimentCatalog = {
   },
   'a-sonar': {
     mode: 4,
-    title: 'Sonar: μέτρηση απόστασης',
-    ready: 'Βάλε ένα επίπεδο αντικείμενο απέναντι από τον αισθητήρα υπερήχων και πάτα Έναρξη.',
-    running: 'Ο αισθητήρας στέλνει παλμό, περιμένει την ηχώ και από τον χρόνο επιστροφής βρίσκει την απόσταση.',
-    selected: 'Σύγκρινε τη μετρούμενη απόσταση με τον χρόνο πήγαινε-έλα του παλμού.'
+    title: 'SONAR: Μέτρηση απόστασης με ήχο',
+    ready: 'Βάλε ένα επίπεδο αντικείμενο απέναντι από τον HC-SR04, διάλεξε θέση σκάφους και πάτα Έναρξη για να κρατήσεις τον χρόνο ηχούς.',
+    running: 'Ο HC-SR04 μετρά πραγματικό χρόνο ηχούς στον αέρα. Στο σενάριο τον ερμηνεύουμε σαν μέτρηση sonar στο νερό.',
+    selected: 'Χρησιμοποίησε το Δt που κρατήθηκε και υπολόγισε την απόσταση με d = 1480 · Δt / 2.'
   },
   'a-speed': {
     mode: 4,
@@ -3511,7 +3911,7 @@ function currentMode() {
   if (activeExperimentId === 'a-sonar' && activeMode === 4) {
     return {
       ...meta,
-      title: 'Sonar: χρόνος ηχούς',
+      title: 'SONAR: Μέτρηση απόστασης με ήχο',
       subtitle: 'Ο αισθητήρας μετρά τον συνολικό χρόνο πήγαινε-έλα του παλμού',
       yLabel: 'Συνολικός χρόνος ηχούς (ms)',
       minimumSpan: 2,
@@ -3538,6 +3938,7 @@ function enabledSeries() {
 
 function splitChartAvailable() {
   const meta = currentMode();
+  if (isHookeExperimentMode()) return true;
   return activeMode === 4 && meta.series.length > 1;
 }
 
@@ -3611,8 +4012,7 @@ function dataValue(sample, key) {
   const source = sample || {};
   const mass = Math.max(0.001, collisionMassKg);
   if (key === 'sonarEchoMs') {
-    const distance = Number(source.distance);
-    return isFinite(distance) ? (2 * Math.max(0, distance) / SONAR_SOUND_SPEED_WATER) * 1000 : NaN;
+    return sonarEchoTimeMsFromSample(source);
   }
   if (key === 'fx') return Number(source.ax || 0) * mass;
   if (key === 'fy') return Number(source.ay || 0) * mass;
@@ -3809,7 +4209,7 @@ function isForceExperimentMode() {
 }
 
 function isMotionExperimentMode() {
-  return activeMode === 4 && activeExperimentId !== 'a-sonar';
+  return activeMode === 4 && ['a-motion', 'a-speed', 'b-uniform-motion'].includes(activeExperimentId);
 }
 
 function isSonarExperimentMode() {
@@ -3835,7 +4235,7 @@ function rightRailExperimentTitle() {
   if (isForceExperimentMode()) return 'Πείραμα δύναμης';
   if (isHeatExperimentMode()) return 'Θερμική ισορροπία';
   if (isPendulumExperimentMode()) return 'Απλό εκκρεμές';
-  if (isSonarExperimentMode()) return 'Sonar: μέτρηση απόστασης';
+  if (isSonarExperimentMode()) return 'SONAR: Μέτρηση απόστασης με ήχο';
   if (isMotionExperimentMode()) return 'Ευθύγραμμη ομαλή κίνηση';
   if (isCollisionExperimentMode()) return '3ος Νόμος Newton: Κρούση και ώθηση';
   return 'Πείραμα';
@@ -4194,20 +4594,75 @@ function sonarRoundTripTimeMs(depthM = sonarSelectedPosition().depthM) {
   return (2 * depthM / SONAR_SOUND_SPEED_WATER) * 1000;
 }
 
+function firstFiniteNumber(source, keys) {
+  for (const key of keys) {
+    const value = Number(source && source[key]);
+    if (Number.isFinite(value)) return value;
+  }
+  return NaN;
+}
+
+function sonarEchoTimeMsFromSample(sample) {
+  const echoMs = firstFiniteNumber(sample, ['sonarEchoMs', 'echoMs', 'echoTimeMs', 'roundTripMs', 'durationMs']);
+  if (Number.isFinite(echoMs)) return Math.max(0, echoMs);
+  const echoUs = firstFiniteNumber(sample, ['sonarEchoUs', 'echoUs', 'durationUs', 'roundTripUs']);
+  if (Number.isFinite(echoUs)) return Math.max(0, echoUs / 1000);
+  const distanceM = firstFiniteNumber(sample, ['distance', 'distanceM']);
+  if (Number.isFinite(distanceM)) return (2 * Math.max(0, distanceM) / SONAR_SOUND_SPEED_AIR) * 1000;
+  const distanceCm = firstFiniteNumber(sample, ['distanceCm']);
+  if (Number.isFinite(distanceCm)) return (2 * Math.max(0, distanceCm / 100) / SONAR_SOUND_SPEED_AIR) * 1000;
+  return NaN;
+}
+
+function sonarCurrentEchoMs() {
+  return sonarEchoTimeMsFromSample(lastData);
+}
+
+function sonarDisplayEchoMs(index = sonarPositionIndex) {
+  const measured = sonarMeasuredEchoMs[index];
+  if (Number.isFinite(measured)) return measured;
+  if (index === sonarPositionIndex) return sonarCurrentEchoMs();
+  return NaN;
+}
+
+function sonarCaptureCurrentMeasurement() {
+  const echoMs = sonarCurrentEchoMs();
+  if (!Number.isFinite(echoMs)) {
+    showToast('Δεν υπάρχει ακόμα πραγματική μέτρηση HC-SR04 για να κρατηθεί.', true);
+    return false;
+  }
+  sonarMeasuredEchoMs[sonarPositionIndex] = echoMs;
+  rows = [{
+    time: 0,
+    sample: { mode: 4, sonarEchoMs: echoMs, distance: (echoMs / 1000) * SONAR_SOUND_SPEED_AIR / 2 }
+  }];
+  updateTable();
+  updateAnalysis();
+  draw();
+  renderSonarExperiment();
+  showToast('Κρατήθηκε πραγματικός χρόνος HC-SR04 για ' + sonarSelectedPosition().label + '.');
+  return true;
+}
+
 function sonarExperimentMetrics() {
   if (!isSonarExperimentMode()) return null;
   const position = sonarSelectedPosition();
   const distance = position.depthM;
-  const roundTripTime = 2 * distance / SONAR_SOUND_SPEED_WATER;
+  const measuredEchoMs = sonarDisplayEchoMs();
+  const roundTripTime = Number.isFinite(measuredEchoMs)
+    ? measuredEchoMs / 1000
+    : NaN;
   return {
-    ready: true,
+    ready: Number.isFinite(roundTripTime),
     position,
     distance,
     soundSpeed: SONAR_SOUND_SPEED_WATER,
     roundTripTime,
     halfTime: roundTripTime / 2,
-    targetRoundTripTime: roundTripTime,
-    source: 'θέση βαρκιού στην εικόνα'
+    targetRoundTripTime: 2 * distance / SONAR_SOUND_SPEED_WATER,
+    source: Number.isFinite(sonarMeasuredEchoMs[sonarPositionIndex])
+      ? 'κρατημένη μέτρηση HC-SR04'
+      : 'ζωντανή μέτρηση HC-SR04'
   };
 }
 
@@ -4223,7 +4678,103 @@ function renderSonarExperiment() {
   } else {
     timeLabel.textContent = '— ms';
   }
+  renderSonarWorksheet();
   drawSonarCanvas();
+}
+
+function renderSonarWorksheet() {
+  const body = document.getElementById('sonarWorksheetRows');
+  const conclusion = document.getElementById('sonarConclusion');
+  if (!body) return;
+  body.innerHTML = SONAR_POSITIONS.map((position, index) => {
+    const dtMs = sonarDisplayEchoMs(index);
+    const savedSeconds = sonarWorksheetAnswers.seconds[index] || '';
+    const savedDistance = sonarWorksheetAnswers.distance[index] || '';
+    return '<tr class="' + (index === sonarPositionIndex ? 'active' : '') + '">' +
+      '<td>' + position.label + '</td>' +
+      '<td>' + (Number.isFinite(dtMs) ? compactNumber(dtMs) : '—') + '</td>' +
+      '<td><input data-sonar-seconds-answer="' + index + '" inputmode="decimal" value="' + savedSeconds + '" aria-label="Χρόνος σε δευτερόλεπτα για ' + position.label + '"></td>' +
+      '<td><input data-sonar-distance-answer="' + index + '" inputmode="decimal" value="' + savedDistance + '" aria-label="Απόσταση μαθητή για ' + position.label + '"></td>' +
+      '</tr>';
+  }).join('');
+  if (conclusion && conclusion.value !== sonarWorksheetAnswers.conclusion) {
+    conclusion.value = sonarWorksheetAnswers.conclusion;
+  }
+}
+
+function sonarWorksheetData() {
+  return SONAR_POSITIONS.map((position, index) => ({
+    label: position.label,
+    dtMs: Number.isFinite(sonarMeasuredEchoMs[index]) ? compactNumber(sonarMeasuredEchoMs[index]) : '',
+    dtS: sonarWorksheetAnswers.seconds[index] || '',
+    distance: sonarWorksheetAnswers.distance[index] || ''
+  }));
+}
+
+function escapeHtml(value) {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function saveSonarWorksheetAndPrint() {
+  document.querySelectorAll('[data-sonar-seconds-answer]').forEach(input => {
+    sonarWorksheetAnswers.seconds[Number(input.dataset.sonarSecondsAnswer)] = input.value;
+  });
+  document.querySelectorAll('[data-sonar-distance-answer]').forEach(input => {
+    sonarWorksheetAnswers.distance[Number(input.dataset.sonarDistanceAnswer)] = input.value;
+  });
+  const conclusion = document.getElementById('sonarConclusion');
+  if (conclusion) sonarWorksheetAnswers.conclusion = conclusion.value;
+
+  const rowsHtml = sonarWorksheetData().map(row =>
+    '<tr><td>' + escapeHtml(row.label) + '</td><td>' + escapeHtml(row.dtMs) + '</td><td>' +
+    escapeHtml(row.dtS) + '</td><td>' + escapeHtml(row.distance) + '</td></tr>'
+  ).join('');
+  const conclusionText = escapeHtml(sonarWorksheetAnswers.conclusion || '');
+  const report = window.open('', '_blank');
+  if (!report) {
+    showToast('Ο browser μπλόκαρε το παράθυρο PDF. Επίτρεψε pop-ups για τη σελίδα.', true);
+    return;
+  }
+  report.document.write(
+    '<!doctype html><html lang="el"><head><meta charset="utf-8"><title>Αναφορά Sonar</title>' +
+    '<style>body{font-family:system-ui,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;margin:32px;color:#172033;}' +
+    'h1{margin:0 0 6px;font-size:26px;}h2{margin:22px 0 8px;font-size:17px;color:#1f3650;}p,li{color:#4c5f75;line-height:1.5;}table{width:100%;border-collapse:collapse;margin:18px 0;}' +
+    'th,td{border:1px solid #cfdbe8;padding:10px;text-align:left;}th{background:#edf4fb;color:#344861;font-size:12px;text-transform:uppercase;}' +
+    '.box{border:1px solid #cfdbe8;border-radius:12px;padding:14px;margin-top:16px;}.meta{margin-top:4px;color:#60758c;font-size:13px;}' +
+    '.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.answer-line{min-height:34px;border-bottom:1px solid #cfdbe8;margin-top:8px;}' +
+    '.formula{display:inline-block;padding:8px 12px;border-radius:10px;background:#edf4fb;color:#173b73;font-weight:800;}' +
+    '@media(max-width:760px){.grid{grid-template-columns:1fr}}' +
+    '@media print{body{margin:18mm}.no-print{display:none}}</style></head><body>' +
+    '<h1>Αναφορά πειράματος Sonar</h1><div class="meta">Palladio Physics Lab · ' + new Date().toLocaleString('el-GR') + '</div>' +
+    '<div class="box"><strong>Κεντρική ερώτηση</strong><p>Πώς μπορούμε να υπολογίσουμε μια απόσταση όταν μετράμε τον συνολικό χρόνο που χρειάζεται ένας ηχητικός παλμός για να πάει σε ένα εμπόδιο και να επιστρέψει;</p></div>' +
+    '<div class="grid">' +
+    '<div class="box"><strong>Στόχος</strong><p>Να χρησιμοποιήσω πραγματικό χρόνο ηχούς από HC-SR04 και να υπολογίσω απόσταση με τη σύμβαση ότι ο ήχος ταξιδεύει στο νερό.</p></div>' +
+    '<div class="box"><strong>Υλικά / εργαλεία</strong><p>Palladio Physics Lab, M5Stick, αισθητήρας HC-SR04, επίπεδο εμπόδιο, τρεις θέσεις σκάφους, αριθμομηχανή.</p></div>' +
+    '</div>' +
+    '<h2>Θεωρητική ιδέα</h2>' +
+    '<p>Ο HC-SR04 μετρά πραγματικό χρόνο ηχούς στον αέρα. Στο πείραμα κάνουμε τη σύμβαση ότι αυτός ο χρόνος είναι χρόνος sonar μέσα στο νερό.</p>' +
+    '<p>Ο ήχος διανύει τη διαδρομή αισθητήρας → στόχος → αισθητήρας. Άρα ο συνολικός χρόνος Δt αντιστοιχεί σε διπλάσια απόσταση από αυτή που ζητάμε.</p>' +
+    '<p><span class="formula">d = υ · Δt / 2</span> με ταχύτητα ήχου στο νερό περίπου υ = 1480 m/s.</p>' +
+    '<h2>Διαδικασία</h2>' +
+    '<ol><li>Διάλεξα μία θέση του σκάφους.</li><li>Μέτρησα με τον HC-SR04 τον συνολικό χρόνο ηχούς Δt σε ms.</li><li>Μετέτρεψα τα ms σε s.</li><li>Υπολόγισα την απόσταση d με τη σύμβαση του νερού.</li><li>Σύγκρινα τις τρεις θέσεις.</li></ol>' +
+    '<h2>Μετρήσεις και υπολογισμοί</h2>' +
+    '<table><thead><tr><th>Θέση</th><th>Δt HC-SR04 (ms)</th><th>Δt (s)</th><th>d μαθητή (m)</th></tr></thead><tbody>' + rowsHtml + '</tbody></table>' +
+    '<h2>Ερωτήσεις</h2>' +
+    '<div class="box"><strong>1. Γιατί διαιρούμε τον συνολικό χρόνο με το 2;</strong><div class="answer-line"></div></div>' +
+    '<div class="box"><strong>2. Ποια θέση αντιστοιχεί στο μεγαλύτερο βάθος;</strong><div class="answer-line"></div></div>' +
+    '<div class="box"><strong>3. Ο αισθητήρας μετρά άμεσα απόσταση ή χρόνο;</strong><div class="answer-line"></div></div>' +
+    '<div class="box"><strong>Συμπέρασμα μαθητή</strong><p>' + (conclusionText || '&nbsp;') + '</p></div>' +
+    '<p class="no-print">Στο παράθυρο εκτύπωσης διάλεξε “Save as PDF” / “Αποθήκευση ως PDF”.</p>' +
+    '<script>window.addEventListener(\"load\",()=>setTimeout(()=>window.print(),150));<\/script>' +
+    '</body></html>'
+  );
+  report.document.close();
+  showToast('Οι απαντήσεις αποθηκεύτηκαν. Άνοιξε η αναφορά για PDF.');
 }
 
 function sonarCanvasMetrics(width, height) {
@@ -4344,15 +4895,16 @@ function drawSonarSeabed(ctx, width, height, metrics) {
     ctx.fillStyle = index === sonarPositionIndex ? 'rgba(255, 255, 255, 0.68)' : 'rgba(255, 255, 255, 0.42)';
     ctx.strokeStyle = index === sonarPositionIndex ? 'rgba(26, 102, 199, 0.34)' : 'rgba(207, 224, 240, 0.58)';
     ctx.lineWidth = 1;
+    const labelY = Math.min(height - 34, y + 18 * metrics.scale);
     ctx.beginPath();
-    ctx.roundRect(x - 56, y - 55, 112, 30, 10);
+    ctx.roundRect(x - 56, labelY, 112, 30, 10);
     ctx.fill();
     ctx.stroke();
     ctx.fillStyle = '#173b73';
     ctx.font = '900 12px system-ui';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(position.label, x, y - 40);
+    ctx.fillText(position.label, x, labelY + 15);
   });
   ctx.restore();
 }
@@ -4457,8 +5009,9 @@ function drawSonarCanvas() {
   if (overlayCard) {
     const cardW = Math.min(190, width * 0.28);
     const cardH = 72;
-    const cardLeft = Math.max(14, Math.min(width - cardW - 14, beamCenter + 92 * scale));
-    const cardTop = Math.max(metrics.waterY + 22 * scale, Math.min(height - cardH - 18, metrics.waterY + 118 * scale));
+    const pulseRightEdge = beamCenter + 126 * scale;
+    const cardLeft = Math.max(14, Math.min(width - cardW - 14, pulseRightEdge + 34 * scale));
+    const cardTop = Math.max(metrics.waterY + 22 * scale, Math.min(height - cardH - 18, metrics.waterY + 108 * scale));
     overlayCard.style.setProperty('--sonar-card-left', cardLeft + 'px');
     overlayCard.style.setProperty('--sonar-card-top', cardTop + 'px');
   }
@@ -4801,6 +5354,233 @@ function drawHookeExperimentChart(trials, fit) {
   hookeCtx.restore();
 }
 
+function hookeChartPoints() {
+  return hookeTrials
+    .map((trial, index) => ({
+      index,
+      xCm: Number(trial.extensionCm),
+      xM: Number(trial.extensionM),
+      force: Number(trial.forceMean)
+    }))
+    .filter(point => point.xCm > 0 && isFinite(point.force));
+}
+
+function drawHookeDxPanel(panel, options = {}) {
+  const points = hookeChartPoints();
+  const fit = hookeFit(hookeTrials);
+  const pad = panel.pad;
+  const plotW = panel.plotW;
+  const plotH = panel.plotH;
+  const compact = Boolean(options.compact);
+
+  ctx.save();
+  ctx.font = '12px system-ui';
+  ctx.lineWidth = 1;
+  ctx.textBaseline = 'middle';
+
+  if (panel.title) {
+    ctx.fillStyle = '#25384b';
+    ctx.font = '800 13px system-ui';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText(panel.title, pad.left, Math.max(2, pad.top - 16));
+  }
+
+  if (!points.length) {
+    ctx.strokeStyle = '#d9e4ee';
+    ctx.lineWidth = 1.3;
+    ctx.setLineDash([6, 5]);
+    ctx.strokeRect(pad.left, pad.top, plotW, plotH);
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#718190';
+    ctx.font = '700 15px system-ui';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Αποθήκευσε δοκιμές για να φανεί το F-Δx', pad.left + plotW / 2, pad.top + plotH / 2 - 8);
+    ctx.font = '12px system-ui';
+    ctx.fillText('Η κλίση της ευθείας δίνει τη σταθερά k.', pad.left + plotW / 2, pad.top + plotH / 2 + 16);
+    ctx.restore();
+    return;
+  }
+
+  const maxX = Math.max(...points.map(point => point.xCm), 0.1) * 1.15;
+  const maxY = Math.max(...points.map(point => point.force), 0.1) * 1.18;
+  const xStep = niceNumber(maxX / (compact ? 4 : 6), true);
+  const yStep = niceNumber(maxY / (compact ? 4 : 6), true);
+  const xMax = Math.max(xStep, Math.ceil(maxX / xStep) * xStep);
+  const yMax = Math.max(yStep, Math.ceil(maxY / yStep) * yStep);
+
+  for (let value = 0; value <= yMax + yStep / 2; value += yStep) {
+    const y = pad.top + plotH - (value / yMax) * plotH;
+    ctx.strokeStyle = value === 0 ? '#8798a7' : '#e4ebf2';
+    ctx.lineWidth = value === 0 ? 1.4 : 1;
+    ctx.beginPath();
+    ctx.moveTo(pad.left, y);
+    ctx.lineTo(pad.left + plotW, y);
+    ctx.stroke();
+    ctx.fillStyle = '#526474';
+    ctx.font = '12px system-ui';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(compactNumber(value), pad.left - 8, y);
+  }
+
+  for (let value = 0; value <= xMax + xStep / 2; value += xStep) {
+    const x = pad.left + (value / xMax) * plotW;
+    ctx.strokeStyle = '#dce4eb';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x, pad.top);
+    ctx.lineTo(x, pad.top + plotH);
+    ctx.stroke();
+    ctx.fillStyle = '#526474';
+    ctx.font = '12px system-ui';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText(compactNumber(value), x, pad.top + plotH + 8);
+  }
+
+  ctx.strokeStyle = '#657685';
+  ctx.lineWidth = 1.3;
+  ctx.strokeRect(pad.left, pad.top, plotW, plotH);
+
+  if (fit) {
+    ctx.strokeStyle = '#1f2d3a';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([8, 5]);
+    ctx.beginPath();
+    const startY = Math.max(0, fit.intercept);
+    const endY = Math.max(0, fit.slope * (xMax / 100) + fit.intercept);
+    ctx.moveTo(pad.left, pad.top + plotH - (startY / yMax) * plotH);
+    ctx.lineTo(pad.left + plotW, pad.top + plotH - (endY / yMax) * plotH);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  points.forEach(point => {
+    const x = pad.left + (point.xCm / xMax) * plotW;
+    const y = pad.top + plotH - (point.force / yMax) * plotH;
+    ctx.fillStyle = '#0f9f6e';
+    ctx.beginPath();
+    ctx.arc(x, y, compact ? 4.5 : 5.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    if (!compact) {
+      ctx.fillStyle = '#23415f';
+      ctx.font = '800 11px system-ui';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(String(point.index + 1), x, y - 8);
+    }
+  });
+
+  ctx.fillStyle = '#344553';
+  ctx.font = '600 13px system-ui';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'bottom';
+  ctx.fillText('Δx (cm)', pad.left + plotW / 2, pad.top + plotH + 46);
+
+  ctx.save();
+  ctx.translate(Math.max(14, pad.left - 56), pad.top + plotH / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  ctx.fillText('F (N)', 0, 0);
+  ctx.restore();
+
+  if (fit && !compact) {
+    ctx.fillStyle = '#23415f';
+    ctx.font = '800 12px system-ui';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'top';
+    ctx.fillText('k ≈ ' + compactNumber(fit.slope) + ' N/m', pad.left + plotW - 4, pad.top + 10);
+  }
+  ctx.restore();
+}
+
+function drawHookeDxChart(width, height) {
+  const pad = { left: width < 520 ? 64 : 82, right: 24, top: 28, bottom: 58 };
+  chartGeometry = null;
+  drawHookeDxPanel({
+    title: '',
+    pad,
+    plotW: Math.max(1, width - pad.left - pad.right),
+    plotH: Math.max(1, height - pad.top - pad.bottom)
+  });
+}
+
+function drawHookeSplitChart(width, height) {
+  const view = getViewBounds();
+  const dataRows = visibleRows();
+  const xMin = view.start;
+  const xMax = view.end;
+  const viewSpan = Math.max(0.5, xMax - xMin);
+  const timeScale = selectedTimeScale(viewSpan);
+  const forceSeries = currentMode().series[0];
+  const horizontal = width >= 860;
+  const outerPad = { left: width < 520 ? 58 : 70, right: 22, top: 22, bottom: 54 };
+  const gap = horizontal ? 86 : 34;
+  const availableW = Math.max(1, width - outerPad.left - outerPad.right);
+  const availableH = Math.max(1, height - outerPad.top - outerPad.bottom);
+  const panelW = horizontal ? Math.max(1, (availableW - gap) / 2) : availableW;
+  const panelH = horizontal ? availableH : Math.max(1, (availableH - gap) / 2);
+  const forceScale = yScale(dataRows, [forceSeries], false);
+  const timePanel = {
+    key: 'hooke-time',
+    title: 'F - χρόνος',
+    pad: { left: outerPad.left, top: outerPad.top, right: width - outerPad.left - panelW, bottom: height - outerPad.top - panelH },
+    plotW: panelW,
+    plotH: panelH,
+    series: [forceSeries],
+    scale: forceScale,
+    xMin,
+    xMax,
+    timeScale,
+    valueScale: selectedValueScale([forceSeries], forceScale)
+  };
+  const dxPanel = {
+    title: 'F - Δx',
+    pad: {
+      left: horizontal ? outerPad.left + panelW + gap : outerPad.left,
+      top: horizontal ? outerPad.top : outerPad.top + panelH + gap,
+      right: horizontal ? outerPad.right : width - outerPad.left - panelW,
+      bottom: horizontal ? height - outerPad.top - panelH : outerPad.bottom
+    },
+    plotW: panelW,
+    plotH: panelH
+  };
+
+  chartGeometry = {
+    split: true,
+    panels: [timePanel],
+    pad: timePanel.pad,
+    plotW: timePanel.plotW,
+    plotH: timePanel.plotH,
+    xMin,
+    xMax,
+    scale: timePanel.scale,
+    dataRows,
+    selectedSeries: [forceSeries],
+    timeScale,
+    valueScale: timePanel.valueScale
+  };
+
+  ctx.save();
+  drawPanelFrame(timePanel, width, height, viewSpan);
+  if (!dataRows.length) {
+    ctx.fillStyle = '#718190';
+    ctx.font = '600 14px system-ui';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Αναμονή για μετρήσεις...', timePanel.pad.left + timePanel.plotW / 2, timePanel.pad.top + timePanel.plotH / 2);
+  }
+  drawSeriesInPanel(timePanel, dataRows);
+  drawHookeDxPanel(dxPanel, { compact: true });
+  ctx.restore();
+}
+
 function renderHookeExperiment() {
   const panel = document.getElementById('hookeExperiment');
   const summary = document.getElementById('hookeSummary');
@@ -4819,6 +5599,10 @@ function renderHookeExperiment() {
   }
 
   panel.hidden = false;
+  ['weightExperiment', 'buoyancyExperiment', 'motionExperiment'].forEach(id => {
+    const otherPanel = document.getElementById(id);
+    if (otherPanel) otherPanel.hidden = true;
+  });
   applyCollisionRailLayout();
   const current = hookeCurrentMetrics();
   status.textContent = current
@@ -4826,14 +5610,14 @@ function renderHookeExperiment() {
     : 'Επίλεξε με A-B ένα σταθερό κομμάτι δύναμης';
 
   protocol.innerHTML =
-    '<section class="experiment-study-card"><h5>Στόχος</h5><p>Να ελέγξουν οι μαθητές αν η δύναμη είναι ανάλογη της επιμήκυνσης και να εκτιμήσουν τη σταθερά του ελατηρίου k.</p></section>' +
-    '<section class="experiment-study-card"><h5>Στήσιμο</h5><p>Ελατήριο συνδεδεμένο με την κυψέλη φορτίου. Για κάθε φόρτιση μετράς ή διαβάζεις την επιμήκυνση Δx και κρατάς σταθερό το ελατήριο μέχρι να ηρεμήσει.</p></section>' +
-    '<section class="experiment-study-card"><h5>Βήματα</h5><ol><li>Κάνε tare πριν από κάθε σειρά.</li><li>Φόρτισε το ελατήριο σε νέο επίπεδο και περίμενε να ηρεμήσει.</li><li>Επίλεξε με A-B μόνο το σταθερό plateau της δύναμης.</li><li>Γράψε την επιμήκυνση Δx και αποθήκευσε τη δοκιμή.</li><li>Με 3 ή περισσότερα σημεία έλεγξε αν το F-Δx είναι σχεδόν ευθεία.</li></ol></section>' +
+    '<section class="experiment-study-card"><h5>Στόχος</h5><p>Να ελέγξουν οι μαθητές αν η δύναμη που μετρά το load cell είναι ανάλογη της επιμήκυνσης του ελατηρίου.</p></section>' +
+    '<section class="experiment-study-card"><h5>Στήσιμο</h5><p>Ελατήριο συνδεδεμένο με την κυψέλη φορτίου. Για κάθε φόρτιση οι μαθητές μετρούν τη Δx με χάρακα και περιμένουν να σταθεροποιηθεί η ένδειξη δύναμης.</p></section>' +
+    '<section class="experiment-study-card"><h5>Βήματα</h5><ol><li>Κάνε tare πριν από κάθε σειρά.</li><li>Φόρτισε το ελατήριο σε νέο επίπεδο και περίμενε να ηρεμήσει.</li><li>Επίλεξε με A-B μόνο το σταθερό plateau της δύναμης.</li><li>Γράψε την επιμήκυνση Δx που μέτρησες με χάρακα.</li><li>Αποθήκευσε τη δοκιμή και έλεγξε αν το γράφημα F-Δx είναι σχεδόν ευθεία.</li></ol></section>' +
     '<section class="experiment-study-card"><h5>Τι περιμένουμε</h5><p>Για μικρές παραμορφώσεις περιμένουμε περίπου F = k·Δx. Στο γράφημα αυτό σημαίνει ευθεία που περνά κοντά από την αρχή των αξόνων.</p></section>' +
     '<section class="experiment-study-card"><h5>Σημείωση καθηγητή</h5><p>Αν τα σημεία αποκλίνουν έντονα από ευθεία, συζήτησε αν φταίει το πείραμα, η μέτρηση της επιμήκυνσης ή το ότι το ελατήριο βγήκε έξω από την ελαστική περιοχή.</p></section>';
 
   if (!hookeTrials.length) {
-    body.innerHTML = '<tr><td colspan="6" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>';
+    body.innerHTML = '<tr><td colspan="5" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>';
     if (current) {
       summary.innerHTML = [
         '<div class="summary-card"><span>Τρέχον Fmean</span><strong>' + compactNumber(current.meanForce) + '</strong><small>N στο plateau</small></div>',
@@ -4853,9 +5637,8 @@ function renderHookeExperiment() {
     return '<tr>' +
       '<td>' + (index + 1) + '</td>' +
       '<td>' + trial.extensionCm.toFixed(2) + '</td>' +
+      '<td>' + trial.extensionM.toFixed(4) + '</td>' +
       '<td>' + trial.forceMean.toFixed(4) + '</td>' +
-      '<td>' + trial.forceMax.toFixed(4) + '</td>' +
-      '<td>' + trial.stdDev.toFixed(4) + '</td>' +
       '<td>' + trial.kEstimate.toFixed(2) + '</td>' +
       '</tr>';
   }).join('');
@@ -5661,11 +6444,32 @@ function setMode(mode, source = 'sensor', options = {}) {
 
 function updateModeUi() {
   const meta = currentMode();
+  const experiment = experimentCatalog[activeExperimentId];
+  const workspaceTitle = document.getElementById('workspaceTitle');
+  const workspaceSubtitle = document.getElementById('workspaceSubtitle');
+  if (workspaceTitle) workspaceTitle.textContent = experiment ? experiment.title : 'Εργαστήριο μέτρησης';
+  if (workspaceSubtitle) {
+    workspaceSubtitle.textContent = isSonarExperimentMode()
+      ? 'Ο HC-SR04 μετρά πραγματικό χρόνο ηχούς στον αέρα. Στο σενάριο τον χρησιμοποιούμε σαν sonar στο νερό.'
+      : 'Διάλεξε πείραμα από την τάξη σου, πάτα Έναρξη και παρατήρησε τι αλλάζει στο γράφημα.';
+  }
   document.body.classList.toggle('sonar-mode', isSonarExperimentMode());
-  document.getElementById('chartTitle').textContent = meta.title;
-  document.getElementById('chartSubtitle').textContent = meta.subtitle;
+  document.body.classList.toggle('hooke-mode', isHookeExperimentMode());
+  let chartTitle = meta.title;
+  let chartSubtitle = meta.subtitle;
+  if (isHookeExperimentMode()) {
+    if (splitChartActive()) {
+      chartTitle = 'Νόμος Hooke: F-t και F-Δx';
+      chartSubtitle = 'Αριστερά η ζωντανή δύναμη, δεξιά η σχέση δύναμης και επιμήκυνσης από τις δοκιμές.';
+    } else if (hookeChartView === 'extension') {
+      chartTitle = 'Δύναμη - επιμήκυνση';
+      chartSubtitle = 'Τα σημεία προκύπτουν από τον πίνακα δοκιμών του νόμου του Hooke.';
+    }
+  }
+  document.getElementById('chartTitle').textContent = chartTitle;
+  document.getElementById('chartSubtitle').textContent = chartSubtitle;
   document.getElementById('chartHint').textContent = isSonarExperimentMode()
-    ? 'Στο νερό ο ήχος ταξιδεύει περίπου με v = 1480 m/s. Οι μαθητές χρησιμοποιούν τον συνολικό χρόνο ηχούς t και υπολογίζουν d = 1480 · t / 2.'
+    ? ''
     : 'Σύρε στο γράφημα για μετακίνηση στον χρόνο. Ροδέλα για zoom που εστιάζει στην κυματομορφή. Shift + σύρσιμο για επιλογή A-B.';
   modeButtons.forEach(button => {
     button.classList.toggle('active', Number(button.dataset.mode) === activeMode);
@@ -5685,9 +6489,11 @@ function updateModeUi() {
   updateStaticGauge();
   updateAnalysis();
   renderHookeExperiment();
-  renderWeightExperiment();
-  renderBuoyancyExperiment();
-  renderMotionExperiment();
+  if (!isHookeExperimentMode()) {
+    renderWeightExperiment();
+    renderBuoyancyExperiment();
+    renderMotionExperiment();
+  }
   renderSonarExperiment();
   renderCollisionExperiment();
   renderHeatExperiment();
@@ -5716,6 +6522,8 @@ function selectExperiment(experimentId) {
   if (experiment.forceExperiment) {
     activeForceExperiment = experiment.forceExperiment;
     localStorage.setItem('palladio-force-experiment', activeForceExperiment);
+    accelDisplayMode = 'accel';
+    localStorage.setItem('palladio-accel-view', accelDisplayMode);
     const preferredWidth = preferredRailWidthForExperiment();
     if (collisionRailWidth < preferredWidth) {
       collisionRailWidth = preferredWidth;
@@ -5727,6 +6535,14 @@ function selectExperiment(experimentId) {
 }
 
 function applyExperimentDefaults(experimentId) {
+  const experiment = experimentCatalog[experimentId];
+  if (experiment && experiment.mode === 2) {
+    const rateSelect = document.getElementById('sampleRate');
+    if (rateSelect && rateSelect.value !== '10') {
+      rateSelect.value = '10';
+      fetch(apiUrl('/settings?rate=10'), { cache: 'no-store' }).catch(() => {});
+    }
+  }
   if (experimentId === 'a-pendulum') {
     setRunning(false);
     resetPendulumRows();
@@ -5878,11 +6694,22 @@ function updateSplitChartControls() {
   const toggle = document.getElementById('splitChartToggle');
   const field = document.getElementById('splitChartField');
   const select = document.getElementById('splitSeriesSelect');
+  const hookeToggle = document.getElementById('hookeChartToggle');
+  if (hookeToggle) {
+    hookeToggle.hidden = !isHookeExperimentMode();
+    hookeToggle.querySelectorAll('[data-hooke-chart]').forEach(button => {
+      button.classList.toggle('active', button.dataset.hookeChart === hookeChartView);
+    });
+  }
   toggleWrap.hidden = !available;
-  field.hidden = !available || !splitChart;
+  field.hidden = !available || !splitChart || isHookeExperimentMode();
   toggle.checked = available && splitChart;
   if (!available) return;
   const meta = currentMode();
+  if (isHookeExperimentMode()) {
+    select.innerHTML = '';
+    return;
+  }
   const primary = primaryChartSeries();
   select.innerHTML = meta.series
     .map((series, index) => '<option value="' + index + '"' + (series === primary ? ' disabled' : '') + '>' +
@@ -5925,10 +6752,32 @@ function updateReadouts(data) {
     '</div>';
 }
 
-function addRow(data, deferUpdate) {
+function scheduleLiveUiUpdate(forceAnalysis = false) {
+  if (liveUiFramePending) return;
+  liveUiFramePending = true;
+  requestAnimationFrame(() => {
+    liveUiFramePending = false;
+    updateTable();
+    updateStaticGauge();
+    const now = performance.now();
+    if (forceAnalysis || now - lastLiveAnalysisUpdate > 250) {
+      updateAnalysis();
+      updateStudentGuide();
+      lastLiveAnalysisUpdate = now;
+    }
+    draw();
+  });
+}
+
+function addRow(data, deferUpdate, deferReadout) {
   lastData = data;
   const mode = Number(data.mode);
-  if (mode !== activeMode && modes[mode]) {
+  const selectedExperiment = experimentCatalog[activeExperimentId];
+  const expectedMode = selectedExperiment ? selectedExperiment.mode : activeMode;
+  if (mode !== expectedMode) {
+    return;
+  }
+  if (!selectedExperiment && mode !== activeMode && modes[mode]) {
     activeMode = mode;
     resetMeasurement();
     updateModeUi();
@@ -5940,7 +6789,7 @@ function addRow(data, deferUpdate) {
   const sampleMs = Number(data.sampleMs);
   if (!Number.isFinite(sampleId) || sampleId <= lastSampleId) return;
   lastSampleId = sampleId;
-  updateReadouts(data);
+  if (!deferReadout) updateReadouts(data);
   if (!running || !modes[activeMode]) return;
   if (sampleEpochMs === null || sampleMs < sampleEpochMs) sampleEpochMs = sampleMs;
 
@@ -5950,21 +6799,14 @@ function addRow(data, deferUpdate) {
   });
   if (rows.length > maxSamples) rows.shift();
   if (deferUpdate) return;
-  updateTable();
-  updateStaticGauge();
-  updateAnalysis();
-  updateStudentGuide();
-  draw();
+  scheduleLiveUiUpdate(true);
 }
 
 function addRows(samples) {
   if (!Array.isArray(samples) || !samples.length) return;
-  samples.forEach(sample => addRow(sample, true));
-  updateTable();
-  updateStaticGauge();
-  updateAnalysis();
-  updateStudentGuide();
-  draw();
+  samples.forEach(sample => addRow(sample, true, true));
+  if (lastData) updateReadouts(lastData);
+  scheduleLiveUiUpdate();
 }
 
 function updateTable() {
@@ -7384,6 +8226,16 @@ function draw() {
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, width, height);
 
+  if (isHookeExperimentMode() && splitChartActive()) {
+    drawHookeSplitChart(width, height);
+    return;
+  }
+
+  if (isHookeExperimentMode() && hookeChartView === 'extension') {
+    drawHookeDxChart(width, height);
+    return;
+  }
+
   if (splitChartActive()) {
     drawSplitChart(width, height);
     return;
@@ -7690,17 +8542,8 @@ function timeAtX(x, y) {
 
 function setRunning(value) {
   if (value && isSonarExperimentMode()) {
-    rows = [{
-      time: 0,
-      sample: { mode: 4, distance: sonarSelectedPosition().depthM }
-    }];
-    lastData = rows[0].sample;
-    updateTable();
-    updateAnalysis();
-    draw();
-    renderSonarExperiment();
+    sonarCaptureCurrentMeasurement();
     value = false;
-    showToast('Κρατήθηκε χρόνος ηχούς για ' + sonarSelectedPosition().label + '.');
   }
   if (value && isPendulumExperimentMode()) {
     const currentTime = rows.length ? rows[rows.length - 1].time : 0;
@@ -7737,7 +8580,7 @@ function setChartTool(tool) {
     select: 'Σύρε πάνω στη γραφική για να διαλέξεις το κομμάτι A-B που σε ενδιαφέρει.',
     pan: 'Σύρε στο γράφημα για μετακίνηση στον χρόνο. Ροδέλα για zoom που εστιάζει στην κυματομορφή. Shift + σύρσιμο για επιλογή A-B.'
   };
-  document.getElementById('chartHint').textContent = hints[tool];
+  document.getElementById('chartHint').textContent = isSonarExperimentMode() ? '' : hints[tool];
   canvas.style.cursor = tool === 'select' ? 'crosshair' : (tool === 'pan' ? 'grab' : 'default');
   draw();
 }
@@ -7904,6 +8747,17 @@ document.querySelectorAll('[data-chart-tool]').forEach(button => {
   button.addEventListener('click', () => setChartTool(button.dataset.chartTool));
 });
 
+document.querySelectorAll('[data-hooke-chart]').forEach(button => {
+  button.addEventListener('click', () => {
+    hookeChartView = button.dataset.hookeChart === 'extension' ? 'extension' : 'time';
+    localStorage.setItem('palladio-hooke-chart-view', hookeChartView);
+    hoverPoint = null;
+    tooltip.hidden = true;
+    updateSplitChartControls();
+    updateModeUi();
+  });
+});
+
 document.getElementById('splitChartToggle').addEventListener('change', event => {
   splitChart = event.target.checked;
   localStorage.setItem('palladio-split-chart', splitChart ? '1' : '0');
@@ -7911,6 +8765,7 @@ document.getElementById('splitChartToggle').addEventListener('change', event => 
   hoverPoint = null;
   tooltip.hidden = true;
   updateSplitChartControls();
+  updateModeUi();
   updateZoomStatus();
   draw();
 });
@@ -8122,6 +8977,7 @@ document.getElementById('saveHookeTrial').addEventListener('click', () => {
   });
   saveHookeTrials();
   renderHookeExperiment();
+  draw();
   showToast('Αποθηκεύτηκε δοκιμή Hooke: Δx = ' + extensionCm.toFixed(1) + ' cm');
 });
 
@@ -8129,6 +8985,7 @@ document.getElementById('clearHookeTrials').addEventListener('click', () => {
   hookeTrials = [];
   saveHookeTrials();
   renderHookeExperiment();
+  draw();
   showToast('Οι δοκιμές Hooke διαγράφηκαν.');
 });
 
@@ -8510,6 +9367,24 @@ document.querySelectorAll('[data-sonar-position]').forEach(button => {
     draw();
   });
 });
+
+document.getElementById('sonarWorksheetPanel').addEventListener('input', event => {
+  const secondsInput = event.target.closest('[data-sonar-seconds-answer]');
+  if (secondsInput) {
+    sonarWorksheetAnswers.seconds[Number(secondsInput.dataset.sonarSecondsAnswer)] = secondsInput.value;
+    return;
+  }
+  const distanceInput = event.target.closest('[data-sonar-distance-answer]');
+  if (distanceInput) {
+    sonarWorksheetAnswers.distance[Number(distanceInput.dataset.sonarDistanceAnswer)] = distanceInput.value;
+    return;
+  }
+  if (event.target.id === 'sonarConclusion') {
+    sonarWorksheetAnswers.conclusion = event.target.value;
+  }
+});
+
+document.getElementById('saveSonarWorksheet').addEventListener('click', saveSonarWorksheetAndPrint);
 
 document.getElementById('togglePendulumPositions').addEventListener('click', () => {
   pendulumShowPositions = !pendulumShowPositions;
