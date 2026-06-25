@@ -30,6 +30,7 @@ The repository also keeps the earlier Python desktop application for reference a
 | `case2.stl`, `cover.stl` | 3D-printable case/cover assets. |
 | `PROJECT_STRUCTURE.md` | More detailed technical structure and known hot spots. |
 | `HARDWARE_API.md` | Hardware wiring notes, firmware API reference, UDP compatibility, and verification checklist. |
+| `UI_FLOW.md` | Student and teacher dashboard flow, classroom checklist, and current UI state model. |
 
 ## Run The Web Dashboard
 
@@ -157,3 +158,4 @@ python physics_lab_with_angular_velocity.py
 
 See `PROJECT_STRUCTURE.md` for the fuller technical map.
 See `HARDWARE_API.md` for the hardware and API reference.
+See `UI_FLOW.md` for the student and teacher classroom flow.
