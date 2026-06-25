@@ -550,8 +550,8 @@ void autoDetectSensorMode() {
   bool ultraFound = false;
 
   if (!heatFound) {
-    forceFound = detectForceSensor();
-    if (!forceFound) ultraFound = detectUltrasonicSensor();
+    ultraFound = detectUltrasonicSensor();
+    if (!ultraFound) forceFound = detectForceSensor();
   }
 
   uint8_t detectedMode = 0;

@@ -102,7 +102,7 @@ Current pin definitions in `Physics_Lab.ino`:
 #define TEMP2_PIN 26
 ```
 
-Firmware startup performs conservative sensor auto-detection. It selects Heat when both DS18B20 sensors are found, Force when HX711 is found, and Ultrasonic when the URM10 responds to trigger/echo timing. Manual selection remains available from the dashboard and M5 buttons.
+Firmware startup performs conservative sensor auto-detection. It selects Heat when both DS18B20 sensors are found, Ultrasonic when the URM10 responds to trigger/echo timing, and Force when HX711 is found. Manual selection remains available from the dashboard and M5 buttons.
 
 Pin sharing is intentional in the current firmware mode layout, but it should be documented in a classroom wiring guide before hardware kits are handed out broadly.
 
