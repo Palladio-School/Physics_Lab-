@@ -920,6 +920,7 @@
 <script src="js/app-config.js"></script>
 <script src="js/device-client.js"></script>
 <script src="js/storage-export.js"></script>
+<script src="js/chart-utils.js"></script>
 <script>
 // Structural map: constants / config
 const {
@@ -935,6 +936,12 @@ const {
   niceNumber
 } = window.PalladioConfig;
 const storageExport = window.PalladioStorageExport;
+const {
+  selectedTimeScale,
+  selectedValueScale,
+  displayUnit,
+  formatValue
+} = window.PalladioChartUtils;
 const urlParams = new URLSearchParams(window.location.search);
 let deviceBaseUrl = (urlParams.get('device') || storageExport.getItem('palladio-device-url') || DEFAULT_DEVICE_URL).replace(/\/+$/, '');
 storageExport.setItem('palladio-device-url', deviceBaseUrl);
@@ -1182,7 +1189,7 @@ function splitChartPanels(width, height, xMin, xMax, timeScale, dataRows) {
       xMin,
       xMax,
       timeScale,
-      valueScale: selectedValueScale([primary], yScale(dataRows, [primary], false))
+      valueScale: selectedValueScale([primary], yScale(dataRows, [primary], false), valueScaleMode)
     },
     {
       key: 'secondary',
@@ -1200,7 +1207,7 @@ function splitChartPanels(width, height, xMin, xMax, timeScale, dataRows) {
       xMin,
       xMax,
       timeScale,
-      valueScale: selectedValueScale([secondary], yScale(dataRows, [secondary], false))
+      valueScale: selectedValueScale([secondary], yScale(dataRows, [secondary], false), valueScaleMode)
     }
   ];
 }
@@ -1267,43 +1274,6 @@ function drawDataPath(points) {
     const cp2y = p2.y - (p3.y - p1.y) / 6;
     ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, p2.x, p2.y);
   }
-}
-
-function selectedTimeScale(viewSpan) {
-  if (timeScaleMode === 's') return { unit: 's', multiplier: 1 };
-  if (timeScaleMode === 'ms') return { unit: 'ms', multiplier: 1e-3 };
-  if (timeScaleMode === 'us') return { unit: 'μs', multiplier: 1e-6 };
-  if (viewSpan < 0.001) return { unit: 'μs', multiplier: 1e-6 };
-  if (viewSpan < 1) return { unit: 'ms', multiplier: 1e-3 };
-  return { unit: 's', multiplier: 1 };
-}
-
-function selectedValueScale(selectedSeries, scale) {
-  const units = [...new Set(selectedSeries.map(series => series.unit))];
-  const maxAbs = Math.max(Math.abs(scale.min), Math.abs(scale.max), 1e-12);
-  const mapping = {
-    micro: { prefix: 'μ', multiplier: 1e-6 },
-    milli: { prefix: 'm', multiplier: 1e-3 },
-    base: { prefix: '', multiplier: 1 },
-    kilo: { prefix: 'k', multiplier: 1e3 }
-  };
-  if (units.length !== 1) return { prefix: '', multiplier: 1 };
-  if (valueScaleMode !== 'auto') return mapping[valueScaleMode] || mapping.base;
-  if (maxAbs >= 1000) return mapping.kilo;
-  if (maxAbs < 0.001) return mapping.micro;
-  if (maxAbs < 1) return mapping.milli;
-  return mapping.base;
-}
-
-function displayUnit(unit, scaleInfo) {
-  return (scaleInfo.prefix || '') + unit;
-}
-
-function formatValue(value, span) {
-  const magnitude = Math.abs(value);
-  if (magnitude >= 100 || span >= 100) return value.toFixed(0);
-  if (magnitude >= 10 || span >= 10) return value.toFixed(1);
-  return value.toFixed(2);
 }
 
 // Structural map: storage / CSV / PDF export
@@ -2672,7 +2642,7 @@ function drawHookeSplitChart(width, height) {
   const xMin = view.start;
   const xMax = view.end;
   const viewSpan = Math.max(0.5, xMax - xMin);
-  const timeScale = selectedTimeScale(viewSpan);
+  const timeScale = selectedTimeScale(viewSpan, timeScaleMode);
   const forceSeries = currentMode().series[0];
   const horizontal = width >= 860;
   const outerPad = { left: width < 520 ? 58 : 70, right: 22, top: 22, bottom: 54 };
@@ -2693,7 +2663,7 @@ function drawHookeSplitChart(width, height) {
     xMin,
     xMax,
     timeScale,
-    valueScale: selectedValueScale([forceSeries], forceScale)
+    valueScale: selectedValueScale([forceSeries], forceScale, valueScaleMode)
   };
   const dxPanel = {
     title: 'F - Δx',
@@ -5296,7 +5266,7 @@ function drawSplitChart(width, height) {
   const xMin = view.start;
   const xMax = view.end;
   const viewSpan = Math.max(0.5, xMax - xMin);
-  const timeScale = selectedTimeScale(viewSpan);
+  const timeScale = selectedTimeScale(viewSpan, timeScaleMode);
   const panels = splitChartPanels(width, height, xMin, xMax, timeScale, dataRows);
   chartGeometry = {
     split: true,
@@ -5380,8 +5350,8 @@ function draw() {
   const xMin = view.start;
   const xMax = view.end;
   const viewSpan = Math.max(0.5, xMax - xMin);
-  const timeScale = selectedTimeScale(viewSpan);
-  const valueScale = selectedValueScale(selectedSeries, scale);
+  const timeScale = selectedTimeScale(viewSpan, timeScaleMode);
+  const valueScale = selectedValueScale(selectedSeries, scale, valueScaleMode);
 
   chartGeometry = { pad, plotW, plotH, xMin, xMax, scale, dataRows, selectedSeries, timeScale, valueScale };
 
