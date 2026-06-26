@@ -919,6 +919,7 @@
 
 <script src="js/app-config.js"></script>
 <script src="js/device-client.js"></script>
+<script src="js/storage-export.js"></script>
 <script>
 // Structural map: constants / config
 const {
@@ -933,9 +934,10 @@ const {
   compactNumber,
   niceNumber
 } = window.PalladioConfig;
+const storageExport = window.PalladioStorageExport;
 const urlParams = new URLSearchParams(window.location.search);
-let deviceBaseUrl = (urlParams.get('device') || localStorage.getItem('palladio-device-url') || DEFAULT_DEVICE_URL).replace(/\/+$/, '');
-localStorage.setItem('palladio-device-url', deviceBaseUrl);
+let deviceBaseUrl = (urlParams.get('device') || storageExport.getItem('palladio-device-url') || DEFAULT_DEVICE_URL).replace(/\/+$/, '');
+storageExport.setItem('palladio-device-url', deviceBaseUrl);
 
 // Structural map: device API and polling helpers
 let deviceClient = null;
@@ -1028,46 +1030,11 @@ localStorage.removeItem('palladio-sonar-conclusion');
 let buoyancyVolumeMl = Math.max(0, Number(localStorage.getItem('palladio-buoyancy-volume-ml') || '100'));
 let buoyancyAirForce = Number(localStorage.getItem('palladio-buoyancy-air-force') || 'NaN');
 let buoyancyLiquidForce = Number(localStorage.getItem('palladio-buoyancy-liquid-force') || 'NaN');
-let collisionTrials = (() => {
-  try {
-    const saved = JSON.parse(localStorage.getItem('palladio-collision-trials') || '[]');
-    return Array.isArray(saved) ? saved : [];
-  } catch (error) {
-    return [];
-  }
-})();
-let hookeTrials = (() => {
-  try {
-    const saved = JSON.parse(localStorage.getItem('palladio-hooke-trials') || '[]');
-    return Array.isArray(saved) ? saved : [];
-  } catch (error) {
-    return [];
-  }
-})();
-let weightTrials = (() => {
-  try {
-    const saved = JSON.parse(localStorage.getItem('palladio-weight-trials') || '[]');
-    return Array.isArray(saved) ? saved : [];
-  } catch (error) {
-    return [];
-  }
-})();
-let pendulumTrials = (() => {
-  try {
-    const saved = JSON.parse(localStorage.getItem('palladio-pendulum-trials') || '[]');
-    return Array.isArray(saved) ? saved : [];
-  } catch (error) {
-    return [];
-  }
-})();
-let buoyancyTrials = (() => {
-  try {
-    const saved = JSON.parse(localStorage.getItem('palladio-buoyancy-trials') || '[]');
-    return Array.isArray(saved) ? saved : [];
-  } catch (error) {
-    return [];
-  }
-})();
+let collisionTrials = storageExport.loadJsonArray('palladio-collision-trials');
+let hookeTrials = storageExport.loadJsonArray('palladio-hooke-trials');
+let weightTrials = storageExport.loadJsonArray('palladio-weight-trials');
+let pendulumTrials = storageExport.loadJsonArray('palladio-pendulum-trials');
+let buoyancyTrials = storageExport.loadJsonArray('palladio-buoyancy-trials');
 const activePointers = new Map();
 let pinchState = null;
 let lastSampleId = -1;
@@ -1391,32 +1358,32 @@ function updateDerivedControls() {
 }
 
 function saveCollisionTrials() {
-  localStorage.setItem('palladio-collision-trials', JSON.stringify(collisionTrials));
+  storageExport.saveJson('palladio-collision-trials', collisionTrials);
 }
 
 function saveHookeTrials() {
-  localStorage.setItem('palladio-hooke-trials', JSON.stringify(hookeTrials));
+  storageExport.saveJson('palladio-hooke-trials', hookeTrials);
 }
 
 function saveWeightTrials() {
-  localStorage.setItem('palladio-weight-trials', JSON.stringify(weightTrials));
+  storageExport.saveJson('palladio-weight-trials', weightTrials);
 }
 
 function savePendulumTrials() {
-  localStorage.setItem('palladio-pendulum-trials', JSON.stringify(pendulumTrials));
+  storageExport.saveJson('palladio-pendulum-trials', pendulumTrials);
 }
 
 function saveWeightCapture() {
-  localStorage.setItem('palladio-weight-force', String(weightCapturedForce));
+  storageExport.setItem('palladio-weight-force', weightCapturedForce);
 }
 
 function saveBuoyancyTrials() {
-  localStorage.setItem('palladio-buoyancy-trials', JSON.stringify(buoyancyTrials));
+  storageExport.saveJson('palladio-buoyancy-trials', buoyancyTrials);
 }
 
 function saveBuoyancyCapture() {
-  localStorage.setItem('palladio-buoyancy-air-force', String(buoyancyAirForce));
-  localStorage.setItem('palladio-buoyancy-liquid-force', String(buoyancyLiquidForce));
+  storageExport.setItem('palladio-buoyancy-air-force', buoyancyAirForce);
+  storageExport.setItem('palladio-buoyancy-liquid-force', buoyancyLiquidForce);
 }
 
 function isCollisionExperimentMode() {
@@ -1943,15 +1910,6 @@ function sonarWorksheetData() {
   }));
 }
 
-function escapeHtml(value) {
-  return String(value || '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
 function saveSonarWorksheetAndPrint() {
   document.querySelectorAll('[data-sonar-seconds-answer]').forEach(input => {
     sonarWorksheetAnswers.seconds[Number(input.dataset.sonarSecondsAnswer)] = input.value;
@@ -1962,50 +1920,15 @@ function saveSonarWorksheetAndPrint() {
   const conclusion = document.getElementById('sonarConclusion');
   if (conclusion) sonarWorksheetAnswers.conclusion = conclusion.value;
 
-  const rowsHtml = sonarWorksheetData().map(row =>
-    '<tr><td>' + escapeHtml(row.label) + '</td><td>' + escapeHtml(row.dtMs) + '</td><td>' +
-    escapeHtml(row.dtS) + '</td><td>' + escapeHtml(row.distance) + '</td></tr>'
-  ).join('');
-  const conclusionText = escapeHtml(sonarWorksheetAnswers.conclusion || '');
-  const report = window.open('', '_blank');
-  if (!report) {
+  const reportHtml = storageExport.buildSonarWorksheetReport(
+    sonarWorksheetData(),
+    sonarWorksheetAnswers.conclusion,
+    new Date().toLocaleString('el-GR')
+  );
+  if (!storageExport.openPrintableDocument(reportHtml)) {
     showToast('Ο browser μπλόκαρε το παράθυρο PDF. Επίτρεψε pop-ups για τη σελίδα.', true);
     return;
   }
-  report.document.write(
-    '<!doctype html><html lang="el"><head><meta charset="utf-8"><title>Αναφορά Sonar</title>' +
-    '<style>body{font-family:system-ui,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;margin:32px;color:#172033;}' +
-    'h1{margin:0 0 6px;font-size:26px;}h2{margin:22px 0 8px;font-size:17px;color:#1f3650;}p,li{color:#4c5f75;line-height:1.5;}table{width:100%;border-collapse:collapse;margin:18px 0;}' +
-    'th,td{border:1px solid #cfdbe8;padding:10px;text-align:left;}th{background:#edf4fb;color:#344861;font-size:12px;text-transform:uppercase;}' +
-    '.box{border:1px solid #cfdbe8;border-radius:12px;padding:14px;margin-top:16px;}.meta{margin-top:4px;color:#60758c;font-size:13px;}' +
-    '.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.answer-line{min-height:34px;border-bottom:1px solid #cfdbe8;margin-top:8px;}' +
-    '.formula{display:inline-block;padding:8px 12px;border-radius:10px;background:#edf4fb;color:#173b73;font-weight:800;}' +
-    '@media(max-width:760px){.grid{grid-template-columns:1fr}}' +
-    '@media print{body{margin:18mm}.no-print{display:none}}</style></head><body>' +
-    '<h1>Αναφορά πειράματος Sonar</h1><div class="meta">Palladio Physics Lab · ' + new Date().toLocaleString('el-GR') + '</div>' +
-    '<div class="box"><strong>Κεντρική ερώτηση</strong><p>Πώς μπορούμε να υπολογίσουμε μια απόσταση όταν μετράμε τον συνολικό χρόνο που χρειάζεται ένας ηχητικός παλμός για να πάει σε ένα εμπόδιο και να επιστρέψει;</p></div>' +
-    '<div class="grid">' +
-    '<div class="box"><strong>Στόχος</strong><p>Να χρησιμοποιήσω πραγματικό χρόνο ηχούς από DFRobot URM10 και να υπολογίσω απόσταση με τη σύμβαση ότι ο ήχος ταξιδεύει στο νερό.</p></div>' +
-    '<div class="box"><strong>Υλικά / εργαλεία</strong><p>Palladio Physics Lab, M5Stick, αισθητήρας DFRobot URM10, επίπεδο εμπόδιο, τρεις θέσεις σκάφους, αριθμομηχανή.</p></div>' +
-    '</div>' +
-    '<h2>Θεωρητική ιδέα</h2>' +
-    '<p>Ο DFRobot URM10 μετρά πραγματικό χρόνο ηχούς στον αέρα. Στο πείραμα κάνουμε τη σύμβαση ότι αυτός ο χρόνος είναι χρόνος sonar μέσα στο νερό.</p>' +
-    '<p>Ο ήχος διανύει τη διαδρομή αισθητήρας → στόχος → αισθητήρας. Άρα ο συνολικός χρόνος Δt αντιστοιχεί σε διπλάσια απόσταση από αυτή που ζητάμε.</p>' +
-    '<p><span class="formula">d = υ · Δt / 2</span> με ταχύτητα ήχου στο νερό περίπου υ = 1480 m/s.</p>' +
-    '<h2>Διαδικασία</h2>' +
-    '<ol><li>Διάλεξα μία θέση του σκάφους.</li><li>Μέτρησα με τον DFRobot URM10 τον συνολικό χρόνο ηχούς Δt σε ms.</li><li>Μετέτρεψα τα ms σε s.</li><li>Υπολόγισα την απόσταση d με τη σύμβαση του νερού.</li><li>Σύγκρινα τις τρεις θέσεις.</li></ol>' +
-    '<h2>Μετρήσεις και υπολογισμοί</h2>' +
-    '<table><thead><tr><th>Θέση</th><th>Δt URM10 (ms)</th><th>Δt (s)</th><th>d μαθητή (m)</th></tr></thead><tbody>' + rowsHtml + '</tbody></table>' +
-    '<h2>Ερωτήσεις</h2>' +
-    '<div class="box"><strong>1. Γιατί διαιρούμε τον συνολικό χρόνο με το 2;</strong><div class="answer-line"></div></div>' +
-    '<div class="box"><strong>2. Ποια θέση αντιστοιχεί στο μεγαλύτερο βάθος;</strong><div class="answer-line"></div></div>' +
-    '<div class="box"><strong>3. Ο αισθητήρας μετρά άμεσα απόσταση ή χρόνο;</strong><div class="answer-line"></div></div>' +
-    '<div class="box"><strong>Συμπέρασμα μαθητή</strong><p>' + (conclusionText || '&nbsp;') + '</p></div>' +
-    '<p class="no-print">Στο παράθυρο εκτύπωσης διάλεξε “Save as PDF” / “Αποθήκευση ως PDF”.</p>' +
-    '<script>window.addEventListener(\"load\",()=>setTimeout(()=>window.print(),150));<\/script>' +
-    '</body></html>'
-  );
-  report.document.close();
   showToast('Οι απαντήσεις αποθηκεύτηκαν. Άνοιξε η αναφορά για PDF.');
 }
 
@@ -6144,14 +6067,7 @@ document.getElementById('export').addEventListener('click', () => {
     headers,
     ...rows.map(row => [row.time.toFixed(3), ...meta.series.map(series => rawRowValue(row, series).toFixed(5))])
   ];
-  const csv = csvRows.map(row => row.join(',')).join('\n');
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = 'palladio-' + meta.title.toLowerCase().replaceAll(' ', '-') + '.csv';
-  link.click();
-  URL.revokeObjectURL(url);
+  storageExport.downloadCsv('palladio-' + meta.title.toLowerCase().replaceAll(' ', '-') + '.csv', csvRows);
 });
 
 document.getElementById('hookeExtensionCm').addEventListener('change', event => {
@@ -6215,14 +6131,7 @@ document.getElementById('exportHookeTrials').addEventListener('click', () => {
       trial.kEstimate.toFixed(6)
     ])
   ];
-  const csv = csvRows.map(row => row.join(',')).join('\n');
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = 'palladio-hooke-law.csv';
-  link.click();
-  URL.revokeObjectURL(url);
+  storageExport.downloadCsv('palladio-hooke-law.csv', csvRows);
 });
 
 document.getElementById('weightMassG').addEventListener('change', event => {
@@ -6310,14 +6219,7 @@ document.getElementById('exportWeightTrials').addEventListener('click', () => {
       trial.errorPercent.toFixed(3)
     ])
   ];
-  const csv = csvRows.map(row => row.join(',')).join('\n');
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = 'palladio-weight-mg.csv';
-  link.click();
-  URL.revokeObjectURL(url);
+  storageExport.downloadCsv('palladio-weight-mg.csv', csvRows);
 });
 
 document.getElementById('buoyancyVolumeMl').addEventListener('change', event => {
@@ -6415,14 +6317,7 @@ document.getElementById('exportBuoyancyTrials').addEventListener('click', () => 
       ];
     })
   ];
-  const csv = csvRows.map(row => row.join(',')).join('\n');
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = 'palladio-buoyancy.csv';
-  link.click();
-  URL.revokeObjectURL(url);
+  storageExport.downloadCsv('palladio-buoyancy.csv', csvRows);
 });
 
 document.getElementById('saveCollisionTrial').addEventListener('click', () => {
@@ -6474,14 +6369,7 @@ document.getElementById('exportCollisionTrials').addEventListener('click', () =>
       collisionMassKg.toFixed(5)
     ])
   ];
-  const csv = csvRows.map(row => row.join(',')).join('\n');
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = 'palladio-impulse-vs-velocity.csv';
-  link.click();
-  URL.revokeObjectURL(url);
+  storageExport.downloadCsv('palladio-impulse-vs-velocity.csv', csvRows);
 });
 
 function updatePendulumInputState() {
@@ -6656,14 +6544,7 @@ document.getElementById('exportPendulumTrials').addEventListener('click', () => 
       (trial.period * 10).toFixed(6)
     ])
   ];
-  const csv = csvRows.map(row => row.join(',')).join('\n');
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = 'palladio-pendulum.csv';
-  link.click();
-  URL.revokeObjectURL(url);
+  storageExport.downloadCsv('palladio-pendulum.csv', csvRows);
 });
 
 document.getElementById('collisionPanelToggle').addEventListener('click', () => {
