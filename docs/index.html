@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Palladio Physics Lab</title>
 <style>
+/* Structural map: CSS / layout */
 :root {
   color-scheme: light;
   --blue: #2563eb;
@@ -2641,6 +2642,7 @@ tbody tr:last-child td { border-bottom: 0; }
 </style>
 </head>
 <body>
+<!-- Structural map: HTML shell -->
 <div class="app-shell">
   <aside class="lab-sidebar">
     <header class="topbar">
@@ -2903,6 +2905,7 @@ tbody tr:last-child td { border-bottom: 0; }
           </div>
         </section>
 
+        <!-- Structural map: experiment panels -->
         <section class="hooke-worksheet-panel" id="hookeWorksheetPanel" aria-label="Φύλλο εργασίας νόμου του Hooke">
           <div class="worksheet-card">
             <div class="worksheet-head">
@@ -3550,11 +3553,13 @@ tbody tr:last-child td { border-bottom: 0; }
 <div class="toast" id="toast" hidden></div>
 
 <script>
+// Structural map: constants / config
 const DEFAULT_DEVICE_URL = 'http://192.168.4.1';
 const urlParams = new URLSearchParams(window.location.search);
 let deviceBaseUrl = (urlParams.get('device') || localStorage.getItem('palladio-device-url') || DEFAULT_DEVICE_URL).replace(/\/+$/, '');
 localStorage.setItem('palladio-device-url', deviceBaseUrl);
 
+// Structural map: device API and polling helpers
 function apiUrl(path) {
   return deviceBaseUrl + (path.startsWith('/') ? path : '/' + path);
 }
@@ -3588,6 +3593,7 @@ function schedulePoll(delayMs) {
   pollTimerId = setTimeout(poll, delayMs);
 }
 
+// Structural map: experiment state
 const maxSamples = 6000;
 let running = false;
 let rows = [];
@@ -3733,6 +3739,7 @@ const IDLE_HARDWARE_POLL_MS = 300;
 const MIN_HARDWARE_POLL_MS = 40;
 const MAX_HARDWARE_POLL_MS = 500;
 
+// Structural map: HTML element refs
 const canvas = document.getElementById('chart');
 const ctx = canvas.getContext('2d');
 const collisionCanvas = document.getElementById('collisionChart');
@@ -3759,6 +3766,7 @@ const statusDot = document.getElementById('statusDot');
 const modeButtons = [...document.querySelectorAll('[data-mode]')];
 const experimentButtons = [...document.querySelectorAll('[data-experiment]')];
 
+// Structural map: constants / config
 const modes = {
   0: {
     symmetric: true,
@@ -4150,6 +4158,7 @@ function formatValue(value, span) {
   return value.toFixed(2);
 }
 
+// Structural map: storage / CSV / PDF export
 function resetMeasurement() {
   rows = [];
   startTime = performance.now();
@@ -4376,6 +4385,7 @@ function stopRailResize() {
   document.body.style.userSelect = '';
 }
 
+// Structural map: experiment renderers
 function collisionCurrentMetrics() {
   if (!isCollisionExperimentMode() || !analysisCache || analysisCache.points.length < 2) return null;
   const points = analysisCache.points;
@@ -6464,6 +6474,7 @@ function renderHeatExperiment() {
     : 'Για καθαρή καμπύλη θερμικής ισορροπίας χρησιμοποίησε μεγάλη διάρκεια, π.χ. 10 λεπτά ή περισσότερο.';
 }
 
+// Structural map: chart rendering / selection / zoom
 function setMode(mode, source = 'sensor', options = {}) {
   const shouldReset = options.reset !== false;
   if (!modes[mode] || !modes[mode].digital) {
@@ -8776,6 +8787,7 @@ function handleWheel(event) {
   }
 }
 
+// Structural map: event listeners
 modeButtons.forEach(button => {
   button.addEventListener('click', () => setMode(Number(button.dataset.mode)));
 });
@@ -9562,6 +9574,7 @@ if (sonarCanvas) {
   sonarCanvas.addEventListener('pointercancel', finishSonarDrag);
 }
 
+// Structural map: device API and polling
 async function poll() {
   if (currentMode().digital) {
     document.getElementById('network').textContent = 'Ψηφιακό πείραμα · χωρίς M5';
@@ -9613,6 +9626,7 @@ async function poll() {
   }
 }
 
+// Structural map: startup / initialization
 window.addEventListener('resize', resizeCanvas);
 function animatePendulum() {
   if (isPendulumExperimentMode() && !collisionRailCollapsed) drawPendulumCanvas();
