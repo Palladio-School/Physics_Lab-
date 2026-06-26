@@ -135,7 +135,7 @@ Current firmware pin notes:
 - HX711: `DT = 36`, `DT_ALT = 25`, `SCK = 26`
 - DS18B20: `TEMP1_PIN = 25`, `TEMP2_PIN = 26`
 
-On startup the firmware attempts to detect the connected external sensor family and selects the matching mode automatically: DS18B20 heat first, then HX711 force, then URM10 ultrasonic. Manual mode selection from the dashboard or M5 buttons remains available.
+On startup the firmware attempts to detect the connected external sensor family and selects the matching mode automatically: DS18B20 heat first, then URM10 ultrasonic, then HX711 force. Manual mode selection from the dashboard or M5 buttons remains available.
 
 Some pins are shared across experiment modes. Treat this as a documented hardware constraint until the wiring plan is finalized per lab setup.
 With the current wiring, the DFRobot URM10 and the two DS18B20 sensors both use `G25/G26`, so do not keep them connected at the same time.

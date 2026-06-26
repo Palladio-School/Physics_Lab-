@@ -65,7 +65,7 @@ Current firmware definitions:
 Because some pins are shared, treat the current setup as one active external sensor family at a time unless a final wiring harness proves otherwise.
 In particular, the DFRobot URM10 and the two DS18B20 temperature sensors both occupy `G25/G26`; disconnect one sensor family before testing the other.
 
-On startup the firmware runs a conservative sensor auto-detection pass. It checks for two DS18B20 sensors first, then HX711, then URM10. If exactly one sensor family is found, the M5 selects that mode automatically. If nothing is found or the wiring is ambiguous, it falls back to manual mode selection.
+On startup the firmware runs a conservative sensor auto-detection pass. It checks for two DS18B20 sensors first, then URM10, then HX711. The URM10 check runs before the HX711 alternate `DT_ALT = G25` check so the shared echo/DOUT pin is not misclassified as a load-cell signal. If exactly one sensor family is found, the M5 selects that mode automatically. If nothing is found or the wiring is ambiguous, it falls back to manual mode selection.
 
 ## Hardware Notes By Experiment
 
@@ -376,6 +376,6 @@ Before broad classroom use, verify with the actual hardware kit:
 - Several external sensor definitions share pins (`G25`, `G26`). Do not assume simultaneous external sensor wiring until a final harness is tested.
 - URM10 echo voltage must be checked against the M5 input tolerance if the wiring changes from the current 3V setup.
 - Load-cell calibration factor is currently code-defined and should be validated against known masses.
-- Polling every 30 ms is UI-side behavior; firmware sample IDs protect data quality, but performance should still be measured on classroom devices.
+- Adaptive polling is UI-side behavior; firmware sample IDs protect data quality, but performance should still be measured on classroom devices.
 - `/data` returns one flat object for all sensor families, so consumers should read only the fields relevant to the active mode.
 - API changes should preserve `sampleId`, `sampleMs`, and `/samples?since=` semantics because the dashboard depends on them.
