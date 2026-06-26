@@ -918,6 +918,7 @@
 <div class="toast" id="toast" hidden></div>
 
 <script src="js/app-config.js"></script>
+<script src="js/device-client.js"></script>
 <script>
 // Structural map: constants / config
 const {
@@ -927,12 +928,6 @@ const {
   SONAR_POSITIONS,
   SONAR_BOAT_SENSOR_X_RATIO,
   SONAR_BOAT_SENSOR_BOTTOM_RATIO,
-  DIGITAL_POLL_MS,
-  SAMPLE_ENDPOINT_RETRY_MS,
-  OFFLINE_POLL_MS,
-  IDLE_HARDWARE_POLL_MS,
-  MIN_HARDWARE_POLL_MS,
-  MAX_HARDWARE_POLL_MS,
   modes,
   experimentCatalog,
   compactNumber,
@@ -943,16 +938,9 @@ let deviceBaseUrl = (urlParams.get('device') || localStorage.getItem('palladio-d
 localStorage.setItem('palladio-device-url', deviceBaseUrl);
 
 // Structural map: device API and polling helpers
-function apiUrl(path) {
-  return deviceBaseUrl + (path.startsWith('/') ? path : '/' + path);
-}
-
-function fetchJson(path) {
-  return fetch(apiUrl(path), { cache: 'no-store' }).then(response => {
-    if (!response.ok) throw new Error('HTTP ' + response.status);
-    return response.json();
-  });
-}
+let deviceClient = null;
+let apiUrl = null;
+let fetchJson = null;
 
 function syncSampleRate(rate) {
   const numericRate = Number(rate);
@@ -962,18 +950,6 @@ function syncSampleRate(rate) {
   if (!rateSelect) return;
   const hasOption = Array.from(rateSelect.options).some(option => option.value === String(numericRate));
   if (hasOption) rateSelect.value = String(numericRate);
-}
-
-function nextHardwarePollDelay(receivedSamples = false) {
-  if (!running) return IDLE_HARDWARE_POLL_MS;
-  const sampleInterval = 1000 / Math.max(1, sampleRateHz);
-  const multiplier = receivedSamples ? 0.55 : 0.9;
-  return Math.round(Math.max(MIN_HARDWARE_POLL_MS, Math.min(MAX_HARDWARE_POLL_MS, sampleInterval * multiplier)));
-}
-
-function schedulePoll(delayMs) {
-  clearTimeout(pollTimerId);
-  pollTimerId = setTimeout(poll, delayMs);
 }
 
 // Structural map: experiment state
@@ -1097,10 +1073,6 @@ let pinchState = null;
 let lastSampleId = -1;
 let sampleEpochMs = null;
 let sampleRateHz = 10;
-let samplesEndpointAvailable = true;
-let lastSamplesEndpointAttempt = 0;
-let consecutivePollFailures = 0;
-let pollTimerId = null;
 let toastTimer = null;
 let railResizeActive = false;
 let liveUiFramePending = false;
@@ -1132,6 +1104,30 @@ const tooltip = document.getElementById('tooltip');
 const statusDot = document.getElementById('statusDot');
 const modeButtons = [...document.querySelectorAll('[data-mode]')];
 const experimentButtons = [...document.querySelectorAll('[data-experiment]')];
+
+deviceClient = window.PalladioDeviceClient.configure({
+  deviceBaseUrl,
+  getState: () => ({
+    running,
+    digital: currentMode().digital,
+    sampleRateHz,
+    lastSampleId
+  }),
+  onDigitalTick: () => {
+    document.getElementById('network').textContent = 'Ψηφιακό πείραμα · χωρίς M5';
+    statusDot.classList.remove('offline');
+    appendPendulumLiveSamples();
+  },
+  onStatusChange: status => {
+    document.getElementById('network').textContent = status.text;
+    statusDot.classList.toggle('offline', !status.online);
+  },
+  onSampleRate: syncSampleRate,
+  onSamples: addRows,
+  onData: addRow
+});
+apiUrl = deviceClient.apiUrl;
+fetchJson = deviceClient.fetchJson;
 
 if (!experimentCatalog[activeExperimentId]) activeExperimentId = '';
 if (activeExperimentId) {
@@ -6732,58 +6728,6 @@ if (sonarCanvas) {
   sonarCanvas.addEventListener('pointercancel', finishSonarDrag);
 }
 
-// Structural map: device API and polling
-async function poll() {
-  if (currentMode().digital) {
-    document.getElementById('network').textContent = 'Ψηφιακό πείραμα · χωρίς M5';
-    statusDot.classList.remove('offline');
-    appendPendulumLiveSamples();
-    consecutivePollFailures = 0;
-    schedulePoll(DIGITAL_POLL_MS);
-    return;
-  }
-  let nextDelay = nextHardwarePollDelay();
-  try {
-    const now = performance.now();
-    const shouldTrySamples = samplesEndpointAvailable || now - lastSamplesEndpointAttempt > SAMPLE_ENDPOINT_RETRY_MS;
-    if (shouldTrySamples) {
-      try {
-        lastSamplesEndpointAttempt = now;
-        const batch = await fetchJson('/samples?since=' + lastSampleId);
-        samplesEndpointAvailable = true;
-        consecutivePollFailures = 0;
-        document.getElementById('network').textContent = batch.ap + ' · ' + batch.ip;
-        statusDot.classList.remove('offline');
-        syncSampleRate(batch.sampleRate);
-        addRows(batch.samples);
-        nextDelay = nextHardwarePollDelay(Array.isArray(batch.samples) && batch.samples.length > 0);
-      } catch (samplesError) {
-        samplesEndpointAvailable = false;
-        const data = await fetchJson('/data');
-        consecutivePollFailures = 0;
-        document.getElementById('network').textContent = data.ap + ' · ' + data.ip;
-        statusDot.classList.remove('offline');
-        addRow(data);
-        nextDelay = nextHardwarePollDelay();
-      }
-    } else {
-      const data = await fetchJson('/data');
-      consecutivePollFailures = 0;
-      document.getElementById('network').textContent = data.ap + ' · ' + data.ip;
-      statusDot.classList.remove('offline');
-      addRow(data);
-      nextDelay = nextHardwarePollDelay();
-    }
-  } catch (error) {
-    consecutivePollFailures += 1;
-    document.getElementById('network').textContent = 'Αναμονή για το M5Stick';
-    statusDot.classList.add('offline');
-    nextDelay = Math.min(OFFLINE_POLL_MS * consecutivePollFailures, OFFLINE_POLL_MS * 3);
-  } finally {
-    schedulePoll(nextDelay);
-  }
-}
-
 // Structural map: startup / initialization
 window.addEventListener('resize', resizeCanvas);
 function animatePendulum() {
@@ -6799,7 +6743,7 @@ updateZoomStatus();
 applyCollisionRailLayout();
 resizeCanvas();
 animatePendulum();
-poll();
+deviceClient.start();
 </script>
 </body>
 </html>
