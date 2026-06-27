@@ -1,0 +1,13 @@
+{
+  "name": "palladio-physics-lab-safety-net",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "test": "npm run test:helpers && npm run test:browser",
+    "test:helpers": "node tests/pure-helpers.test.js",
+    "test:browser": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1"
+  }
+}
