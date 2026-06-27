@@ -48,6 +48,23 @@ http://localhost:8000
 
 If GitHub Pages is enabled for the repository, it should serve the same `docs/` dashboard.
 
+## Dashboard Safety Checks
+
+The dashboard has lightweight regression checks for extracted helper files and the browser-only GitHub Pages surface:
+
+```bash
+npm install
+npm test
+```
+
+If Playwright has not downloaded Chromium on the machine yet:
+
+```bash
+npx playwright install chromium
+```
+
+The browser smoke test serves `docs/` locally with mocked M5-shaped API responses, verifies the `docs/js/*.js` load order, checks for console/page errors, and switches through Hooke, Sonar, Pendulum, and Collision views.
+
 For hardware-backed measurements, upload the firmware to the M5StickC Plus2 and use the device access point:
 
 1. Upload `Physics_Lab/Physics_Lab.ino` to the M5StickC Plus2.
