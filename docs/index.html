@@ -338,6 +338,69 @@
           </div>
         </section>
 
+        <section class="buoyancy-worksheet-panel" id="buoyancyWorksheetPanel" aria-label="Φύλλο εργασίας άνωσης">
+          <div class="worksheet-card">
+            <div class="worksheet-head">
+              <div>
+                <h3>Φύλλο εργασίας: Άνωση</h3>
+                <p>Σύγκρινε το βάρος του ίδιου σώματος στον αέρα και στο νερό και έλεγξε πειραματικά την αρχή του Αρχιμήδη.</p>
+              </div>
+              <span class="worksheet-chip">A = Wαέρα - Wυγρό</span>
+            </div>
+            <div class="worksheet-grid">
+              <div class="worksheet-column">
+                <div class="worksheet-block compact">
+                  <h4>Οδηγίες</h4>
+                  <ol>
+                    <li>Κάνε tare στην κυψέλη φορτίου με άδειο γάντζο.</li>
+                    <li>Κρέμασε το σώμα στον αέρα και περίμενε να σταθεροποιηθεί η δύναμη.</li>
+                    <li>Επίλεξε ένα καθαρό plateau A-B και πάτησε «Μέτρηση στον αέρα».</li>
+                    <li>Βύθισε πλήρως το σώμα χωρίς να ακουμπά στο δοχείο και αποθήκευσε το νέο plateau.</li>
+                    <li>Γράψε τον βυθισμένο όγκο, αποθήκευσε τη δοκιμή και σύγκρινε Aπ με Aθ.</li>
+                  </ol>
+                </div>
+                <div class="worksheet-block compact">
+                  <h4>Ερωτήσεις</h4>
+                  <ol>
+                    <li>Ποια ένδειξη είναι μικρότερη: στον αέρα ή στο νερό;</li>
+                    <li>Ποια δύναμη προκαλεί αυτή τη διαφορά;</li>
+                    <li>Πώς επηρεάζει ο βυθισμένος όγκος τη θεωρητική άνωση;</li>
+                    <li>Γιατί το σώμα δεν πρέπει να ακουμπά στον πυθμένα ή στα τοιχώματα;</li>
+                  </ol>
+                </div>
+              </div>
+              <div class="worksheet-column">
+                <div class="worksheet-block">
+                  <h4>Πίνακας μετρήσεων</h4>
+                  <div class="worksheet-table-scroll">
+                    <table class="worksheet-table">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>V (mL)</th>
+                          <th>Wαέρα (N)</th>
+                          <th>Wυγρό (N)</th>
+                          <th>Aπ (N)</th>
+                          <th>Aθ (N)</th>
+                          <th>Σφάλμα (%)</th>
+                        </tr>
+                      </thead>
+                      <tbody id="buoyancyBody">
+                        <tr><td colspan="7" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="worksheet-block compact worksheet-conclusion-block">
+                  <h4>Συμπέρασμα</h4>
+                  <textarea class="worksheet-conclusion" id="buoyancyConclusion" placeholder="Γράψε τι δείχνουν οι μετρήσεις σου για το φαινόμενο βάρος και την αρχή του Αρχιμήδη."></textarea>
+                  <p class="experiment-note" id="buoyancyNote">Αρχή του Αρχιμήδη: η άνωση ισούται με το βάρος του υγρού που εκτοπίζεται από το βυθισμένο μέρος του σώματος.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section class="sonar-worksheet-panel" id="sonarWorksheetPanel" aria-label="Φύλλο εργασίας sonar">
           <div class="worksheet-card">
             <div class="worksheet-head">
@@ -547,6 +610,7 @@
               <button class="experiment-toggle" id="buoyancyPanelToggle" type="button">Κλείσιμο panel</button>
             </div>
           </div>
+          <div class="experiment-overview buoyancy-overview">
           <div class="free-body-diagram buoyancy-illustration" aria-label="Δύο μετρήσεις άνωσης με δυναμόμετρο: σώμα στον αέρα και σώμα βυθισμένο σε νερό">
             <div class="buoyancy-image-wrap">
               <img src="assets/buoyancy-dynamometer-illustration.png" alt="Σχολική εικονογράφηση πειράματος άνωσης με δυναμόμετρο, σώμα στον αέρα και το ίδιο σώμα βυθισμένο σε ποτήρι νερού">
@@ -672,6 +736,17 @@
               </g>
             </svg>
           </div>
+          <div class="experiment-intro">
+            <div class="experiment-intro-card">
+              <strong>Κεντρική ερώτηση</strong>
+              <p>Γιατί το ίδιο σώμα φαίνεται να ζυγίζει λιγότερο όταν είναι βυθισμένο στο νερό;</p>
+            </div>
+            <div class="experiment-intro-card">
+              <strong>Θεωρητική ιδέα</strong>
+              <p>Το νερό ασκεί στο σώμα κατακόρυφη δύναμη προς τα πάνω. Η πειραματική άνωση είναι Aπ = Wαέρα - Wυγρό και, σύμφωνα με την αρχή του Αρχιμήδη, συγκρίνεται με Aθ = ρνερού · g · V.</p>
+            </div>
+          </div>
+          </div>
           <div class="experiment-tools">
             <label class="field">
               Όγκος βυθισμένου σώματος
@@ -687,28 +762,8 @@
           <div class="experiment-summary" id="buoyancySummary">
             <div class="experiment-empty">Επίλεξε με A-B ένα σταθερό τμήμα στον αέρα, αποθήκευσέ το, μετά επανάλαβε μέσα στο υγρό.</div>
           </div>
-          <div class="experiment-study">
-            <div class="experiment-study-grid" id="buoyancyProtocol"></div>
-          </div>
-          <div class="table-title">Αποθηκευμένες δοκιμές άνωσης</div>
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>V (mL)</th>
-                <th>Wαέρα (N)</th>
-                <th>Wυγρό (N)</th>
-                <th>Aπ (N)</th>
-                <th>Aθ νερού (N)</th>
-                <th>Σφάλμα (%)</th>
-              </tr>
-            </thead>
-            <tbody id="buoyancyBody">
-              <tr><td colspan="7" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>
-            </tbody>
-          </table>
-          <div class="experiment-note" id="buoyancyNote">
-            Αρχή του Αρχιμήδη: η άνωση ισούται με το βάρος του υγρού που εκτοπίζεται από το βυθισμένο μέρος του σώματος.
+          <div class="buoyancy-internal-hidden" aria-hidden="true">
+            <div id="buoyancyProtocol"></div>
           </div>
         </section>
         <section class="experiment-panel" id="motionExperiment" hidden>
@@ -3512,6 +3567,7 @@ function updateModeUi() {
   }
   document.body.classList.toggle('sonar-mode', isSonarExperimentMode());
   document.body.classList.toggle('hooke-mode', isHookeExperimentMode());
+  document.body.classList.toggle('buoyancy-mode', isBuoyancyExperimentMode());
   let chartTitle = meta.title;
   let chartSubtitle = meta.subtitle;
   if (isHookeExperimentMode()) {

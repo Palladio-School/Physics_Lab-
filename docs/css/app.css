@@ -750,12 +750,14 @@ input[type="number"] {
   grid-template-rows: auto minmax(0, 1fr);
   gap: 10px;
   align-content: start;
+  min-width: 0;
 }
 .worksheet-block {
   padding: 11px 12px;
   border: 1px solid #e1e9f2;
   border-radius: 12px;
   background: #fff;
+  min-width: 0;
 }
 .worksheet-block.compact {
   padding: 11px 12px;
@@ -935,6 +937,67 @@ input[type="number"] {
   order: 2;
 }
 .hooke-internal-hidden {
+  display: none !important;
+}
+.buoyancy-mode .workspace-grid {
+  grid-template-columns: minmax(0, 1fr);
+  display: contents;
+}
+.buoyancy-mode .workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.buoyancy-mode .workspace-heading {
+  order: -2;
+}
+.buoyancy-mode .workspace-main {
+  display: contents;
+}
+.buoyancy-mode .workspace-rail {
+  order: -1;
+  grid-column: 1;
+  width: 100%;
+}
+.buoyancy-mode .instrument-bar {
+  order: 0;
+}
+.buoyancy-mode .chart-panel {
+  order: 1;
+}
+.buoyancy-mode .buoyancy-worksheet-panel {
+  display: block;
+  order: 2;
+}
+.buoyancy-mode .rail-resizer,
+.buoyancy-mode .experiment-tabs,
+.buoyancy-mode .experiment-collapsed-toggle {
+  display: none !important;
+}
+.buoyancy-mode .workspace-rail .experiment-panel {
+  position: static;
+  top: auto;
+}
+.buoyancy-mode .workspace-grid.rail-collapsed #buoyancyExperiment {
+  display: block !important;
+}
+.buoyancy-mode .workspace-grid.rail-collapsed .experiment-panel[hidden] {
+  display: none !important;
+}
+.buoyancy-mode #buoyancyExperiment {
+  margin-bottom: 14px;
+}
+.buoyancy-mode #buoyancyExperiment .experiment-head-actions,
+.buoyancy-mode #buoyancyExperiment .experiment-toggle {
+  display: none;
+}
+.buoyancy-mode .table-panel {
+  display: none;
+}
+.buoyancy-worksheet-panel {
+  display: none;
+}
+.buoyancy-internal-hidden {
   display: none !important;
 }
 canvas {
@@ -1602,6 +1665,60 @@ canvas {
   color: #4c6077;
   font-size: 13px;
   line-height: 1.45;
+}
+.experiment-overview {
+  display: grid;
+  grid-template-columns: minmax(220px, 310px) minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+  padding: 0 16px 14px;
+}
+.experiment-overview .free-body-diagram {
+  margin: 0;
+  align-self: start;
+}
+.experiment-intro {
+  display: grid;
+  gap: 10px;
+}
+.experiment-intro-card {
+  padding: 12px 13px;
+  border: 1px solid #dce7f1;
+  border-radius: 12px;
+  background: #fbfdff;
+}
+.experiment-intro-card strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #23415f;
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.experiment-intro-card p {
+  margin: 0;
+  color: #4c6077;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.worksheet-table-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+.worksheet-table-scroll .worksheet-table {
+  min-width: 720px;
+}
+.worksheet-conclusion-block .experiment-note {
+  margin: 9px 0 0;
+}
+@media (max-width: 900px) {
+  .experiment-overview {
+    grid-template-columns: 1fr;
+  }
+  .experiment-overview .buoyancy-illustration {
+    width: min(100%, 360px);
+  }
 }
 .motion-illustration {
   margin: 0 16px 12px;

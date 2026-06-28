@@ -184,6 +184,13 @@ test('smokes Hooke, Sonar, Pendulum, and Collision views without console errors'
   await expect(page.locator('#hookeWorksheetPanel')).toBeVisible();
   await expect(page.locator('#chartTitle')).toContainText(/Hooke|Δύναμη/);
 
+  await clickExperiment(page, 'b-buoyancy');
+  await expect(page.locator('#workspaceTitle')).toContainText('Άνωση');
+  await expect(page.locator('#buoyancyExperiment')).toBeVisible();
+  await expect(page.locator('#buoyancyWorksheetPanel')).toBeVisible();
+  await expect(page.locator('.buoyancy-overview .experiment-intro-card')).toHaveCount(2);
+  await expect(page.locator('#buoyancyBody')).toBeVisible();
+
   await clickExperiment(page, 'a-sonar');
   await expect(page.locator('#workspaceTitle')).toContainText('SONAR');
   await expect(page.locator('#sonarWorksheetPanel')).toBeVisible();
