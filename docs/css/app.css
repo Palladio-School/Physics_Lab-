@@ -1061,6 +1061,67 @@ input[type="number"] {
 .buoyancy-internal-hidden {
   display: none !important;
 }
+.motion-layout-mode .workspace-grid {
+  grid-template-columns: minmax(0, 1fr);
+  display: contents;
+}
+.motion-layout-mode .workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.motion-layout-mode .workspace-heading {
+  order: -2;
+}
+.motion-layout-mode .workspace-main {
+  display: contents;
+}
+.motion-layout-mode .workspace-rail {
+  order: -1;
+  grid-column: 1;
+  width: 100%;
+}
+.motion-layout-mode .instrument-bar {
+  order: 0;
+}
+.motion-layout-mode .chart-panel {
+  order: 1;
+}
+.motion-layout-mode .motion-worksheet-panel {
+  display: block;
+  order: 2;
+}
+.motion-layout-mode .rail-resizer,
+.motion-layout-mode .experiment-tabs,
+.motion-layout-mode .experiment-collapsed-toggle {
+  display: none !important;
+}
+.motion-layout-mode .workspace-rail .experiment-panel {
+  position: static;
+  top: auto;
+}
+.motion-layout-mode .workspace-grid.rail-collapsed #motionExperiment {
+  display: block !important;
+}
+.motion-layout-mode .workspace-grid.rail-collapsed .experiment-panel[hidden] {
+  display: none !important;
+}
+.motion-layout-mode #motionExperiment {
+  margin-bottom: 14px;
+}
+.motion-layout-mode #motionExperiment .experiment-head-actions,
+.motion-layout-mode #motionExperiment .experiment-toggle {
+  display: none;
+}
+.motion-layout-mode .table-panel {
+  display: none;
+}
+.motion-worksheet-panel {
+  display: none;
+}
+.motion-internal-hidden {
+  display: none !important;
+}
 canvas {
   width: 100%;
   height: 100%;
@@ -1791,6 +1852,12 @@ canvas {
 }
 .worksheet-table-scroll .worksheet-table {
   min-width: 720px;
+}
+.worksheet-live-summary {
+  padding: 10px 0 0;
+}
+.worksheet-live-summary .experiment-empty {
+  grid-column: 1 / -1;
 }
 .worksheet-conclusion-block .experiment-note {
   margin: 9px 0 0;

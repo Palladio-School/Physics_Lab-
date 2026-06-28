@@ -338,6 +338,62 @@
           </div>
         </section>
 
+        <section class="motion-worksheet-panel" id="motionWorksheetPanel" aria-label="Φύλλο εργασίας κίνησης">
+          <div class="worksheet-card">
+            <div class="worksheet-head">
+              <div>
+                <h3 id="motionWorksheetTitle">Φύλλο εργασίας: Ευθύγραμμη ομαλή κίνηση</h3>
+                <p id="motionWorksheetDescription">Σύνδεσε τις μετρήσεις του αισθητήρα με τα γραφήματα θέσης και ταχύτητας.</p>
+              </div>
+              <span class="worksheet-chip" id="motionWorksheetChip">υ = Δx / Δt</span>
+            </div>
+            <div class="experiment-summary worksheet-live-summary" id="motionSummary">
+              <div class="experiment-empty">Κάνε μία μέτρηση με αμαξίδιο ή σώμα που κινείται μπροστά από τον αισθητήρα.</div>
+            </div>
+            <div class="worksheet-grid">
+              <div class="worksheet-column">
+                <div class="worksheet-block compact">
+                  <h4>Οδηγίες</h4>
+                  <ol id="motionWorksheetInstructions"></ol>
+                </div>
+                <div class="worksheet-block compact">
+                  <h4>Ερωτήσεις</h4>
+                  <ol id="motionWorksheetQuestions"></ol>
+                </div>
+              </div>
+              <div class="worksheet-column">
+                <div class="worksheet-block">
+                  <h4>Πίνακας μετρήσεων</h4>
+                  <div class="worksheet-table-scroll">
+                    <table class="worksheet-table motion-worksheet-table">
+                      <thead>
+                        <tr>
+                          <th>Δοκιμή</th>
+                          <th>Δt (s)</th>
+                          <th>xαρχ (m)</th>
+                          <th>xτελ (m)</th>
+                          <th>Δx (m)</th>
+                          <th>υμ (m/s)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr><td>1</td><td><input type="number" step="0.01" aria-label="Δοκιμή 1 χρονικό διάστημα"></td><td><input type="number" step="0.01" aria-label="Δοκιμή 1 αρχική θέση"></td><td><input type="number" step="0.01" aria-label="Δοκιμή 1 τελική θέση"></td><td><input type="number" step="0.01" aria-label="Δοκιμή 1 μετατόπιση"></td><td><input type="number" step="0.01" aria-label="Δοκιμή 1 μέση ταχύτητα"></td></tr>
+                        <tr><td>2</td><td><input type="number" step="0.01" aria-label="Δοκιμή 2 χρονικό διάστημα"></td><td><input type="number" step="0.01" aria-label="Δοκιμή 2 αρχική θέση"></td><td><input type="number" step="0.01" aria-label="Δοκιμή 2 τελική θέση"></td><td><input type="number" step="0.01" aria-label="Δοκιμή 2 μετατόπιση"></td><td><input type="number" step="0.01" aria-label="Δοκιμή 2 μέση ταχύτητα"></td></tr>
+                        <tr><td>3</td><td><input type="number" step="0.01" aria-label="Δοκιμή 3 χρονικό διάστημα"></td><td><input type="number" step="0.01" aria-label="Δοκιμή 3 αρχική θέση"></td><td><input type="number" step="0.01" aria-label="Δοκιμή 3 τελική θέση"></td><td><input type="number" step="0.01" aria-label="Δοκιμή 3 μετατόπιση"></td><td><input type="number" step="0.01" aria-label="Δοκιμή 3 μέση ταχύτητα"></td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="worksheet-block compact worksheet-conclusion-block">
+                  <h4>Συμπέρασμα</h4>
+                  <textarea class="worksheet-conclusion" id="motionConclusion" placeholder="Γράψε τι συμπεραίνεις από τις μετρήσεις και τα γραφήματα."></textarea>
+                  <p class="experiment-note" id="motionNote">Ξεκίνα με το γράφημα θέσης x-t και χρησιμοποίησε το υ-t για να ελέγξεις το συμπέρασμά σου.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section class="weight-worksheet-panel" id="weightWorksheetPanel" aria-label="Φύλλο εργασίας μάζας και βάρους">
           <div class="worksheet-card">
             <div class="worksheet-head">
@@ -828,26 +884,32 @@
         <section class="experiment-panel" id="motionExperiment" hidden>
           <div class="experiment-head">
             <div>
-              <h3>Ευθύγραμμη ομαλή κίνηση</h3>
-              <p>Πρώτο σχολικό πείραμα με τον αισθητήρα υπερήχων: έλεγχος αν η θέση αλλάζει γραμμικά και αν η ταχύτητα μένει περίπου σταθερή.</p>
+              <h3 id="motionPanelTitle">Ευθύγραμμη ομαλή κίνηση</h3>
+              <p id="motionPanelDescription">Έλεγχος αν η θέση αλλάζει γραμμικά και αν η ταχύτητα μένει περίπου σταθερή.</p>
             </div>
             <div class="experiment-head-actions">
               <span class="experiment-status" id="motionStatus">Περίμενε καθαρή μέτρηση κίνησης</span>
               <button class="experiment-toggle" id="motionPanelToggle" type="button">Κλείσιμο panel</button>
             </div>
           </div>
-          <div class="motion-illustration">
-            <img src="assets/uniform-motion-editorial-hcsr04-track.png" alt="Μοντέρνα εικονογράφηση πειράματος ευθύγραμμης ομαλής κίνησης με αισθητήρα υπερήχων DFRobot URM10, εργαστηριακό χάρακα και αμαξίδιο">
-            <div class="motion-image-note">Ο αισθητήρας υπερήχων μετρά την απόσταση από το αμαξίδιο. Στην ευθύγραμμη ομαλή κίνηση οι ίσοι χρόνοι αντιστοιχούν σε ίσες μετατοπίσεις.</div>
+          <div class="experiment-overview motion-overview">
+            <div class="experiment-setup-illustration">
+              <img src="assets/uniform-motion-editorial-hcsr04-track.png" alt="Μοντέρνα εικονογράφηση πειράματος κίνησης με αισθητήρα υπερήχων DFRobot URM10, εργαστηριακό χάρακα και αμαξίδιο">
+              <div class="experiment-image-note">Ο αισθητήρας υπερήχων μετρά διαδοχικά την απόσταση του αμαξιδίου.</div>
+            </div>
+            <div class="experiment-intro">
+              <div class="experiment-intro-card">
+                <strong>Κεντρική ερώτηση</strong>
+                <p id="motionCentralQuestion">Πώς μπορούμε να καταλάβουμε από τις μετρήσεις και τα γραφήματα ότι ένα σώμα κινείται με σταθερή ταχύτητα;</p>
+              </div>
+              <div class="experiment-intro-card">
+                <strong>Θεωρητική ιδέα</strong>
+                <p id="motionTheoryIdea">Στην ευθύγραμμη ομαλή κίνηση το σώμα διανύει ίσες μετατοπίσεις σε ίσα χρονικά διαστήματα.</p>
+              </div>
+            </div>
           </div>
-          <div class="experiment-summary" id="motionSummary">
-            <div class="experiment-empty">Κάνε μία μέτρηση με αμαξίδιο ή σώμα που κινείται μπροστά από τον αισθητήρα.</div>
-          </div>
-          <div class="experiment-study">
-            <div class="experiment-study-grid" id="motionProtocol"></div>
-          </div>
-          <div class="experiment-note" id="motionNote">
-            Ξεκίνα με το γράφημα θέσης x-t. Αν δεις σχεδόν ευθεία, μετά γύρισε στο velocity για να επιβεβαιώσεις αν η ταχύτητα είναι περίπου σταθερή.
+          <div class="motion-internal-hidden" aria-hidden="true">
+            <div id="motionProtocol"></div>
           </div>
         </section>
         <section class="experiment-panel" id="collisionExperiment" hidden>
@@ -1725,6 +1787,77 @@ function motionExperimentMetrics() {
   };
 }
 
+function motionExperimentCopy() {
+  if (activeExperimentId === 'a-motion') {
+    return {
+      title: 'Απόσταση και χρόνος',
+      description: 'Παρατήρησε πώς αλλάζει η απόσταση ενός κινούμενου σώματος καθώς περνά ο χρόνος.',
+      question: 'Πώς μπορούμε να περιγράψουμε την κίνηση ενός σώματος με μετρήσεις απόστασης και χρόνου;',
+      theory: 'Ο αισθητήρας καταγράφει την απόσταση του σώματος σε διαδοχικές χρονικές στιγμές. Η μεταβολή της θέσης είναι Δx = xτελ - xαρχ και αποτυπώνεται στο γράφημα x-t.',
+      worksheetTitle: 'Φύλλο εργασίας: Απόσταση και χρόνος',
+      worksheetDescription: 'Κατάγραψε θέσεις σε διαφορετικές χρονικές στιγμές και περιέγραψε πώς κινήθηκε το σώμα.',
+      chip: 'Δx = xτελ - xαρχ',
+      instructions: [
+        'Τοποθέτησε το αμαξίδιο απέναντι από τον αισθητήρα υπερήχων.',
+        'Πάτα Έναρξη και μετακίνησε το αμαξίδιο σε ευθεία γραμμή.',
+        'Επίλεξε στο x-t ένα καθαρό τμήμα A-B.',
+        'Διάβασε τη χρονική διάρκεια και την αρχική και τελική θέση.',
+        'Υπολόγισε τη μετατόπιση και συμπλήρωσε τον πίνακα.'
+      ],
+      questions: [
+        'Πότε αυξάνεται και πότε μειώνεται η απόσταση από τον αισθητήρα;',
+        'Τι δείχνει ένα οριζόντιο τμήμα στο γράφημα x-t;',
+        'Πώς φαίνεται στο γράφημα ότι το σώμα κινείται πιο γρήγορα;'
+      ]
+    };
+  }
+  if (activeExperimentId === 'a-speed') {
+    return {
+      title: 'Μέση ταχύτητα',
+      description: 'Χρησιμοποίησε τη μετατόπιση και το αντίστοιχο χρονικό διάστημα για να υπολογίσεις τη μέση ταχύτητα.',
+      question: 'Πώς μπορούμε να συγκρίνουμε πόσο γρήγορα έγιναν δύο διαφορετικές κινήσεις;',
+      theory: 'Η μέση ταχύτητα υπολογίζεται από τη μετατόπιση προς το χρονικό διάστημα: υμ = Δx / Δt. Το πρόσημό της δείχνει και τη φορά της κίνησης ως προς τον αισθητήρα.',
+      worksheetTitle: 'Φύλλο εργασίας: Μέση ταχύτητα',
+      worksheetDescription: 'Επίλεξε ένα καθαρό τμήμα της κίνησης και υπολόγισε τη μέση ταχύτητα από τα άκρα του.',
+      chip: 'υμ = Δx / Δt',
+      instructions: [
+        'Κάνε μία ευθύγραμμη διαδρομή μπροστά από τον αισθητήρα.',
+        'Επίλεξε στο x-t ένα καθαρό τμήμα A-B.',
+        'Κατάγραψε Δt, xαρχ και xτελ.',
+        'Υπολόγισε τη μετατόπιση Δx και έπειτα τη μέση ταχύτητα.',
+        'Επανάλαβε με πιο αργή ή πιο γρήγορη κίνηση.'
+      ],
+      questions: [
+        'Ποια δοκιμή είχε τη μεγαλύτερη κατά απόλυτη τιμή μέση ταχύτητα;',
+        'Τι σημαίνει αρνητική τιμή της ταχύτητας;',
+        'Μπορούν δύο κινήσεις με διαφορετικά Δx και Δt να έχουν ίδια μέση ταχύτητα;'
+      ]
+    };
+  }
+  return {
+    title: 'Ευθύγραμμη ομαλή κίνηση',
+    description: 'Έλεγξε αν η θέση αλλάζει γραμμικά και αν η ταχύτητα παραμένει περίπου σταθερή.',
+    question: 'Πώς μπορούμε να καταλάβουμε από τις μετρήσεις και τα γραφήματα ότι ένα σώμα κινείται με σταθερή ταχύτητα;',
+    theory: 'Στην ευθύγραμμη ομαλή κίνηση το σώμα διανύει ίσες μετατοπίσεις σε ίσα χρονικά διαστήματα. Το x-t είναι ευθεία, ενώ στο υ-t η ταχύτητα παραμένει περίπου σταθερή.',
+    worksheetTitle: 'Φύλλο εργασίας: Ευθύγραμμη ομαλή κίνηση',
+    worksheetDescription: 'Σύνδεσε τις μετρήσεις του αισθητήρα με τα γραφήματα θέσης και ταχύτητας.',
+    chip: 'υ = Δx / Δt',
+    instructions: [
+      'Κίνησε το αμαξίδιο σε ευθεία γραμμή με όσο γίνεται σταθερό ρυθμό.',
+      'Επίλεξε στο x-t το πιο καθαρό τμήμα A-B.',
+      'Κατάγραψε Δt και Δx και υπολόγισε την ταχύτητα.',
+      'Άνοιξε Split View για να συγκρίνεις τα x-t και υ-t.',
+      'Επανάλαβε και έλεγξε αν οι τιμές της ταχύτητας παραμένουν παρόμοιες.'
+    ],
+    questions: [
+      'Το x-t μοιάζει με ευθεία; Τι σημαίνει αυτό;',
+      'Το υ-t παραμένει περίπου οριζόντιο;',
+      'Σε ίσα χρονικά διαστήματα προκύπτουν περίπου ίσες μετατοπίσεις;',
+      'Ποιες πειραματικές ατέλειες δυσκολεύουν την ομαλή κίνηση;'
+    ]
+  };
+}
+
 function renderMotionExperiment() {
   const panel = document.getElementById('motionExperiment');
   const summary = document.getElementById('motionSummary');
@@ -1740,6 +1873,16 @@ function renderMotionExperiment() {
 
   panel.hidden = false;
   applyCollisionRailLayout();
+  const copy = motionExperimentCopy();
+  document.getElementById('motionPanelTitle').textContent = copy.title;
+  document.getElementById('motionPanelDescription').textContent = copy.description;
+  document.getElementById('motionCentralQuestion').textContent = copy.question;
+  document.getElementById('motionTheoryIdea').textContent = copy.theory;
+  document.getElementById('motionWorksheetTitle').textContent = copy.worksheetTitle;
+  document.getElementById('motionWorksheetDescription').textContent = copy.worksheetDescription;
+  document.getElementById('motionWorksheetChip').textContent = copy.chip;
+  document.getElementById('motionWorksheetInstructions').innerHTML = copy.instructions.map(item => '<li>' + item + '</li>').join('');
+  document.getElementById('motionWorksheetQuestions').innerHTML = copy.questions.map(item => '<li>' + item + '</li>').join('');
   const metrics = motionExperimentMetrics();
   const series = metrics && metrics.series ? metrics.series : currentMode().series[analysisSeriesIndex] || currentMode().series[0];
   const usingDistance = series.key === 'distance';
@@ -3628,6 +3771,7 @@ function updateModeUi() {
   document.body.classList.toggle('hooke-mode', isHookeExperimentMode());
   document.body.classList.toggle('weight-mode', isWeightExperimentMode());
   document.body.classList.toggle('buoyancy-mode', isBuoyancyExperimentMode());
+  document.body.classList.toggle('motion-layout-mode', isMotionExperimentMode());
   let chartTitle = meta.title;
   let chartSubtitle = meta.subtitle;
   if (isHookeExperimentMode()) {

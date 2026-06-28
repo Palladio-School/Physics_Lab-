@@ -178,6 +178,20 @@ test('loads dashboard scripts in dependency order and exposes expected globals',
 test('smokes Hooke, Sonar, Pendulum, and Collision views without console errors', async ({ page }) => {
   const errors = await openDashboard(page);
 
+  await clickExperiment(page, 'a-motion');
+  await expect(page.locator('#motionExperiment')).toBeVisible();
+  await expect(page.locator('#motionWorksheetPanel')).toBeVisible();
+  await expect(page.locator('#motionPanelTitle')).toContainText('Απόσταση και χρόνος');
+
+  await clickExperiment(page, 'a-speed');
+  await expect(page.locator('#motionExperiment')).toBeVisible();
+  await expect(page.locator('#motionWorksheetTitle')).toContainText('Μέση ταχύτητα');
+
+  await clickExperiment(page, 'b-uniform-motion');
+  await expect(page.locator('#motionExperiment')).toBeVisible();
+  await expect(page.locator('#motionWorksheetTitle')).toContainText('Ευθύγραμμη ομαλή κίνηση');
+  await expect(page.locator('#splitChartToggleWrap')).toBeVisible();
+
   await clickExperiment(page, 'b-hooke');
   await expect(page.locator('#workspaceTitle')).toContainText('Νόμος του Hooke');
   await expect(page.locator('#hookeExperiment')).toBeVisible();
