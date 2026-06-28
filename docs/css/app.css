@@ -939,6 +939,67 @@ input[type="number"] {
 .hooke-internal-hidden {
   display: none !important;
 }
+.weight-mode .workspace-grid {
+  grid-template-columns: minmax(0, 1fr);
+  display: contents;
+}
+.weight-mode .workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.weight-mode .workspace-heading {
+  order: -2;
+}
+.weight-mode .workspace-main {
+  display: contents;
+}
+.weight-mode .workspace-rail {
+  order: -1;
+  grid-column: 1;
+  width: 100%;
+}
+.weight-mode .instrument-bar {
+  order: 0;
+}
+.weight-mode .chart-panel {
+  order: 1;
+}
+.weight-mode .weight-worksheet-panel {
+  display: block;
+  order: 2;
+}
+.weight-mode .rail-resizer,
+.weight-mode .experiment-tabs,
+.weight-mode .experiment-collapsed-toggle {
+  display: none !important;
+}
+.weight-mode .workspace-rail .experiment-panel {
+  position: static;
+  top: auto;
+}
+.weight-mode .workspace-grid.rail-collapsed #weightExperiment {
+  display: block !important;
+}
+.weight-mode .workspace-grid.rail-collapsed .experiment-panel[hidden] {
+  display: none !important;
+}
+.weight-mode #weightExperiment {
+  margin-bottom: 14px;
+}
+.weight-mode #weightExperiment .experiment-head-actions,
+.weight-mode #weightExperiment .experiment-toggle {
+  display: none;
+}
+.weight-mode .table-panel {
+  display: none;
+}
+.weight-worksheet-panel {
+  display: none;
+}
+.weight-internal-hidden {
+  display: none !important;
+}
 .buoyancy-mode .workspace-grid {
   grid-template-columns: minmax(0, 1fr);
   display: contents;
@@ -1676,6 +1737,28 @@ canvas {
 .experiment-overview .free-body-diagram {
   margin: 0;
   align-self: start;
+}
+.experiment-setup-illustration {
+  margin: 0;
+  border: 1px solid #dce7f1;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ffffff, #f7fbff);
+  overflow: hidden;
+  align-self: start;
+}
+.experiment-setup-illustration img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.experiment-image-note {
+  padding: 9px 12px 11px;
+  border-top: 1px solid #dce7f1;
+  background: #f8fbff;
+  color: #52667d;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
 }
 .experiment-intro {
   display: grid;

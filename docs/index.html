@@ -338,6 +338,70 @@
           </div>
         </section>
 
+        <section class="weight-worksheet-panel" id="weightWorksheetPanel" aria-label="Φύλλο εργασίας μάζας και βάρους">
+          <div class="worksheet-card">
+            <div class="worksheet-head">
+              <div>
+                <h3>Φύλλο εργασίας: Μάζα, βάρος και επιμήκυνση</h3>
+                <p>Μέτρησε το βάρος διαφορετικών μαζών και σύνδεσε τη δύναμη με τη μεταβολή του μήκους του ελατηρίου.</p>
+              </div>
+              <span class="worksheet-chip">w = m · g</span>
+            </div>
+            <div class="worksheet-grid">
+              <div class="worksheet-column">
+                <div class="worksheet-block compact">
+                  <h4>Οδηγίες</h4>
+                  <ol>
+                    <li>Κάνε tare στον αισθητήρα χωρίς κρεμασμένη μάζα.</li>
+                    <li>Μέτρησε το αρχικό μήκος του ελατηρίου χωρίς φορτίο.</li>
+                    <li>Κρέμασε μία γνωστή μάζα και περίμενε να σταθεροποιηθεί η δύναμη.</li>
+                    <li>Επίλεξε ένα καθαρό plateau A-B και πάτησε «Μέτρηση βάρους».</li>
+                    <li>Μέτρησε την επιμήκυνση Δx, αποθήκευσε τη δοκιμή και επανάλαβε με άλλη μάζα.</li>
+                  </ol>
+                </div>
+                <div class="worksheet-block compact">
+                  <h4>Ερωτήσεις</h4>
+                  <ol>
+                    <li>Τι συμβαίνει στο βάρος όταν αυξάνεται η μάζα;</li>
+                    <li>Πόσο κοντά βρίσκεται το πειραματικό βάρος στην τιμή m · g;</li>
+                    <li>Τι συμβαίνει στην επιμήκυνση όταν αυξάνεται το βάρος;</li>
+                    <li>Γιατί πρέπει να μετράμε τη δύναμη σε σταθερό plateau;</li>
+                  </ol>
+                </div>
+              </div>
+              <div class="worksheet-column">
+                <div class="worksheet-block">
+                  <h4>Πίνακας μετρήσεων</h4>
+                  <div class="worksheet-table-scroll">
+                    <table class="worksheet-table">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>m (g)</th>
+                          <th>m (kg)</th>
+                          <th>Δx (cm)</th>
+                          <th>wπ (N)</th>
+                          <th>wθ (N)</th>
+                          <th>gπ (m/s²)</th>
+                          <th>Σφάλμα (%)</th>
+                        </tr>
+                      </thead>
+                      <tbody id="weightBody">
+                        <tr><td colspan="8" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="worksheet-block compact worksheet-conclusion-block">
+                  <h4>Συμπέρασμα</h4>
+                  <textarea class="worksheet-conclusion" id="weightConclusion" placeholder="Γράψε τι δείχνουν οι μετρήσεις σου για τη σχέση μάζας-βάρους και για την επιμήκυνση του ελατηρίου."></textarea>
+                  <p class="experiment-note" id="weightNote">Η επιμήκυνση Δx μετριέται σε σχέση με το αρχικό μήκος του ελατηρίου χωρίς μάζα.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section class="buoyancy-worksheet-panel" id="buoyancyWorksheetPanel" aria-label="Φύλλο εργασίας άνωσης">
           <div class="worksheet-card">
             <div class="worksheet-head">
@@ -555,6 +619,22 @@
               <button class="experiment-toggle" id="weightPanelToggle" type="button">Κλείσιμο panel</button>
             </div>
           </div>
+          <div class="experiment-overview weight-overview">
+            <div class="experiment-setup-illustration">
+              <img src="assets/hooke-setup-illustration.png" alt="Σχολική εικονογράφηση διάταξης με αισθητήρα δύναμης, ελατήριο και κρεμασμένη μάζα">
+              <div class="experiment-image-note">Η κυψέλη φορτίου μετρά το βάρος της μάζας, ενώ ο χάρακας χρησιμοποιείται για την επιμήκυνση του ελατηρίου.</div>
+            </div>
+            <div class="experiment-intro">
+              <div class="experiment-intro-card">
+                <strong>Κεντρική ερώτηση</strong>
+                <p>Πώς συνδέονται η μάζα ενός σώματος, το βάρος του και η επιμήκυνση που προκαλεί σε ένα ελατήριο;</p>
+              </div>
+              <div class="experiment-intro-card">
+                <strong>Θεωρητική ιδέα</strong>
+                <p>Στον ίδιο τόπο το βάρος είναι ανάλογο της μάζας: w = m · g. Όσο αυξάνεται η μάζα και επομένως το βάρος, περιμένουμε να αυξάνεται και η επιμήκυνση του ελατηρίου.</p>
+              </div>
+            </div>
+          </div>
           <div class="experiment-tools">
             <label class="field">
               Μάζα
@@ -574,29 +654,8 @@
           <div class="experiment-summary" id="weightSummary">
             <div class="experiment-empty">Επίλεξε με A-B ένα σταθερό τμήμα δύναμης, γράψε τη μάζα και την επιμήκυνση Δx.</div>
           </div>
-          <div class="experiment-study">
-            <div class="experiment-study-grid" id="weightProtocol"></div>
-          </div>
-          <div class="table-title">Αποθηκευμένες δοκιμές μάζας, βάρους και επιμήκυνσης</div>
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>m (g)</th>
-                <th>m (kg)</th>
-                <th>Δx (cm)</th>
-                <th>wπ (N)</th>
-                <th>wθ = mg (N)</th>
-                <th>gπ = w/m (m/s²)</th>
-                <th>Σφάλμα (%)</th>
-              </tr>
-            </thead>
-            <tbody id="weightBody">
-              <tr><td colspan="8" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>
-            </tbody>
-          </table>
-          <div class="experiment-note" id="weightNote">
-            Η επιμήκυνση Δx μετριέται σε σχέση με το αρχικό μήκος του ελατηρίου χωρίς μάζα.
+          <div class="weight-internal-hidden" aria-hidden="true">
+            <div id="weightProtocol"></div>
           </div>
         </section>
         <section class="experiment-panel" id="buoyancyExperiment" hidden>
@@ -3567,6 +3626,7 @@ function updateModeUi() {
   }
   document.body.classList.toggle('sonar-mode', isSonarExperimentMode());
   document.body.classList.toggle('hooke-mode', isHookeExperimentMode());
+  document.body.classList.toggle('weight-mode', isWeightExperimentMode());
   document.body.classList.toggle('buoyancy-mode', isBuoyancyExperimentMode());
   let chartTitle = meta.title;
   let chartSubtitle = meta.subtitle;
