@@ -114,7 +114,8 @@ async function openDashboard(page) {
   });
   page.on('pageerror', error => errors.push(error.message));
   await page.goto(`${baseUrl}/?device=${encodeURIComponent(baseUrl)}`, { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('#workspaceTitle')).toBeVisible();
+  await expect(page.locator('.workspace')).toBeVisible();
+  await expect(page.locator('#sessionStatus')).toBeVisible();
   return errors;
 }
 
@@ -173,6 +174,8 @@ test('loads dashboard scripts in dependency order and exposes expected globals',
     physics: true,
     fit: true
   });
+  await expect(page.locator('[data-experiment="b-rotation"]')).toHaveCount(0);
+  await expect.poll(() => page.evaluate(() => Boolean(window.PalladioExperimentCatalog.experimentCatalog['b-rotation']))).toBe(false);
 });
 
 test('smokes Hooke, Sonar, Pendulum, and Collision views without console errors', async ({ page }) => {
@@ -193,36 +196,45 @@ test('smokes Hooke, Sonar, Pendulum, and Collision views without console errors'
   await expect(page.locator('#splitChartToggleWrap')).toBeVisible();
 
   await clickExperiment(page, 'b-hooke');
-  await expect(page.locator('#workspaceTitle')).toContainText('Νόμος του Hooke');
   await expect(page.locator('#hookeExperiment')).toBeVisible();
+  await expect(page.locator('#hookeExperiment h3').first()).toContainText('Νόμος του Hooke');
   await expect(page.locator('#hookeWorksheetPanel')).toBeVisible();
   await expect(page.locator('#chartTitle')).toContainText(/Hooke|Δύναμη/);
 
   await clickExperiment(page, 'a-weight');
-  await expect(page.locator('#workspaceTitle')).toContainText('Μάζα/Βάρος');
   await expect(page.locator('#weightExperiment')).toBeVisible();
+  await expect(page.locator('#weightExperiment h3').first()).toContainText('Μάζα/Βάρος');
   await expect(page.locator('#weightWorksheetPanel')).toBeVisible();
   await expect(page.locator('.weight-overview .experiment-intro-card')).toHaveCount(2);
   await expect(page.locator('#weightBody')).toBeVisible();
 
   await clickExperiment(page, 'b-buoyancy');
-  await expect(page.locator('#workspaceTitle')).toContainText('Άνωση');
   await expect(page.locator('#buoyancyExperiment')).toBeVisible();
+  await expect(page.locator('#buoyancyExperiment h3').first()).toContainText('Άνωση');
   await expect(page.locator('#buoyancyWorksheetPanel')).toBeVisible();
   await expect(page.locator('.buoyancy-overview .experiment-intro-card')).toHaveCount(2);
   await expect(page.locator('#buoyancyBody')).toBeVisible();
 
   await clickExperiment(page, 'a-sonar');
-  await expect(page.locator('#workspaceTitle')).toContainText('SONAR');
   await expect(page.locator('#sonarWorksheetPanel')).toBeVisible();
   await expect(page.locator('#sonarMainView')).toBeVisible();
   await expect(page.locator('#sonarMainTime')).toContainText('ms');
 
+  await clickExperiment(page, 'a-heat');
+  await expect(page.locator('#heatExperiment')).toBeVisible();
+  await expect(page.locator('#heatExperiment h3').first()).toContainText('Θερμική ισορροπία');
+  await expect(page.locator('#heatWorksheetPanel')).toBeVisible();
+  await expect(page.locator('.heat-overview .experiment-intro-card')).toHaveCount(2);
+  await expect(page.locator('#heatSummary')).toBeVisible();
+
   await clickExperiment(page, 'a-pendulum');
-  await expect(page.locator('#workspaceTitle')).toContainText('Απλό εκκρεμές');
   await openRailIfCollapsed(page);
   await expect(page.locator('#pendulumExperiment')).toBeVisible();
+  await expect(page.locator('#pendulumExperiment h3').first()).toContainText('Απλό εκκρεμές');
+  await expect(page.locator('#pendulumWorksheetPanel')).toBeVisible();
+  await expect(page.locator('.pendulum-overview .experiment-intro-card')).toHaveCount(3);
   await expect(page.locator('#pendulumCanvas')).toBeVisible();
+  await expect(page.locator('#pendulumBody')).toBeVisible();
   await page.locator('#runPendulumTrial').click();
   await expect(page.locator('#sampleCount')).not.toHaveText('0');
 
@@ -230,7 +242,6 @@ test('smokes Hooke, Sonar, Pendulum, and Collision views without console errors'
   await page.locator('.advanced-settings').evaluate(element => { element.open = true; });
   await page.locator('#accelView').selectOption('force');
   await openRailIfCollapsed(page);
-  await expect(page.locator('#workspaceTitle')).toContainText('Εργαστήριο μέτρησης');
   await expect(page.locator('#chartTitle')).toContainText('Δύναμη από επιτάχυνση');
   await expect(page.locator('#collisionExperiment')).toBeVisible();
   await expect(page.locator('#collisionMass')).toHaveValue('0.20');

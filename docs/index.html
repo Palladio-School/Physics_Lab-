@@ -63,10 +63,6 @@
             Άνωση
             <small>Φαινόμενο βάρος</small>
           </button>
-          <button data-experiment="b-rotation" type="button">
-            Περιστροφή
-            <small>Γωνιακή ταχύτητα</small>
-          </button>
         </div>
       </details>
     </section>
@@ -92,14 +88,6 @@
   </aside>
 
   <main class="workspace">
-    <header class="workspace-heading">
-      <div>
-        <h2 id="workspaceTitle">Εργαστήριο μέτρησης</h2>
-        <p id="workspaceSubtitle">Διάλεξε πείραμα από την τάξη σου, πάτα Έναρξη και παρατήρησε τι αλλάζει στο γράφημα.</p>
-      </div>
-      <span class="live-chip paused" id="sessionStatus">● ΕΤΟΙΜΟ</span>
-    </header>
-
     <section class="student-flow" aria-label="Ροή πειράματος">
       <div class="student-prompt">
         <strong id="studentPromptTitle">Ξεκίνα με μια καθαρή μέτρηση</strong>
@@ -113,11 +101,14 @@
     </section>
 
     <section class="instrument-bar" aria-label="Εργαλεία καταγραφής">
-      <div class="controls">
-        <button id="toggle" class="primary">Έναρξη</button>
-        <button id="clear">Νέα μέτρηση</button>
-        <button id="export">Αποθήκευση CSV</button>
-        <button id="calibrate" class="calibrate-button">Μηδενισμός accel</button>
+      <div class="instrument-main">
+        <div class="controls">
+          <button id="toggle" class="primary">Έναρξη</button>
+          <button id="clear">Νέα μέτρηση</button>
+          <button id="export">Αποθήκευση CSV</button>
+          <button id="calibrate" class="calibrate-button">Μηδενισμός accel</button>
+        </div>
+        <span class="live-chip paused" id="sessionStatus">● ΕΤΟΙΜΟ</span>
       </div>
       <details class="advanced-settings">
         <summary>Περισσότερα εργαλεία</summary>
@@ -338,6 +329,68 @@
           </div>
         </section>
 
+        <section class="heat-worksheet-panel" id="heatWorksheetPanel" aria-label="Φύλλο εργασίας θερμικής ισορροπίας">
+          <div class="worksheet-card">
+            <div class="worksheet-head">
+              <div>
+                <h3>Φύλλο εργασίας: Θερμική ισορροπία</h3>
+                <p>Παρακολούθησε τις δύο θερμοκρασίες και χρησιμοποίησε τη διαφορά τους για να κρίνεις αν το σύστημα πλησιάζει σε ισορροπία.</p>
+              </div>
+              <span class="worksheet-chip">|ΔT| = |T1 - T2|</span>
+            </div>
+            <div class="experiment-summary worksheet-live-summary" id="heatSummary">
+              <div class="experiment-empty">Πάτα Έναρξη και περίμενε να εμφανιστούν οι δύο θερμοκρασίες.</div>
+            </div>
+            <div class="worksheet-grid">
+              <div class="worksheet-column">
+                <div class="worksheet-block compact">
+                  <h4>Οδηγίες</h4>
+                  <ol>
+                    <li>Βάλε νερό διαφορετικής θερμοκρασίας στο ποτήρι και στη λεκάνη.</li>
+                    <li>Τοποθέτησε τον T1 στο ποτήρι και τον T2 στο νερό της λεκάνης.</li>
+                    <li>Έλεγξε ότι οι αισθητήρες δεν ακουμπούν στα τοιχώματα.</li>
+                    <li>Πάτα Έναρξη και άφησε τη διάταξη ακίνητη για τουλάχιστον 10 λεπτά.</li>
+                    <li>Κατάγραψε χαρακτηριστικές τιμές και παρατήρησε αν το |ΔT| μειώνεται.</li>
+                  </ol>
+                </div>
+                <div class="worksheet-block compact">
+                  <h4>Ερωτήσεις</h4>
+                  <ol>
+                    <li>Ποιο σώμα χάνει και ποιο κερδίζει θερμότητα;</li>
+                    <li>Πώς μεταβάλλονται οι T1 και T2 με τον χρόνο;</li>
+                    <li>Τι συμβαίνει στη διαφορά |ΔT|;</li>
+                    <li>Πότε μπορούμε να πούμε ότι το σύστημα πλησιάζει σε θερμική ισορροπία;</li>
+                    <li>Γιατί οι τελικές θερμοκρασίες μπορεί να μην γίνουν ακριβώς ίσες;</li>
+                  </ol>
+                </div>
+              </div>
+              <div class="worksheet-column">
+                <div class="worksheet-block">
+                  <h4>Πίνακας μετρήσεων</h4>
+                  <div class="worksheet-table-scroll">
+                    <table class="worksheet-table heat-worksheet-table">
+                      <thead>
+                        <tr><th>Στιγμή</th><th>t (s)</th><th>T1 (°C)</th><th>T2 (°C)</th><th>|ΔT| (°C)</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr><td>Αρχή</td><td><input type="number" step="1" aria-label="Αρχικός χρόνος"></td><td><input type="number" step="0.1" aria-label="Αρχική θερμοκρασία T1"></td><td><input type="number" step="0.1" aria-label="Αρχική θερμοκρασία T2"></td><td><input type="number" step="0.1" aria-label="Αρχική διαφορά θερμοκρασίας"></td></tr>
+                        <tr><td>Ενδιάμεση 1</td><td><input type="number" step="1" aria-label="Πρώτος ενδιάμεσος χρόνος"></td><td><input type="number" step="0.1" aria-label="Πρώτη ενδιάμεση θερμοκρασία T1"></td><td><input type="number" step="0.1" aria-label="Πρώτη ενδιάμεση θερμοκρασία T2"></td><td><input type="number" step="0.1" aria-label="Πρώτη ενδιάμεση διαφορά θερμοκρασίας"></td></tr>
+                        <tr><td>Ενδιάμεση 2</td><td><input type="number" step="1" aria-label="Δεύτερος ενδιάμεσος χρόνος"></td><td><input type="number" step="0.1" aria-label="Δεύτερη ενδιάμεση θερμοκρασία T1"></td><td><input type="number" step="0.1" aria-label="Δεύτερη ενδιάμεση θερμοκρασία T2"></td><td><input type="number" step="0.1" aria-label="Δεύτερη ενδιάμεση διαφορά θερμοκρασίας"></td></tr>
+                        <tr><td>Τέλος</td><td><input type="number" step="1" aria-label="Τελικός χρόνος"></td><td><input type="number" step="0.1" aria-label="Τελική θερμοκρασία T1"></td><td><input type="number" step="0.1" aria-label="Τελική θερμοκρασία T2"></td><td><input type="number" step="0.1" aria-label="Τελική διαφορά θερμοκρασίας"></td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="worksheet-block compact worksheet-conclusion-block">
+                  <h4>Συμπέρασμα</h4>
+                  <textarea class="worksheet-conclusion" id="heatConclusion" placeholder="Γράψε πώς δείχνουν οι μετρήσεις σου ότι το σύστημα πλησιάζει σε θερμική ισορροπία."></textarea>
+                  <p class="experiment-note" id="heatNote">Για καθαρή καμπύλη θερμικής ισορροπίας χρησιμοποίησε μεγάλη διάρκεια, π.χ. 10 λεπτά ή περισσότερο.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section class="motion-worksheet-panel" id="motionWorksheetPanel" aria-label="Φύλλο εργασίας κίνησης">
           <div class="worksheet-card">
             <div class="worksheet-head">
@@ -452,6 +505,75 @@
                   <h4>Συμπέρασμα</h4>
                   <textarea class="worksheet-conclusion" id="weightConclusion" placeholder="Γράψε τι δείχνουν οι μετρήσεις σου για τη σχέση μάζας-βάρους και για την επιμήκυνση του ελατηρίου."></textarea>
                   <p class="experiment-note" id="weightNote">Η επιμήκυνση Δx μετριέται σε σχέση με το αρχικό μήκος του ελατηρίου χωρίς μάζα.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="pendulum-worksheet-panel" id="pendulumWorksheetPanel" aria-label="Φύλλο εργασίας απλού εκκρεμούς">
+          <div class="worksheet-card">
+            <div class="worksheet-head">
+              <div>
+                <h3>Φύλλο εργασίας: Απλό εκκρεμές</h3>
+                <p>Μέτρησε τον χρόνο πολλών ταλαντώσεων, υπολόγισε την περίοδο και έλεγξε από ποια μεγέθη εξαρτάται.</p>
+              </div>
+              <span class="worksheet-chip">T = Δt / N</span>
+            </div>
+            <div class="experiment-summary worksheet-live-summary" id="pendulumSummary">
+              <div class="experiment-empty">Διάλεξε μήκος και γωνία και πάτησε Προσομοίωση.</div>
+            </div>
+            <div class="worksheet-grid">
+              <div class="worksheet-column">
+                <div class="worksheet-block compact">
+                  <h4>Οδηγίες</h4>
+                  <ol>
+                    <li>Διάλεξε μήκος, μάζα και μικρή αρχική γωνία.</li>
+                    <li>Πάτησε «Προσομοίωση» και παρατήρησε μία πλήρη ταλάντωση.</li>
+                    <li>Χρησιμοποίησε τους οδηγούς T/4, T/2 και T για να συνδέσεις τις θέσεις του σώματος με το γράφημα.</li>
+                    <li>Μέτρησε συνολικό χρόνο Δt για N πλήρεις ταλαντώσεις και υπολόγισε T = Δt/N.</li>
+                    <li>Αποθήκευσε δοκιμές με διαφορετικό μήκος και μάζα και σύγκρινε τις περιόδους.</li>
+                  </ol>
+                </div>
+                <div class="worksheet-block compact">
+                  <h4>Ερωτήσεις</h4>
+                  <ol>
+                    <li>Τι ονομάζουμε περίοδο μιας ταλάντωσης;</li>
+                    <li>Γιατί μετράμε τον χρόνο πολλών ταλαντώσεων αντί μόνο μίας;</li>
+                    <li>Πώς μεταβάλλεται η περίοδος όταν αυξάνεται το μήκος;</li>
+                    <li>Αλλάζει η περίοδος όταν αλλάζει μόνο η μάζα;</li>
+                    <li>Πόσος χρόνος χρειάζεται από τη θέση ισορροπίας ως μία ακραία θέση;</li>
+                  </ol>
+                </div>
+              </div>
+              <div class="worksheet-column">
+                <div class="worksheet-block">
+                  <h4>Πίνακας μετρήσεων</h4>
+                  <div class="worksheet-table-scroll">
+                    <table class="worksheet-table pendulum-worksheet-table">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>L (m)</th>
+                          <th>m (g)</th>
+                          <th>θ0 (°)</th>
+                          <th>Δt (s)</th>
+                          <th>N</th>
+                          <th>T = Δt/N (s)</th>
+                          <th>T θεωρ. (s)</th>
+                          <th>10T (s)</th>
+                        </tr>
+                      </thead>
+                      <tbody id="pendulumBody">
+                        <tr><td colspan="9" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="worksheet-block compact worksheet-conclusion-block">
+                  <h4>Συμπέρασμα</h4>
+                  <textarea class="worksheet-conclusion" id="pendulumConclusion" placeholder="Γράψε πώς επηρεάζουν το μήκος και η μάζα την περίοδο του απλού εκκρεμούς."></textarea>
+                  <p class="experiment-note" id="pendulumNote">Το μοντέλο είναι ιδανικό: δεν περιλαμβάνει τριβές και είναι καλύτερο για μικρές γωνίες.</p>
                 </div>
               </div>
             </div>
@@ -985,18 +1107,24 @@
               <button class="experiment-toggle" id="heatPanelToggle" type="button">Κλείσιμο panel</button>
             </div>
           </div>
-          <div class="heat-illustration">
-            <img src="assets/heat-equilibrium-basin-cup-editorial.png" alt="Μοντέρνα εικονογράφηση πειράματος θερμικής ισορροπίας με ποτήρι μέσα σε λεκάνη νερού και δύο αισθητήρες DS18B20">
-            <div class="heat-image-note">Το ποτήρι βρίσκεται μέσα στη λεκάνη νερού, άρα τα δύο νερά είναι σε θερμική επαφή μέσω του τοιχώματος. Οι δύο αισθητήρες δείχνουν πώς πλησιάζουν οι θερμοκρασίες.</div>
+          <div class="experiment-overview heat-overview">
+            <div class="experiment-setup-illustration">
+              <img src="assets/heat-equilibrium-basin-cup-editorial.png" alt="Μοντέρνα εικονογράφηση πειράματος θερμικής ισορροπίας με ποτήρι μέσα σε λεκάνη νερού και δύο αισθητήρες DS18B20">
+              <div class="experiment-image-note">Το ποτήρι βρίσκεται μέσα στο νερό της λεκάνης και τα δύο συστήματα ανταλλάσσουν θερμότητα μέσω του τοιχώματος.</div>
+            </div>
+            <div class="experiment-intro">
+              <div class="experiment-intro-card">
+                <strong>Κεντρική ερώτηση</strong>
+                <p>Πώς μεταβάλλονται οι θερμοκρασίες δύο σωμάτων διαφορετικής θερμοκρασίας όταν έρθουν σε θερμική επαφή;</p>
+              </div>
+              <div class="experiment-intro-card">
+                <strong>Θεωρητική ιδέα</strong>
+                <p>Η θερμότητα μεταφέρεται από το θερμότερο προς το ψυχρότερο σώμα. Η θερμική ισορροπία προσεγγίζεται όταν οι θερμοκρασίες γίνουν περίπου ίσες και δεν υπάρχει καθαρή μεταφορά θερμότητας μεταξύ τους.</p>
+              </div>
+            </div>
           </div>
-          <div class="experiment-summary" id="heatSummary">
-            <div class="experiment-empty">Πάτα Έναρξη και περίμενε να εμφανιστούν οι δύο θερμοκρασίες.</div>
-          </div>
-          <div class="experiment-study">
-            <div class="experiment-study-grid" id="heatProtocol"></div>
-          </div>
-          <div class="experiment-note" id="heatNote">
-            Για καθαρή καμπύλη θερμικής ισορροπίας χρησιμοποίησε μεγάλη διάρκεια, π.χ. 10 λεπτά ή περισσότερο.
+          <div class="heat-internal-hidden" aria-hidden="true">
+            <div id="heatProtocol"></div>
           </div>
         </section>
         <section class="experiment-panel" id="pendulumExperiment" hidden>
@@ -1010,9 +1138,30 @@
               <button class="experiment-toggle" id="pendulumPanelToggle" type="button">Κλείσιμο panel</button>
             </div>
           </div>
-          <div class="pendulum-sim">
-            <canvas id="pendulumCanvas" aria-label="Προσομοίωση απλού εκκρεμούς"></canvas>
-            <div class="pendulum-note">Άλλαξε μήκος, μάζα και αρχική γωνία. Άνοιξε τις θέσεις όταν θέλεις να συγκρίνεις τη θέση ισορροπίας με τις ακραίες θέσεις. Μετά τη μέτρηση σύρε το σώμα για να φωτιστεί η αντίστοιχη θέση στη γραφική.</div>
+          <div class="experiment-overview pendulum-overview">
+            <div class="pendulum-sim">
+              <canvas id="pendulumCanvas" aria-label="Προσομοίωση απλού εκκρεμούς"></canvas>
+              <div class="pendulum-note">Άλλαξε μήκος, μάζα και αρχική γωνία. Άνοιξε τις θέσεις όταν θέλεις να συγκρίνεις τη θέση ισορροπίας με τις ακραίες θέσεις. Μετά τη μέτρηση σύρε το σώμα για να φωτιστεί η αντίστοιχη θέση στη γραφική.</div>
+            </div>
+            <div class="experiment-intro">
+              <div class="experiment-intro-card">
+                <strong>Κεντρική ερώτηση</strong>
+                <p>Πώς επηρεάζει το μήκος του νήματος την περίοδο ενός απλού εκκρεμούς και ποιος είναι ο ρόλος της μάζας;</p>
+              </div>
+              <div class="experiment-intro-card">
+                <strong>Θεωρητική ιδέα</strong>
+                <p>Για μικρές γωνίες η περίοδος είναι T = 2π√(L/g). Εξαρτάται από το μήκος L και όχι από τη μάζα του βαριδίου.</p>
+              </div>
+              <div class="experiment-intro-card experiment-intro-card-list">
+                <strong>Τι να παρατηρήσεις</strong>
+                <ul>
+                  <li>Αν αυξηθεί το μήκος L, η περίοδος T μεγαλώνει.</li>
+                  <li>Αν αλλάξει η μάζα, η περίοδος μένει σχεδόν ίδια.</li>
+                  <li>Θέση ισορροπίας προς ακραία θέση: T/4.</li>
+                  <li>Ακραία θέση Α προς ακραία θέση Β: T/2.</li>
+                </ul>
+              </div>
+            </div>
           </div>
           <div class="experiment-tools">
             <label class="field">
@@ -1058,33 +1207,8 @@
             <button type="button" data-pendulum-interval="one">Δείξε 1T</button>
             <button type="button" data-pendulum-interval="five">Δείξε 5T</button>
           </div>
-          <div class="experiment-summary" id="pendulumSummary">
-            <div class="experiment-empty">Διάλεξε μήκος και γωνία και πάτησε Προσομοίωση.</div>
-          </div>
-          <div class="experiment-study">
+          <div class="pendulum-internal-hidden" aria-hidden="true">
             <div class="experiment-study-grid" id="pendulumProtocol"></div>
-          </div>
-          <div class="table-title">Αποθηκευμένες δοκιμές απλού εκκρεμούς</div>
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>L (m)</th>
-                <th>m (g)</th>
-                <th>θ0 (°)</th>
-                <th>Δt (s)</th>
-                <th>N</th>
-                <th>T = Δt/N (s)</th>
-                <th>T θεωρ. (s)</th>
-                <th>10T (s)</th>
-              </tr>
-            </thead>
-            <tbody id="pendulumBody">
-              <tr><td colspan="9" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>
-            </tbody>
-          </table>
-          <div class="experiment-note" id="pendulumNote">
-            Το μοντέλο είναι ιδανικό: δεν περιλαμβάνει τριβές και είναι καλύτερο για μικρές γωνίες.
           </div>
         </section>
       </aside>
@@ -3772,6 +3896,8 @@ function updateModeUi() {
   document.body.classList.toggle('weight-mode', isWeightExperimentMode());
   document.body.classList.toggle('buoyancy-mode', isBuoyancyExperimentMode());
   document.body.classList.toggle('motion-layout-mode', isMotionExperimentMode());
+  document.body.classList.toggle('heat-layout-mode', isHeatExperimentMode());
+  document.body.classList.toggle('pendulum-layout-mode', isPendulumExperimentMode());
   let chartTitle = meta.title;
   let chartSubtitle = meta.subtitle;
   if (isHookeExperimentMode()) {
@@ -6703,6 +6829,7 @@ function animatePendulum() {
   requestAnimationFrame(animatePendulum);
 }
 updateModeUi();
+if (isHeatExperimentMode()) applyExperimentDefaults('a-heat');
 if (isPendulumExperimentMode() && !rows.length) resetPendulumRows();
 updateReadouts({});
 setChartTool('pan');
