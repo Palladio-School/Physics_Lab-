@@ -257,6 +257,7 @@
           </div>
           <div class="chart-foot">
             <span><strong id="sampleCount">0</strong> δείγματα</span>
+            <span class="motion-area-result" id="motionVelocityArea" hidden></span>
             <span id="chartHint">Σύρε στο γράφημα για μετακίνηση στον χρόνο. Ροδέλα για zoom που εστιάζει στην κυματομορφή. Shift + σύρσιμο για επιλογή A-B.</span>
           </div>
         </section>
@@ -1915,6 +1916,28 @@ function buoyancyCurrentMetrics() {
   };
 }
 
+function motionVelocityAreaMetrics() {
+  if (!isMotionExperimentMode() || !selection) return null;
+  const velocitySeries = currentMode().series.find(series => series.key === 'velocity');
+  if (!velocitySeries) return null;
+  const points = analysisPoints(velocitySeries);
+  if (points.length < 2) return null;
+
+  let signedArea = 0;
+  for (let index = 1; index < points.length; index++) {
+    const first = points[index - 1];
+    const second = points[index];
+    const dt = second.x - first.x;
+    signedArea += (first.y + second.y) * dt / 2;
+  }
+
+  return {
+    signedArea,
+    duration: points[points.length - 1].x - points[0].x,
+    sampleCount: points.length
+  };
+}
+
 function motionExperimentMetrics() {
   const meta = currentMode();
   const series = (analysisCache && analysisCache.series) || meta.series[analysisSeriesIndex] || meta.series[0];
@@ -2023,9 +2046,11 @@ function renderMotionExperiment() {
   const status = document.getElementById('motionStatus');
   const protocol = document.getElementById('motionProtocol');
   const note = document.getElementById('motionNote');
+  const areaResult = document.getElementById('motionVelocityArea');
 
   if (!isMotionExperimentMode()) {
     panel.hidden = true;
+    areaResult.hidden = true;
     applyCollisionRailLayout();
     return;
   }
@@ -2047,6 +2072,12 @@ function renderMotionExperiment() {
   const usingDistance = series.key === 'distance';
   const usingVelocity = series.key === 'velocity';
   const usingAcceleration = series.key === 'acceleration';
+  const velocityArea = motionVelocityAreaMetrics();
+
+  areaResult.hidden = !velocityArea;
+  areaResult.textContent = velocityArea
+    ? 'Εμβαδό υ–t: ' + compactNumber(velocityArea.signedArea) + ' m · μετατόπιση στο A–B'
+    : '';
 
   status.textContent = !metrics || !metrics.ready
     ? 'Κάνε μέτρηση και επίλεξε καθαρό τμήμα της κίνησης'
@@ -2057,6 +2088,9 @@ function renderMotionExperiment() {
   } else {
     const cards = [];
     cards.push('<div class="summary-card"><span>Διάρκεια</span><strong>' + compactNumber(metrics.duration) + '</strong><small>s στο επιλεγμένο τμήμα</small></div>');
+    if (velocityArea) {
+      cards.push('<div class="summary-card"><span>Εμβαδό υ–t</span><strong>' + compactNumber(velocityArea.signedArea) + '</strong><small>m μετατόπιση στο A–B</small></div>');
+    }
     if (usingDistance) {
       cards.push('<div class="summary-card"><span>Δx</span><strong>' + compactNumber(metrics.delta) + '</strong><small>m μετατόπιση</small></div>');
       cards.push('<div class="summary-card"><span>Μέση ταχύτητα</span><strong>' + compactNumber(metrics.slope) + '</strong><small>m/s από την κλίση</small></div>');

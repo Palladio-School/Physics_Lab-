@@ -186,6 +186,7 @@ test('smokes Hooke, Sonar, Pendulum, and Collision views without console errors'
   await expect(page.locator('#motionWorksheetPanel')).toBeVisible();
   await expect(page.locator('#motionPanelTitle')).toContainText('Απόσταση και χρόνος');
   await expect(page.locator('#clearMotionMeasurements')).toBeVisible();
+  await expect(page.locator('#motionVelocityArea')).toHaveCount(1);
 
   await clickExperiment(page, 'a-speed');
   await expect(page.locator('#motionExperiment')).toBeVisible();
