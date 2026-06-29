@@ -779,6 +779,31 @@ input[type="number"] {
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
+.worksheet-table-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 9px;
+}
+.worksheet-table-heading h4 {
+  margin: 0;
+}
+.worksheet-clear-button {
+  min-height: 34px;
+  padding: 0 11px;
+  border-color: #d7e1ec;
+  background: #f8fafc;
+  color: #52667d;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.worksheet-clear-button:hover {
+  border-color: #aebed0;
+  background: #f1f5f9;
+  color: #243b53;
+}
 .worksheet-block p,
 .worksheet-block li {
   color: #465b72;
@@ -1745,6 +1770,7 @@ canvas {
 }
 .experiment-head {
   padding: 14px 16px;
+  margin-bottom: 14px;
   border-bottom: 1px solid var(--line);
   display: flex;
   align-items: flex-start;
@@ -1978,6 +2004,18 @@ canvas {
   color: #4c6077;
   font-size: 13px;
   line-height: 1.45;
+}
+.experiment-description-card {
+  border-color: #b9dfd3;
+  background: #eef9f5;
+}
+.experiment-description-card strong,
+.hooke-intro-card.experiment-description-card strong {
+  color: #176b5a;
+}
+.experiment-description-card p,
+.hooke-intro-card.experiment-description-card p {
+  color: #365f59;
 }
 .experiment-intro-card-list ul {
   margin: 0;

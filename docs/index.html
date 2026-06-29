@@ -294,7 +294,10 @@
               </div>
               <div class="worksheet-column">
                 <div class="worksheet-block">
-                  <h4>Πίνακας μετρήσεων</h4>
+                  <div class="worksheet-table-heading">
+                    <h4>Πίνακας μετρήσεων</h4>
+                    <button class="worksheet-clear-button" id="clearHookeTrials" type="button">Καθαρισμός μετρήσεων</button>
+                  </div>
                   <div class="experiment-tools">
                     <label class="field">
                       Δx
@@ -302,7 +305,6 @@
                       <small>cm</small>
                     </label>
                     <button id="saveHookeTrial">Αποθήκευση δοκιμής</button>
-                    <button id="clearHookeTrials">Καθαρισμός δοκιμών</button>
                     <button id="exportHookeTrials">Εξαγωγή CSV</button>
                   </div>
                   <table class="worksheet-table">
@@ -366,7 +368,10 @@
               </div>
               <div class="worksheet-column">
                 <div class="worksheet-block">
-                  <h4>Πίνακας μετρήσεων</h4>
+                  <div class="worksheet-table-heading">
+                    <h4>Πίνακας μετρήσεων</h4>
+                    <button class="worksheet-clear-button" id="clearHeatMeasurements" type="button">Καθαρισμός μετρήσεων</button>
+                  </div>
                   <div class="worksheet-table-scroll">
                     <table class="worksheet-table heat-worksheet-table">
                       <thead>
@@ -416,7 +421,10 @@
               </div>
               <div class="worksheet-column">
                 <div class="worksheet-block">
-                  <h4>Πίνακας μετρήσεων</h4>
+                  <div class="worksheet-table-heading">
+                    <h4>Πίνακας μετρήσεων</h4>
+                    <button class="worksheet-clear-button" id="clearMotionMeasurements" type="button">Καθαρισμός μετρήσεων</button>
+                  </div>
                   <div class="worksheet-table-scroll">
                     <table class="worksheet-table motion-worksheet-table">
                       <thead>
@@ -480,7 +488,10 @@
               </div>
               <div class="worksheet-column">
                 <div class="worksheet-block">
-                  <h4>Πίνακας μετρήσεων</h4>
+                  <div class="worksheet-table-heading">
+                    <h4>Πίνακας μετρήσεων</h4>
+                    <button class="worksheet-clear-button" id="clearWeightTrials" type="button">Καθαρισμός μετρήσεων</button>
+                  </div>
                   <div class="worksheet-table-scroll">
                     <table class="worksheet-table">
                       <thead>
@@ -548,7 +559,10 @@
               </div>
               <div class="worksheet-column">
                 <div class="worksheet-block">
-                  <h4>Πίνακας μετρήσεων</h4>
+                  <div class="worksheet-table-heading">
+                    <h4>Πίνακας μετρήσεων</h4>
+                    <button class="worksheet-clear-button" id="clearPendulumTrials" type="button">Καθαρισμός μετρήσεων</button>
+                  </div>
                   <div class="worksheet-table-scroll">
                     <table class="worksheet-table pendulum-worksheet-table">
                       <thead>
@@ -613,7 +627,10 @@
               </div>
               <div class="worksheet-column">
                 <div class="worksheet-block">
-                  <h4>Πίνακας μετρήσεων</h4>
+                  <div class="worksheet-table-heading">
+                    <h4>Πίνακας μετρήσεων</h4>
+                    <button class="worksheet-clear-button" id="clearBuoyancyTrials" type="button">Καθαρισμός μετρήσεων</button>
+                  </div>
                   <div class="worksheet-table-scroll">
                     <table class="worksheet-table">
                       <thead>
@@ -675,7 +692,10 @@
               </div>
               <div class="worksheet-column">
                 <div class="worksheet-block">
-                  <h4>Πίνακας μετρήσεων</h4>
+                  <div class="worksheet-table-heading">
+                    <h4>Πίνακας μετρήσεων</h4>
+                    <button class="worksheet-clear-button" id="clearSonarMeasurements" type="button">Καθαρισμός μετρήσεων</button>
+                  </div>
                   <table class="worksheet-table">
                     <thead>
                       <tr>
@@ -766,9 +786,12 @@
           <div class="hooke-overview">
             <div class="hooke-illustration">
               <img src="assets/hooke-setup-illustration.png" alt="Σχολική εικονογράφηση πειράματος νόμου του Hooke με ορθοστάτη, κίτρινο κουτί αισθητήρα, M5Stick, ελατήριο και βαρίδι">
-              <div class="hooke-image-note">Το ελατήριο κρεμιέται από τον αισθητήρα δύναμης.</div>
             </div>
             <div class="hooke-intro">
+              <div class="hooke-intro-card experiment-description-card">
+                <strong>Η διάταξη</strong>
+                <p>Το ελατήριο κρεμιέται από τον αισθητήρα δύναμης.</p>
+              </div>
               <div class="hooke-intro-card">
                 <strong>Κεντρική ερώτηση</strong>
                 <p>Πώς αλλάζει η επιμήκυνση ενός ελατηρίου όταν αυξάνεται η δύναμη που του ασκούμε;</p>
@@ -800,9 +823,12 @@
           <div class="experiment-overview weight-overview">
             <div class="experiment-setup-illustration">
               <img src="assets/hooke-setup-illustration.png" alt="Σχολική εικονογράφηση διάταξης με αισθητήρα δύναμης, ελατήριο και κρεμασμένη μάζα">
-              <div class="experiment-image-note">Η κυψέλη φορτίου μετρά το βάρος της μάζας, ενώ ο χάρακας χρησιμοποιείται για την επιμήκυνση του ελατηρίου.</div>
             </div>
             <div class="experiment-intro">
+              <div class="experiment-intro-card experiment-description-card">
+                <strong>Η διάταξη</strong>
+                <p>Η κυψέλη φορτίου μετρά το βάρος της μάζας, ενώ ο χάρακας χρησιμοποιείται για την επιμήκυνση του ελατηρίου.</p>
+              </div>
               <div class="experiment-intro-card">
                 <strong>Κεντρική ερώτηση</strong>
                 <p>Πώς συνδέονται η μάζα ενός σώματος, το βάρος του και η επιμήκυνση που προκαλεί σε ένα ελατήριο;</p>
@@ -826,7 +852,6 @@
             </label>
             <button id="captureWeightTrial">Μέτρηση βάρους</button>
             <button id="saveWeightTrial">Αποθήκευση δοκιμής</button>
-            <button id="clearWeightTrials">Καθαρισμός δοκιμών</button>
             <button id="exportWeightTrials">Εξαγωγή CSV</button>
           </div>
           <div class="experiment-summary" id="weightSummary">
@@ -881,7 +906,6 @@
                 <text class="weight-label" x="1246" y="884">w</text>
               </svg>
             </div>
-            <div class="buoyancy-image-note">Αριστερά: το δυναμόμετρο μετρά το βάρος στον αέρα. Δεξιά: μέσα στο νερό εμφανίζεται άνωση προς τα πάνω, άρα το δυναμόμετρο δείχνει μικρότερο φαινόμενο βάρος.</div>
             <svg viewBox="0 0 720 430" role="img">
               <defs>
                 <marker id="arrowBlue" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
@@ -974,6 +998,10 @@
             </svg>
           </div>
           <div class="experiment-intro">
+            <div class="experiment-intro-card experiment-description-card">
+              <strong>Η διάταξη</strong>
+              <p>Αριστερά: το δυναμόμετρο μετρά το βάρος στον αέρα. Δεξιά: μέσα στο νερό εμφανίζεται άνωση προς τα πάνω, άρα το δυναμόμετρο δείχνει μικρότερο φαινόμενο βάρος.</p>
+            </div>
             <div class="experiment-intro-card">
               <strong>Κεντρική ερώτηση</strong>
               <p>Γιατί το ίδιο σώμα φαίνεται να ζυγίζει λιγότερο όταν είναι βυθισμένο στο νερό;</p>
@@ -993,7 +1021,6 @@
             <button id="captureBuoyancyAir">Μέτρηση στον αέρα</button>
             <button id="captureBuoyancyLiquid">Μέτρηση στο υγρό</button>
             <button id="saveBuoyancyTrial">Αποθήκευση δοκιμής</button>
-            <button id="clearBuoyancyTrials">Καθαρισμός δοκιμών</button>
             <button id="exportBuoyancyTrials">Εξαγωγή CSV</button>
           </div>
           <div class="experiment-summary" id="buoyancySummary">
@@ -1017,9 +1044,12 @@
           <div class="experiment-overview motion-overview">
             <div class="experiment-setup-illustration">
               <img src="assets/uniform-motion-editorial-hcsr04-track.png" alt="Μοντέρνα εικονογράφηση πειράματος κίνησης με αισθητήρα υπερήχων DFRobot URM10, εργαστηριακό χάρακα και αμαξίδιο">
-              <div class="experiment-image-note">Ο αισθητήρας υπερήχων μετρά διαδοχικά την απόσταση του αμαξιδίου.</div>
             </div>
             <div class="experiment-intro">
+              <div class="experiment-intro-card experiment-description-card">
+                <strong>Η διάταξη</strong>
+                <p>Ο αισθητήρας υπερήχων μετρά διαδοχικά την απόσταση του αμαξιδίου.</p>
+              </div>
               <div class="experiment-intro-card">
                 <strong>Κεντρική ερώτηση</strong>
                 <p id="motionCentralQuestion">Πώς μπορούμε να καταλάβουμε από τις μετρήσεις και τα γραφήματα ότι ένα σώμα κινείται με σταθερή ταχύτητα;</p>
@@ -1110,9 +1140,12 @@
           <div class="experiment-overview heat-overview">
             <div class="experiment-setup-illustration">
               <img src="assets/heat-equilibrium-basin-cup-editorial.png" alt="Μοντέρνα εικονογράφηση πειράματος θερμικής ισορροπίας με ποτήρι μέσα σε λεκάνη νερού και δύο αισθητήρες DS18B20">
-              <div class="experiment-image-note">Το ποτήρι βρίσκεται μέσα στο νερό της λεκάνης και τα δύο συστήματα ανταλλάσσουν θερμότητα μέσω του τοιχώματος.</div>
             </div>
             <div class="experiment-intro">
+              <div class="experiment-intro-card experiment-description-card">
+                <strong>Η διάταξη</strong>
+                <p>Το ποτήρι βρίσκεται μέσα στο νερό της λεκάνης και τα δύο συστήματα ανταλλάσσουν θερμότητα μέσω του τοιχώματος.</p>
+              </div>
               <div class="experiment-intro-card">
                 <strong>Κεντρική ερώτηση</strong>
                 <p>Πώς μεταβάλλονται οι θερμοκρασίες δύο σωμάτων διαφορετικής θερμοκρασίας όταν έρθουν σε θερμική επαφή;</p>
@@ -1141,9 +1174,12 @@
           <div class="experiment-overview pendulum-overview">
             <div class="pendulum-sim">
               <canvas id="pendulumCanvas" aria-label="Προσομοίωση απλού εκκρεμούς"></canvas>
-              <div class="pendulum-note">Άλλαξε μήκος, μάζα και αρχική γωνία. Άνοιξε τις θέσεις όταν θέλεις να συγκρίνεις τη θέση ισορροπίας με τις ακραίες θέσεις. Μετά τη μέτρηση σύρε το σώμα για να φωτιστεί η αντίστοιχη θέση στη γραφική.</div>
             </div>
             <div class="experiment-intro">
+              <div class="experiment-intro-card experiment-description-card">
+                <strong>Η προσομοίωση</strong>
+                <p>Άλλαξε μήκος, μάζα και αρχική γωνία. Άνοιξε τις θέσεις όταν θέλεις να συγκρίνεις τη θέση ισορροπίας με τις ακραίες θέσεις. Μετά τη μέτρηση σύρε το σώμα για να φωτιστεί η αντίστοιχη θέση στη γραφική.</p>
+              </div>
               <div class="experiment-intro-card">
                 <strong>Κεντρική ερώτηση</strong>
                 <p>Πώς επηρεάζει το μήκος του νήματος την περίοδο ενός απλού εκκρεμούς και ποιος είναι ο ρόλος της μάζας;</p>
@@ -1198,7 +1234,6 @@
             <button id="togglePendulumPositions" type="button" aria-pressed="false">Εμφάνιση θέσεων</button>
             <button id="runPendulumTrial">Προσομοίωση</button>
             <button id="savePendulumTrial">Αποθήκευση δοκιμής</button>
-            <button id="clearPendulumTrials">Καθαρισμός δοκιμών</button>
             <button id="exportPendulumTrials">Εξαγωγή CSV</button>
           </div>
           <div class="pendulum-guide-buttons" aria-label="Οδηγοί περιόδου στο γράφημα">
@@ -3639,27 +3674,27 @@ function drawPendulumCanvas() {
   pendulumCtx.strokeStyle = '#d5e0ea';
   pendulumCtx.lineWidth = 1;
   pendulumCtx.beginPath();
-  pendulumCtx.roundRect(12, height - 48, 178, 34, 9);
+  pendulumCtx.roundRect(12, height - 60, 190, 48, 10);
   pendulumCtx.fill();
   pendulumCtx.stroke();
 
   pendulumCtx.fillStyle = '#26384a';
   pendulumCtx.font = '800 11.5px system-ui';
   pendulumCtx.textAlign = 'left';
-  pendulumCtx.fillText('L = ' + pendulumLengthM.toFixed(2) + ' m', 24, height - 34);
-  pendulumCtx.fillText('m = ' + pendulumMassG.toFixed(0) + ' g · T = ' + pendulumPeriod(pendulumLengthM).toFixed(2) + ' s', 24, height - 19);
+  pendulumCtx.fillText('L = ' + pendulumLengthM.toFixed(2) + ' m', 24, height - 40);
+  pendulumCtx.fillText('m = ' + pendulumMassG.toFixed(0) + ' g · T = ' + pendulumPeriod(pendulumLengthM).toFixed(2) + ' s', 24, height - 21);
   if (!running && rows.length) {
     pendulumCtx.fillStyle = 'rgba(255, 255, 255, 0.72)';
     pendulumCtx.strokeStyle = '#d5e0ea';
     pendulumCtx.lineWidth = 1;
     pendulumCtx.beginPath();
-    pendulumCtx.roundRect(width - 136, height - 48, 124, 34, 9);
+    pendulumCtx.roundRect(width - 136, height - 60, 124, 48, 10);
     pendulumCtx.fill();
     pendulumCtx.stroke();
     pendulumCtx.textAlign = 'right';
     pendulumCtx.fillStyle = pendulumInspectTime !== null ? '#1b4f9f' : '#52667d';
-    pendulumCtx.fillText('t = ' + elapsed.toFixed(2) + ' s', width - 24, height - 34);
-    pendulumCtx.fillText('x = ' + sample.pendulumDisplacementCm.toFixed(1) + ' cm', width - 24, height - 19);
+    pendulumCtx.fillText('t = ' + elapsed.toFixed(2) + ' s', width - 24, height - 40);
+    pendulumCtx.fillText('x = ' + sample.pendulumDisplacementCm.toFixed(1) + ' cm', width - 24, height - 21);
   }
 }
 
@@ -6289,6 +6324,22 @@ document.getElementById('hookeExtensionCm').addEventListener('change', event => 
   event.target.value = hookeExtensionCm.toFixed(1);
 });
 
+function clearWorksheetMeasurementInputs(panelId) {
+  document.querySelectorAll('#' + panelId + ' .worksheet-table input').forEach(input => {
+    input.value = '';
+  });
+}
+
+document.getElementById('clearHeatMeasurements').addEventListener('click', () => {
+  clearWorksheetMeasurementInputs('heatWorksheetPanel');
+  showToast('Ο πίνακας μετρήσεων θερμότητας καθαρίστηκε.');
+});
+
+document.getElementById('clearMotionMeasurements').addEventListener('click', () => {
+  clearWorksheetMeasurementInputs('motionWorksheetPanel');
+  showToast('Ο πίνακας μετρήσεων κίνησης καθαρίστηκε.');
+});
+
 document.getElementById('saveHookeTrial').addEventListener('click', () => {
   const current = hookeCurrentMetrics();
   const extensionCm = Math.max(0, Number(document.getElementById('hookeExtensionCm').value) || 0);
@@ -6691,6 +6742,19 @@ document.getElementById('sonarWorksheetPanel').addEventListener('input', event =
   if (event.target.id === 'sonarConclusion') {
     sonarWorksheetAnswers.conclusion = event.target.value;
   }
+});
+
+document.getElementById('clearSonarMeasurements').addEventListener('click', () => {
+  sonarMeasuredEchoMs = Array(SONAR_POSITIONS.length).fill(NaN);
+  sonarWorksheetAnswers.seconds = Array(SONAR_POSITIONS.length).fill('');
+  sonarWorksheetAnswers.distance = Array(SONAR_POSITIONS.length).fill('');
+  rows = [];
+  lastData = {};
+  updateTable();
+  updateAnalysis();
+  renderSonarExperiment();
+  draw();
+  showToast('Οι μετρήσεις sonar καθαρίστηκαν.');
 });
 
 document.getElementById('saveSonarWorksheet').addEventListener('click', saveSonarWorksheetAndPrint);
