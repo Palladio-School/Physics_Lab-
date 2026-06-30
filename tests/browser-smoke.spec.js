@@ -256,3 +256,19 @@ test('smokes Hooke, Sonar, Pendulum, and Collision views without console errors'
 
   await expect.poll(() => errors).toEqual([]);
 });
+
+test('prioritizes the workspace after mobile experiment selection', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  const errors = await openDashboard(page);
+
+  await page.evaluate(() => {
+    const button = document.querySelector('[data-experiment="a-weight"]');
+    button.closest('details').open = true;
+  });
+  await page.locator('[data-experiment="a-weight"]').click();
+
+  await expect(page.locator('#weightExperiment')).toBeVisible();
+  await expect.poll(() => page.evaluate(() => Math.round(document.querySelector('.workspace').getBoundingClientRect().top))).toBeLessThan(40);
+  await expect.poll(() => page.$$eval('.lab-sidebar details[open]', groups => groups.length)).toBe(0);
+  await expect.poll(() => errors).toEqual([]);
+});
