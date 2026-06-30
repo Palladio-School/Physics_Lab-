@@ -2380,6 +2380,49 @@ canvas {
 .experiment-study {
   padding: 0 16px 16px;
 }
+.experiment-detail-group {
+  margin: 0 16px 12px;
+  border: 1px solid #dce4eb;
+  border-radius: 12px;
+  background: #ffffff;
+  overflow: hidden;
+}
+.experiment-detail-group summary {
+  min-height: 42px;
+  padding: 0 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: #23415f;
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  list-style: none;
+}
+.experiment-detail-group summary::-webkit-details-marker {
+  display: none;
+}
+.experiment-detail-group summary::after {
+  content: '⌄';
+  color: #71839a;
+  font-size: 14px;
+}
+.experiment-detail-group[open] summary {
+  border-bottom: 1px solid #e5edf4;
+  background: #f8fbff;
+}
+.experiment-detail-group[open] summary::after {
+  transform: rotate(180deg);
+}
+.experiment-detail-group .experiment-study {
+  padding: 12px;
+}
+.experiment-detail-group table {
+  min-width: 640px;
+}
 .experiment-study-grid {
   display: grid;
   grid-template-columns: 1fr;

@@ -253,6 +253,10 @@ test('smokes Hooke, Sonar, Pendulum, and Collision views without console errors'
   await expect(page.locator('#chartTitle')).toContainText('Δύναμη από επιτάχυνση');
   await expect(page.locator('#collisionExperiment')).toBeVisible();
   await expect(page.locator('#collisionMass')).toHaveValue('0.20');
+  await expect(page.locator('#collisionSummary')).toBeVisible();
+  await expect(page.locator('#collisionChart')).toBeVisible();
+  await expect(page.locator('#collisionExperiment .experiment-detail-group')).toHaveCount(2);
+  await expect(page.locator('#collisionExperiment .experiment-detail-group[open]')).toHaveCount(0);
 
   await expect.poll(() => errors).toEqual([]);
 });

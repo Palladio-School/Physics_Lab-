@@ -1103,26 +1103,32 @@
               </div>
             </div>
           </div>
-          <div class="experiment-study">
-            <div class="experiment-study-grid" id="collisionProtocol"></div>
-          </div>
-          <div class="table-title">Αποθηκευμένες δοκιμές κρούσης</div>
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>v0 (m/s)</th>
-                <th>Impulse (N·s)</th>
-                <th>|Impulse| (N·s)</th>
-                <th>Fmax (N)</th>
-                <th>Fmean (N)</th>
-                <th>Δt (s)</th>
-              </tr>
-            </thead>
-            <tbody id="collisionBody">
-              <tr><td colspan="7" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>
-            </tbody>
-          </table>
+          <details class="experiment-detail-group">
+            <summary>Οδηγός καθηγητή</summary>
+            <div class="experiment-study">
+              <div class="experiment-study-grid" id="collisionProtocol"></div>
+            </div>
+          </details>
+          <details class="experiment-detail-group">
+            <summary>Πίνακας δοκιμών</summary>
+            <div class="table-title">Αποθηκευμένες δοκιμές κρούσης</div>
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>v0 (m/s)</th>
+                  <th>Impulse (N·s)</th>
+                  <th>|Impulse| (N·s)</th>
+                  <th>Fmax (N)</th>
+                  <th>Fmean (N)</th>
+                  <th>Δt (s)</th>
+                </tr>
+              </thead>
+              <tbody id="collisionBody">
+                <tr><td colspan="7" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>
+              </tbody>
+            </table>
+          </details>
           <div class="experiment-note" id="collisionNote">
             Βάλε τη συσκευή στην προβολή δύναμης, επίλεξε το spike της κρούσης και αποθήκευσε πολλές δοκιμές για σύγκριση.
           </div>
