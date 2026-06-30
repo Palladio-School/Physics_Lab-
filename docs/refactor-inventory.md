@@ -38,7 +38,8 @@ Approximate ranges in `docs/index.html` after PR #15:
 | 977-1291 | 315 | State, element refs, row transforms | Mixed pure and UI-bound state. |
 | 1-919 | 919 | HTML shell and experiment panels | Large but mostly declarative markup. |
 
-The `draw()` function remains in place at line 5169 and should stay out of the next small extraction unless a stronger characterization suite is added first.
+The `draw()` function remains in place and should stay out of the next small extraction unless a stronger characterization suite is added first.
+See [`draw-contract.md`](draw-contract.md) for the current chart rendering contract and safe extraction boundaries.
 
 ## Added Safety Net
 
