@@ -197,6 +197,11 @@ test('smokes Hooke, Sonar, Pendulum, and Collision views without console errors'
   await expect(page.locator('#motionWorksheetTitle')).toContainText('Ευθύγραμμη ομαλή κίνηση');
   await expect(page.locator('#splitChartToggleWrap')).toBeVisible();
 
+  await clickExperiment(page, 'b-accelerated-motion');
+  await expect(page.locator('#motionExperiment')).toBeVisible();
+  await expect(page.locator('#motionWorksheetTitle')).toContainText('Επιταχυνόμενη κίνηση');
+  await expect(page.locator('#motionWorksheetChip')).toContainText('a = Δυ / Δt');
+
   await clickExperiment(page, 'b-hooke');
   await expect(page.locator('#hookeExperiment')).toBeVisible();
   await expect(page.locator('#hookeExperiment h3').first()).toContainText('Νόμος του Hooke');
