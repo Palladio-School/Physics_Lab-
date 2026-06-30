@@ -4026,6 +4026,20 @@ function updateExperimentUi() {
   });
 }
 
+function isNarrowNavigationLayout() {
+  return window.matchMedia('(max-width: 900px)').matches;
+}
+
+function focusWorkspaceAfterExperimentChoice() {
+  if (!isNarrowNavigationLayout()) return;
+  document.querySelectorAll('.lab-sidebar details.class-group').forEach(group => {
+    group.open = false;
+  });
+  requestAnimationFrame(() => {
+    document.querySelector('.workspace').scrollIntoView({ block: 'start' });
+  });
+}
+
 function selectExperiment(experimentId) {
   const experiment = experimentCatalog[experimentId];
   if (!experiment) return;
@@ -4044,6 +4058,7 @@ function selectExperiment(experimentId) {
   }
   setMode(experiment.mode, 'experiment', { reset: false });
   applyExperimentDefaults(experimentId);
+  focusWorkspaceAfterExperimentChoice();
 }
 
 function applyExperimentDefaults(experimentId) {
