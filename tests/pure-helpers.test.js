@@ -28,7 +28,8 @@ function loadDashboardHelpers() {
     'docs/js/storage-export.js',
     'docs/js/chart-utils.js',
     'docs/js/physics-calculations.js',
-    'docs/js/fit-utils.js'
+    'docs/js/fit-utils.js',
+    'docs/js/pendulum-utils.js'
   ].forEach(file => {
     const source = fs.readFileSync(path.join(repoRoot, file), 'utf8');
     vm.runInContext(source, context, { filename: file });
@@ -123,5 +124,20 @@ const quadratic = dashboard.PalladioFitUtils.polynomialFit([
 ], 2);
 near(quadratic.predict(4), 25, 1e-7);
 assert.equal(dashboard.PalladioFitUtils.chooseFit([{ x: 0, y: 1 }], 'linear'), null);
+
+const period = dashboard.PalladioPendulumUtils.pendulumPeriod(1);
+near(period, 2 * Math.PI * Math.sqrt(1 / 9.81));
+const pendulumStart = dashboard.PalladioPendulumUtils.pendulumSample(0, 1, 10);
+near(pendulumStart.theta, 10);
+near(pendulumStart.omegaPendulum, 0);
+near(pendulumStart.pendulumAmplitudeCm, 1 * (10 * Math.PI / 180) * 100);
+near(pendulumStart.pendulumDisplacementCm, pendulumStart.pendulumAmplitudeCm);
+const pendulumQuarter = dashboard.PalladioPendulumUtils.pendulumSample(period / 4, 1, 10);
+near(pendulumQuarter.theta, 0, 1e-12);
+assert.ok(pendulumQuarter.omegaPendulum < 0);
+assert.equal(dashboard.PalladioPendulumUtils.pendulumIntervalInfo(period, 1).oscillations, 1);
+assert.equal(dashboard.PalladioPendulumUtils.pendulumIntervalInfo(period / 2, 1).label, 'περίπου T/2');
+assert.match(dashboard.PalladioPendulumUtils.pendulumIntervalInfo(period * 1.31, 1, value => value.toFixed(2)).label, /^1\.31 T$/);
+assert.equal(dashboard.PalladioPendulumUtils.pendulumIntervalInfo(0, 1), null);
 
 console.log('pure helper tests passed');
