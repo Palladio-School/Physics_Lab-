@@ -248,7 +248,8 @@ test('loads dashboard scripts in dependency order and exposes expected globals',
     'js/storage-export.js',
     'js/chart-utils.js',
     'js/physics-calculations.js',
-    'js/fit-utils.js'
+    'js/fit-utils.js',
+    'js/pendulum-utils.js'
   ]);
   await expect.poll(() => errors).toEqual([]);
   await expect(page.locator('#network')).toContainText('PhysicsLab-M5');
@@ -259,7 +260,8 @@ test('loads dashboard scripts in dependency order and exposes expected globals',
     storage: Boolean(window.PalladioStorageExport),
     chart: Boolean(window.PalladioChartUtils),
     physics: Boolean(window.PalladioPhysicsCalculations),
-    fit: Boolean(window.PalladioFitUtils)
+    fit: Boolean(window.PalladioFitUtils),
+    pendulum: Boolean(window.PalladioPendulumUtils)
   }));
   expect(globals).toEqual({
     catalog: true,
@@ -268,7 +270,8 @@ test('loads dashboard scripts in dependency order and exposes expected globals',
     storage: true,
     chart: true,
     physics: true,
-    fit: true
+    fit: true,
+    pendulum: true
   });
   await expect(page.locator('[data-experiment="b-rotation"]')).toHaveCount(0);
   await expect.poll(() => page.evaluate(() => Boolean(window.PalladioExperimentCatalog.experimentCatalog['b-rotation']))).toBe(false);

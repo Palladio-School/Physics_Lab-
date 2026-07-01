@@ -6,8 +6,8 @@ This is a documentation and test inventory only. It does not change dashboard ru
 
 ## Current Size
 
-- `docs/index.html`: 6,457 lines, 312,688 bytes.
-- Extracted dashboard helpers in `docs/js/*.js`: 703 lines, 31,892 bytes.
+- `docs/index.html`: 6,935 lines, 347,315 bytes.
+- Extracted dashboard helpers in `docs/js/*.js`: 752 lines, 33,918 bytes.
 - Largest remaining file by far: `docs/index.html`.
 
 ## Script Load Order
@@ -21,7 +21,8 @@ Current order in `docs/index.html`:
 5. `js/chart-utils.js`
 6. `js/physics-calculations.js`
 7. `js/fit-utils.js`
-8. Inline dashboard app script
+8. `js/pendulum-utils.js`
+9. Inline dashboard app script
 
 The order matters because `app-config.js` reads `window.PalladioExperimentCatalog`, `device-client.js` reads `window.PalladioConfig`, and the inline app reads all exported globals.
 
@@ -47,6 +48,7 @@ See [`draw-contract.md`](draw-contract.md) for the current chart rendering contr
   - catalog/config helpers,
   - chart unit/format helpers,
   - weight and buoyancy calculations,
+  - pendulum period, sample, and interval helpers,
   - storage/export escaping and report generation,
   - linear, Hooke, collision, linear-system, polynomial, and auto fit helpers.
 - `tests/browser-smoke.spec.js` serves `docs/` locally with mocked M5-shaped API responses and checks:
@@ -72,7 +74,7 @@ npx playwright install chromium
 
 Good small PR candidates:
 
-- Pendulum pure math helpers: `pendulumPeriod`, `pendulumSample`, `pendulumIntervalInfo`. These have clear numeric inputs/outputs, though the current defaults read dashboard state when arguments are omitted.
+- More pendulum pure helpers if they stay DOM-free. The period/sample/interval helpers now live in `js/pendulum-utils.js`; keep canvas geometry and drawing in `index.html` unless separately characterized.
 - Sonar numeric helpers: `sonarRoundTripTimeMs`, `firstFiniteNumber`, and the echo-time conversion rules. Keep canvas drawing and drag handlers in `index.html`.
 - Experiment mode predicates and titles: `isHookeExperimentMode`, `isSonarExperimentMode`, `isPendulumExperimentMode`, `rightRailExperimentTitle`. These are small but currently read shared state, so prefer passing a state object in the extracted helper.
 - CSV row builders for saved experiment tables. These are mostly pure formatting, but should be separated from click handlers and `storageExport.downloadCsv`.
