@@ -6,8 +6,8 @@ This is a documentation and test inventory only. It does not change dashboard ru
 
 ## Current Size
 
-- `docs/index.html`: 6,929 lines, 346,854 bytes.
-- Extracted dashboard helpers in `docs/js/*.js`: 785 lines, 35,187 bytes.
+- `docs/index.html`: 6,926 lines, 346,471 bytes.
+- Extracted dashboard helpers in `docs/js/*.js`: 859 lines, 37,802 bytes.
 - Largest remaining file by far: `docs/index.html`.
 
 ## Script Load Order
@@ -18,12 +18,13 @@ Current order in `docs/index.html`:
 2. `js/app-config.js`
 3. `js/device-client.js`
 4. `js/storage-export.js`
-5. `js/sonar-utils.js`
-6. `js/chart-utils.js`
-7. `js/physics-calculations.js`
-8. `js/fit-utils.js`
-9. `js/pendulum-utils.js`
-10. Inline dashboard app script
+5. `js/experiment-view-utils.js`
+6. `js/sonar-utils.js`
+7. `js/chart-utils.js`
+8. `js/physics-calculations.js`
+9. `js/fit-utils.js`
+10. `js/pendulum-utils.js`
+11. Inline dashboard app script
 
 The order matters because `app-config.js` reads `window.PalladioExperimentCatalog`, `device-client.js` reads `window.PalladioConfig`, and the inline app reads all exported globals.
 
@@ -47,6 +48,7 @@ See [`draw-contract.md`](draw-contract.md) for the current chart rendering contr
 
 - `tests/pure-helpers.test.js` loads the extracted global helper files in dependency order and checks:
   - catalog/config helpers,
+  - experiment mode predicates and rail titles,
   - chart unit/format helpers,
   - weight and buoyancy calculations,
   - sonar echo-time normalization helpers,
@@ -78,7 +80,7 @@ Good small PR candidates:
 
 - More pendulum pure helpers if they stay DOM-free. The period/sample/interval helpers now live in `js/pendulum-utils.js`; keep canvas geometry and drawing in `index.html` unless separately characterized.
 - More sonar helpers if they stay DOM-free. `sonarRoundTripTimeMs`, `firstFiniteNumber`, and echo-time conversion rules now live in `js/sonar-utils.js`; keep canvas drawing and drag handlers in `index.html`.
-- Experiment mode predicates and titles: `isHookeExperimentMode`, `isSonarExperimentMode`, `isPendulumExperimentMode`, `rightRailExperimentTitle`. These are small but currently read shared state, so prefer passing a state object in the extracted helper.
+- More experiment view helpers if they stay DOM-free. Mode predicates and right-rail titles now live in `js/experiment-view-utils.js` and take an explicit state object.
 - CSV row builders for saved experiment tables. These are mostly pure formatting, but should be separated from click handlers and `storageExport.downloadCsv`.
 - Table/readout formatting helpers around `compactNumber`, `resultCard`, and small summary-card builders, if they can be kept DOM-free.
 

@@ -26,6 +26,7 @@ function loadDashboardHelpers() {
     'docs/js/experiment-catalog.js',
     'docs/js/app-config.js',
     'docs/js/storage-export.js',
+    'docs/js/experiment-view-utils.js',
     'docs/js/sonar-utils.js',
     'docs/js/chart-utils.js',
     'docs/js/physics-calculations.js',
@@ -87,6 +88,25 @@ assert.match(
   ),
   /&lt;ok&gt;/
 );
+
+const viewState = (activeMode, activeExperimentId, activeForceExperiment = '', accelDisplayMode = 'accel') => ({
+  activeMode,
+  activeExperimentId,
+  activeForceExperiment,
+  accelDisplayMode
+});
+assert.equal(dashboard.PalladioExperimentViewUtils.isHookeExperimentMode(viewState(2, 'b-hooke', 'hooke')), true);
+assert.equal(dashboard.PalladioExperimentViewUtils.isWeightExperimentMode(viewState(2, 'a-weight', 'weight')), true);
+assert.equal(dashboard.PalladioExperimentViewUtils.isBuoyancyExperimentMode(viewState(2, 'b-buoyancy', 'buoyancy')), true);
+assert.equal(dashboard.PalladioExperimentViewUtils.isCollisionExperimentMode(viewState(0, '', '', 'force')), true);
+assert.equal(dashboard.PalladioExperimentViewUtils.isMotionExperimentMode(viewState(4, 'b-uniform-motion')), true);
+assert.equal(dashboard.PalladioExperimentViewUtils.isSonarExperimentMode(viewState(4, 'a-sonar')), true);
+assert.equal(dashboard.PalladioExperimentViewUtils.isHeatExperimentMode(viewState(5, 'a-heat')), true);
+assert.equal(dashboard.PalladioExperimentViewUtils.isPendulumExperimentMode(viewState(6, 'a-pendulum')), true);
+assert.equal(dashboard.PalladioExperimentViewUtils.isRightRailMode(viewState(1, '')), false);
+assert.equal(dashboard.PalladioExperimentViewUtils.rightRailExperimentTitle(viewState(2, 'b-hooke', 'hooke')), 'Νόμος του Hooke');
+assert.equal(dashboard.PalladioExperimentViewUtils.rightRailExperimentTitle(viewState(4, 'a-sonar')), 'SONAR: Μέτρηση απόστασης με ήχο');
+assert.equal(dashboard.PalladioExperimentViewUtils.rightRailExperimentTitle(viewState(99, '')), 'Πείραμα');
 
 near(dashboard.PalladioSonarUtils.sonarRoundTripTimeMs(0.74, 1480), 1);
 assert.equal(dashboard.PalladioSonarUtils.firstFiniteNumber({ a: 'x', b: '2.5' }, ['a', 'b']), 2.5);
