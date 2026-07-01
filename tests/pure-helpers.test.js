@@ -26,6 +26,7 @@ function loadDashboardHelpers() {
     'docs/js/experiment-catalog.js',
     'docs/js/app-config.js',
     'docs/js/storage-export.js',
+    'docs/js/sonar-utils.js',
     'docs/js/chart-utils.js',
     'docs/js/physics-calculations.js',
     'docs/js/fit-utils.js',
@@ -86,6 +87,15 @@ assert.match(
   ),
   /&lt;ok&gt;/
 );
+
+near(dashboard.PalladioSonarUtils.sonarRoundTripTimeMs(0.74, 1480), 1);
+assert.equal(dashboard.PalladioSonarUtils.firstFiniteNumber({ a: 'x', b: '2.5' }, ['a', 'b']), 2.5);
+assert.ok(Number.isNaN(dashboard.PalladioSonarUtils.firstFiniteNumber({ a: 'x' }, ['a'])));
+assert.equal(dashboard.PalladioSonarUtils.sonarEchoTimeMsFromSample({ sonarEchoMs: -4 }, 343), 0);
+assert.equal(dashboard.PalladioSonarUtils.sonarEchoTimeMsFromSample({ sonarEchoUs: 2500 }, 343), 2.5);
+near(dashboard.PalladioSonarUtils.sonarEchoTimeMsFromSample({ distance: 0.343 }, 343), 2);
+near(dashboard.PalladioSonarUtils.sonarEchoTimeMsFromSample({ distanceCm: 34.3 }, 343), 2);
+assert.ok(Number.isNaN(dashboard.PalladioSonarUtils.sonarEchoTimeMsFromSample({}, 343)));
 
 const fit = dashboard.PalladioFitUtils.linearFit([
   { x: 0, y: 1 },
