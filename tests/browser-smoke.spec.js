@@ -142,6 +142,102 @@ async function clickMode(page, mode) {
   }, String(mode));
 }
 
+async function seedChartRows(page, mode, values) {
+  await page.evaluate(({ mode, values }) => {
+    setRunning(true);
+    rows = [];
+    lastSampleId = 0;
+    sampleEpochMs = null;
+    const samples = values.map((sample, index) => ({
+      sampleId: index + 1,
+      sampleMs: index * 500,
+      sampleRate: 10,
+      mode,
+      ax: 0.1,
+      ay: 0.2,
+      az: 9.7,
+      gx: 0,
+      gy: 0,
+      gz: 0,
+      force: 1,
+      distance: 0.3,
+      velocity: 0.05,
+      acceleration: 0.01,
+      temp1: 22,
+      temp2: 24,
+      tempDelta: 2,
+      sonarEchoMs: 1.2,
+      ...sample
+    }));
+    addRows(samples);
+    setRunning(false);
+    draw();
+  }, { mode, values });
+}
+
+async function seedHookeTrials(page) {
+  await page.evaluate(() => {
+    hookeTrials = [
+      { extensionCm: 1.0, extensionM: 0.01, forceMean: 1.1, forceMax: 1.2, forceStdDev: 0.04, duration: 1.2, kEstimate: 110 },
+      { extensionCm: 2.0, extensionM: 0.02, forceMean: 2.1, forceMax: 2.2, forceStdDev: 0.05, duration: 1.2, kEstimate: 105 },
+      { extensionCm: 3.0, extensionM: 0.03, forceMean: 3.2, forceMax: 3.3, forceStdDev: 0.06, duration: 1.2, kEstimate: 107 }
+    ];
+    renderHookeExperiment();
+    drawHookeExperimentChart(hookeTrials, hookeFit(hookeTrials));
+    draw();
+  });
+}
+
+async function setSplitChart(page, active) {
+  await page.evaluate(active => {
+    splitChart = active;
+    localStorage.setItem('palladio-split-chart', active ? '1' : '0');
+    updateSplitChartControls();
+    updateModeUi();
+  }, active);
+}
+
+async function setHookeChartView(page, view) {
+  await page.evaluate(view => {
+    hookeChartView = view;
+    localStorage.setItem('palladio-hooke-chart-view', view);
+    updateSplitChartControls();
+    updateModeUi();
+  }, view);
+}
+
+async function chartContractSnapshot(page) {
+  return page.evaluate(() => {
+    const canvasEl = document.getElementById('chart');
+    const image = canvasEl.getContext('2d').getImageData(0, 0, canvasEl.width, canvasEl.height).data;
+    let nonWhitePixels = 0;
+    for (let index = 0; index < image.length; index += 16) {
+      const alpha = image[index + 3];
+      const red = image[index];
+      const green = image[index + 1];
+      const blue = image[index + 2];
+      if (alpha > 0 && (red < 245 || green < 245 || blue < 245)) nonWhitePixels += 1;
+    }
+    const geometry = typeof chartGeometry === 'undefined' ? null : chartGeometry;
+    return {
+      title: document.getElementById('chartTitle').textContent,
+      nonWhitePixels,
+      geometry: geometry
+        ? {
+            split: Boolean(geometry.split),
+            panelCount: Array.isArray(geometry.panels) ? geometry.panels.length : 0,
+            panelKeys: Array.isArray(geometry.panels) ? geometry.panels.map(panel => panel.key || panel.title) : [],
+            selectedSeries: Array.isArray(geometry.selectedSeries)
+              ? geometry.selectedSeries.map(series => series.key)
+              : [],
+            plotW: Math.round(geometry.plotW),
+            plotH: Math.round(geometry.plotH)
+          }
+        : null
+    };
+  });
+}
+
 test('loads dashboard scripts in dependency order and exposes expected globals', async ({ page }) => {
   const errors = await openDashboard(page);
   const scriptOrder = await page.$$eval('script[src]', scripts => scripts.map(script => script.getAttribute('src')));
@@ -257,6 +353,61 @@ test('smokes Hooke, Sonar, Pendulum, and Collision views without console errors'
   await expect(page.locator('#collisionChart')).toBeVisible();
   await expect(page.locator('#collisionExperiment .experiment-detail-group')).toHaveCount(2);
   await expect(page.locator('#collisionExperiment .experiment-detail-group[open]')).toHaveCount(0);
+
+  await expect.poll(() => errors).toEqual([]);
+});
+
+test('characterizes draw special render path order', async ({ page }) => {
+  const errors = await openDashboard(page);
+
+  await clickExperiment(page, 'b-hooke');
+  await seedChartRows(page, 2, [
+    { force: 1.1 },
+    { force: 1.7 },
+    { force: 2.4 },
+    { force: 3.1 }
+  ]);
+  await seedHookeTrials(page);
+
+  await setSplitChart(page, false);
+  await setHookeChartView(page, 'extension');
+  const hookeExtension = await chartContractSnapshot(page);
+  expect(hookeExtension.title).toBe('Δύναμη - επιμήκυνση');
+  expect(hookeExtension.geometry).toBeNull();
+  expect(hookeExtension.nonWhitePixels).toBeGreaterThan(100);
+
+  await setSplitChart(page, true);
+  const hookeSplit = await chartContractSnapshot(page);
+  expect(hookeSplit.title).toBe('Νόμος Hooke: F-t και F-Δx');
+  expect(hookeSplit.geometry).toMatchObject({
+    split: true,
+    panelCount: 1,
+    panelKeys: ['hooke-time'],
+    selectedSeries: ['force']
+  });
+  expect(hookeSplit.geometry.plotW).toBeGreaterThan(100);
+  expect(hookeSplit.geometry.plotH).toBeGreaterThan(100);
+  expect(hookeSplit.nonWhitePixels).toBeGreaterThan(100);
+
+  await clickExperiment(page, 'b-uniform-motion');
+  await seedChartRows(page, 4, [
+    { distance: 0.2, velocity: 0.08, acceleration: 0.01 },
+    { distance: 0.4, velocity: 0.08, acceleration: 0.01 },
+    { distance: 0.6, velocity: 0.08, acceleration: 0.01 },
+    { distance: 0.8, velocity: 0.08, acceleration: 0.01 }
+  ]);
+  await setSplitChart(page, true);
+  const genericSplit = await chartContractSnapshot(page);
+  expect(genericSplit.title).toBe('Κίνηση με αισθητήρα υπερήχων');
+  expect(genericSplit.geometry).toMatchObject({
+    split: true,
+    panelCount: 2,
+    panelKeys: ['primary', 'secondary'],
+    selectedSeries: ['distance', 'velocity']
+  });
+  expect(genericSplit.geometry.plotW).toBeGreaterThan(100);
+  expect(genericSplit.geometry.plotH).toBeGreaterThan(100);
+  expect(genericSplit.nonWhitePixels).toBeGreaterThan(100);
 
   await expect.poll(() => errors).toEqual([]);
 });
