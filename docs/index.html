@@ -1263,6 +1263,7 @@
 <script src="js/app-config.js"></script>
 <script src="js/device-client.js"></script>
 <script src="js/storage-export.js"></script>
+<script src="js/csv-row-utils.js"></script>
 <script src="js/experiment-view-utils.js"></script>
 <script src="js/sonar-utils.js"></script>
 <script src="js/chart-utils.js"></script>
@@ -1284,6 +1285,7 @@ const {
   niceNumber
 } = window.PalladioConfig;
 const storageExport = window.PalladioStorageExport;
+const csvRowUtils = window.PalladioCsvRowUtils;
 const experimentViewUtils = window.PalladioExperimentViewUtils;
 const {
   sonarRoundTripTimeMs: calculateSonarRoundTripTimeMs,
@@ -6328,11 +6330,7 @@ document.getElementById('zoomReset').addEventListener('click', () => resetZoom(t
 
 document.getElementById('export').addEventListener('click', () => {
   const meta = currentMode();
-  const headers = ['time_s', ...meta.series.map(series => series.key + '_' + series.unit.replaceAll('/', '_per_'))];
-  const csvRows = [
-    headers,
-    ...rows.map(row => [row.time.toFixed(3), ...meta.series.map(series => rawRowValue(row, series).toFixed(5))])
-  ];
+  const csvRows = csvRowUtils.buildLiveSeriesCsvRows(rows, meta.series, rawRowValue);
   storageExport.downloadCsv('palladio-' + meta.title.toLowerCase().replaceAll(' ', '-') + '.csv', csvRows);
 });
 
@@ -6400,19 +6398,7 @@ document.getElementById('exportHookeTrials').addEventListener('click', () => {
     showToast('Δεν υπάρχουν δοκιμές Hooke για εξαγωγή.', true);
     return;
   }
-  const csvRows = [
-    ['trial', 'extension_cm', 'extension_m', 'force_mean_N', 'force_max_N', 'force_stddev_N', 'duration_s', 'k_estimate_N_per_m'],
-    ...hookeTrials.map((trial, index) => [
-      String(index + 1),
-      trial.extensionCm.toFixed(3),
-      trial.extensionM.toFixed(5),
-      trial.forceMean.toFixed(6),
-      trial.forceMax.toFixed(6),
-      trial.stdDev.toFixed(6),
-      trial.duration.toFixed(6),
-      trial.kEstimate.toFixed(6)
-    ])
-  ];
+  const csvRows = csvRowUtils.buildHookeTrialCsvRows(hookeTrials);
   storageExport.downloadCsv('palladio-hooke-law.csv', csvRows);
 });
 
@@ -6486,21 +6472,7 @@ document.getElementById('exportWeightTrials').addEventListener('click', () => {
     showToast('Δεν υπάρχουν δοκιμές μάζας/βάρους - επιμήκυνσης για εξαγωγή.', true);
     return;
   }
-  const csvRows = [
-    ['trial', 'mass_g', 'mass_kg', 'extension_cm', 'extension_m', 'measured_weight_N', 'theoretical_weight_N', 'experimental_g_m_per_s2', 'difference_N', 'error_percent'],
-    ...weightTrials.map((trial, index) => [
-      String(index + 1),
-      trial.massG.toFixed(3),
-      trial.massKg.toFixed(6),
-      isFinite(trial.extensionCm) ? trial.extensionCm.toFixed(3) : '',
-      isFinite(trial.extensionM) ? trial.extensionM.toFixed(5) : '',
-      trial.measuredWeight.toFixed(6),
-      trial.theoreticalWeight.toFixed(6),
-      trial.experimentalG.toFixed(6),
-      trial.difference.toFixed(6),
-      trial.errorPercent.toFixed(3)
-    ])
-  ];
+  const csvRows = csvRowUtils.buildWeightTrialCsvRows(weightTrials);
   storageExport.downloadCsv('palladio-weight-mg.csv', csvRows);
 });
 
@@ -6577,28 +6549,7 @@ document.getElementById('exportBuoyancyTrials').addEventListener('click', () => 
     showToast('Δεν υπάρχουν δοκιμές άνωσης για εξαγωγή.', true);
     return;
   }
-  const csvRows = [
-    ['trial', 'volume_ml', 'volume_m3', 'weight_air_N', 'weight_liquid_N', 'experimental_buoyancy_N', 'theoretical_buoyancy_water_N', 'difference_N', 'error_percent', 'loss_percent', 'density_kg_per_m3'],
-    ...buoyancyTrials.map((trial, index) => {
-      const fallback = buoyancyResult(trial.weightAir, trial.weightLiquid, trial.volumeMl);
-      const theoreticalBuoyancy = isFinite(trial.theoreticalBuoyancy) ? trial.theoreticalBuoyancy : (fallback ? fallback.theoreticalBuoyancy : NaN);
-      const difference = isFinite(trial.difference) ? trial.difference : (fallback ? fallback.difference : NaN);
-      const errorPercent = isFinite(trial.errorPercent) ? trial.errorPercent : (fallback ? fallback.errorPercent : NaN);
-      return [
-        String(index + 1),
-        trial.volumeMl.toFixed(3),
-        trial.volumeM3.toExponential(6),
-        trial.weightAir.toFixed(6),
-        trial.weightLiquid.toFixed(6),
-        trial.buoyantForce.toFixed(6),
-        isFinite(theoreticalBuoyancy) ? theoreticalBuoyancy.toFixed(6) : '',
-        isFinite(difference) ? difference.toFixed(6) : '',
-        isFinite(errorPercent) ? errorPercent.toFixed(3) : '',
-        trial.lossPercent.toFixed(3),
-        trial.density.toFixed(3)
-      ];
-    })
-  ];
+  const csvRows = csvRowUtils.buildBuoyancyTrialCsvRows(buoyancyTrials, buoyancyResult);
   storageExport.downloadCsv('palladio-buoyancy.csv', csvRows);
 });
 
@@ -6638,19 +6589,7 @@ document.getElementById('exportCollisionTrials').addEventListener('click', () =>
     showToast('Δεν υπάρχουν δοκιμές για εξαγωγή.', true);
     return;
   }
-  const csvRows = [
-    ['trial', 'v0_m_per_s', 'impulse_Ns', 'abs_impulse_Ns', 'peak_force_N', 'mean_force_N', 'duration_s', 'mass_kg'],
-    ...collisionTrials.map((trial, index) => [
-      String(index + 1),
-      trial.velocity.toFixed(5),
-      trial.impulse.toFixed(6),
-      Math.abs(trial.impulse).toFixed(6),
-      trial.peakForce.toFixed(6),
-      trial.meanForce.toFixed(6),
-      trial.duration.toFixed(6),
-      collisionMassKg.toFixed(5)
-    ])
-  ];
+  const csvRows = csvRowUtils.buildCollisionTrialCsvRows(collisionTrials, collisionMassKg);
   storageExport.downloadCsv('palladio-impulse-vs-velocity.csv', csvRows);
 });
 
@@ -6822,23 +6761,7 @@ document.getElementById('exportPendulumTrials').addEventListener('click', () => 
     showToast('Δεν υπάρχουν δοκιμές εκκρεμούς για εξαγωγή.', true);
     return;
   }
-  const csvRows = [
-    ['trial', 'length_m', 'mass_g', 'angle_deg', 'duration_s', 'delta_t_s', 'oscillations', 'measured_period_s', 'theoretical_period_s', 'half_period_s', 'quarter_period_s', 'ten_periods_s'],
-    ...pendulumTrials.map((trial, index) => [
-      String(index + 1),
-      trial.lengthM.toFixed(4),
-      (trial.massG || pendulumMassG).toFixed(3),
-      trial.angleDeg.toFixed(2),
-      trial.durationS.toFixed(2),
-      (trial.deltaT || 0).toFixed(4),
-      String(trial.oscillations || 0),
-      (trial.measuredPeriod || trial.period).toFixed(6),
-      trial.period.toFixed(6),
-      (trial.period / 2).toFixed(6),
-      (trial.period / 4).toFixed(6),
-      (trial.period * 10).toFixed(6)
-    ])
-  ];
+  const csvRows = csvRowUtils.buildPendulumTrialCsvRows(pendulumTrials, pendulumMassG);
   storageExport.downloadCsv('palladio-pendulum.csv', csvRows);
 });
 
