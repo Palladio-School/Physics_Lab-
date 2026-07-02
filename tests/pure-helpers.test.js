@@ -27,6 +27,7 @@ function loadDashboardHelpers() {
     'docs/js/app-config.js',
     'docs/js/storage-export.js',
     'docs/js/csv-row-utils.js',
+    'docs/js/readout-utils.js',
     'docs/js/experiment-view-utils.js',
     'docs/js/sonar-utils.js',
     'docs/js/chart-utils.js',
@@ -171,6 +172,19 @@ assert.deepEqual(
     period: 2
   }], 100))[1],
   ['1', '1.0000', '120.000', '10.00', '20.00', '9.2000', '5', '1.840000', '2.000000', '1.000000', '0.500000', '20.000000']
+);
+assert.equal(
+  dashboard.PalladioReadoutUtils.summaryCard('<T1>', 0, '°C & stable'),
+  '<div class="summary-card"><span>&lt;T1&gt;</span><strong>0</strong><small>°C &amp; stable</small></div>'
+);
+assert.equal(dashboard.PalladioReadoutUtils.joinCards(['a', '', 'b']), 'ab');
+assert.equal(
+  dashboard.PalladioReadoutUtils.emptyMessage('<empty>'),
+  '<div class="experiment-empty">&lt;empty&gt;</div>'
+);
+assert.equal(
+  dashboard.PalladioReadoutUtils.emptyTableRow(3, 'no trials'),
+  '<tr><td colspan="3" class="experiment-empty">no trials</td></tr>'
 );
 
 const viewState = (activeMode, activeExperimentId, activeForceExperiment = '', accelDisplayMode = 'accel') => ({
