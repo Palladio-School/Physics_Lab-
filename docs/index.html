@@ -1263,6 +1263,7 @@
 <script src="js/app-config.js"></script>
 <script src="js/device-client.js"></script>
 <script src="js/storage-export.js"></script>
+<script src="js/experiment-view-utils.js"></script>
 <script src="js/sonar-utils.js"></script>
 <script src="js/chart-utils.js"></script>
 <script src="js/physics-calculations.js"></script>
@@ -1283,6 +1284,7 @@ const {
   niceNumber
 } = window.PalladioConfig;
 const storageExport = window.PalladioStorageExport;
+const experimentViewUtils = window.PalladioExperimentViewUtils;
 const {
   sonarRoundTripTimeMs: calculateSonarRoundTripTimeMs,
   firstFiniteNumber: findFirstFiniteNumber,
@@ -1723,57 +1725,52 @@ function saveBuoyancyCapture() {
   storageExport.setItem('palladio-buoyancy-liquid-force', buoyancyLiquidForce);
 }
 
-function isCollisionExperimentMode() {
-  return activeMode === 0 && accelDisplayMode === 'force';
+function experimentViewState() {
+  return { activeMode, activeExperimentId, activeForceExperiment, accelDisplayMode };
 }
 
 function isHookeExperimentMode() {
-  return activeMode === 2 && activeForceExperiment === 'hooke';
+  return experimentViewUtils.isHookeExperimentMode(experimentViewState());
 }
 
 function isWeightExperimentMode() {
-  return activeMode === 2 && activeForceExperiment === 'weight';
+  return experimentViewUtils.isWeightExperimentMode(experimentViewState());
 }
 
 function isBuoyancyExperimentMode() {
-  return activeMode === 2 && activeForceExperiment === 'buoyancy';
+  return experimentViewUtils.isBuoyancyExperimentMode(experimentViewState());
+}
+
+function isCollisionExperimentMode() {
+  return experimentViewUtils.isCollisionExperimentMode(experimentViewState());
 }
 
 function isForceExperimentMode() {
-  return activeMode === 2;
+  return experimentViewUtils.isForceExperimentMode(experimentViewState());
 }
 
 function isMotionExperimentMode() {
-  return activeMode === 4 && ['a-motion', 'a-speed', 'b-uniform-motion'].includes(activeExperimentId);
+  return experimentViewUtils.isMotionExperimentMode(experimentViewState());
 }
 
 function isSonarExperimentMode() {
-  return activeMode === 4 && activeExperimentId === 'a-sonar';
+  return experimentViewUtils.isSonarExperimentMode(experimentViewState());
 }
 
 function isHeatExperimentMode() {
-  return activeMode === 5 && activeExperimentId === 'a-heat';
+  return experimentViewUtils.isHeatExperimentMode(experimentViewState());
 }
 
 function isPendulumExperimentMode() {
-  return activeMode === 6 && activeExperimentId === 'a-pendulum';
+  return experimentViewUtils.isPendulumExperimentMode(experimentViewState());
 }
 
 function isRightRailMode() {
-  return isCollisionExperimentMode() || isMotionExperimentMode() || isForceExperimentMode() || isHeatExperimentMode() || isPendulumExperimentMode();
+  return experimentViewUtils.isRightRailMode(experimentViewState());
 }
 
 function rightRailExperimentTitle() {
-  if (isHookeExperimentMode()) return 'Νόμος του Hooke';
-  if (isWeightExperimentMode()) return 'Μάζα/Βάρος - επιμήκυνση';
-  if (isBuoyancyExperimentMode()) return 'Άνωση';
-  if (isForceExperimentMode()) return 'Πείραμα δύναμης';
-  if (isHeatExperimentMode()) return 'Θερμική ισορροπία';
-  if (isPendulumExperimentMode()) return 'Απλό εκκρεμές';
-  if (isSonarExperimentMode()) return 'SONAR: Μέτρηση απόστασης με ήχο';
-  if (isMotionExperimentMode()) return 'Ευθύγραμμη ομαλή κίνηση';
-  if (isCollisionExperimentMode()) return '3ος Νόμος Newton: Κρούση και ώθηση';
-  return 'Πείραμα';
+  return experimentViewUtils.rightRailExperimentTitle(experimentViewState());
 }
 
 function railMaxWidth() {
