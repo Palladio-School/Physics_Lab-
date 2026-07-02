@@ -26,6 +26,7 @@ function loadDashboardHelpers() {
     'docs/js/experiment-catalog.js',
     'docs/js/app-config.js',
     'docs/js/storage-export.js',
+    'docs/js/csv-row-utils.js',
     'docs/js/experiment-view-utils.js',
     'docs/js/sonar-utils.js',
     'docs/js/chart-utils.js',
@@ -45,6 +46,10 @@ function near(actual, expected, tolerance = 1e-9) {
     Math.abs(actual - expected) <= tolerance,
     `expected ${actual} to be within ${tolerance} of ${expected}`
   );
+}
+
+function plain(value) {
+  return JSON.parse(JSON.stringify(value));
 }
 
 const dashboard = loadDashboardHelpers();
@@ -87,6 +92,85 @@ assert.match(
     '2026-06-27'
   ),
   /&lt;ok&gt;/
+);
+
+assert.deepEqual(
+  plain(dashboard.PalladioCsvRowUtils.buildLiveSeriesCsvRows(
+    [{ time: 1.23456, sample: { force: -0.981 } }],
+    [{ key: 'force', unit: 'N/kg' }],
+    (row, series) => row.sample[series.key]
+  )),
+  [
+    ['time_s', 'force_N_per_kg'],
+    ['1.235', '-0.98100']
+  ]
+);
+assert.deepEqual(
+  plain(dashboard.PalladioCsvRowUtils.buildHookeTrialCsvRows([{
+    extensionCm: 2.5,
+    extensionM: 0.025,
+    forceMean: 1.2,
+    forceMax: 1.25,
+    stdDev: 0.02,
+    duration: 3,
+    kEstimate: 48
+  }])),
+  [
+    ['trial', 'extension_cm', 'extension_m', 'force_mean_N', 'force_max_N', 'force_stddev_N', 'duration_s', 'k_estimate_N_per_m'],
+    ['1', '2.500', '0.02500', '1.200000', '1.250000', '0.020000', '3.000000', '48.000000']
+  ]
+);
+assert.deepEqual(
+  plain(dashboard.PalladioCsvRowUtils.buildWeightTrialCsvRows([{
+    massG: 100,
+    massKg: 0.1,
+    extensionCm: NaN,
+    extensionM: NaN,
+    measuredWeight: 0.98,
+    theoreticalWeight: 0.981,
+    experimentalG: 9.8,
+    difference: -0.001,
+    errorPercent: 0.1
+  }]))[1],
+  ['1', '100.000', '0.100000', '', '', '0.980000', '0.981000', '9.800000', '-0.001000', '0.100']
+);
+assert.deepEqual(
+  plain(dashboard.PalladioCsvRowUtils.buildBuoyancyTrialCsvRows([{
+    volumeMl: 100,
+    volumeM3: 0.0001,
+    weightAir: 2,
+    weightLiquid: 1.019,
+    buoyantForce: 0.981,
+    theoreticalBuoyancy: NaN,
+    difference: NaN,
+    errorPercent: NaN,
+    lossPercent: 49.05,
+    density: 1000
+  }], dashboard.PalladioPhysicsCalculations.buoyancyResult))[1],
+  ['1', '100.000', '1.000000e-4', '2.000000', '1.019000', '0.981000', '0.981000', '0.000000', '0.000', '49.050', '1000.000']
+);
+assert.deepEqual(
+  plain(dashboard.PalladioCsvRowUtils.buildCollisionTrialCsvRows([{
+    velocity: 0.5,
+    impulse: -0.12,
+    peakForce: 2.5,
+    meanForce: 1.1,
+    duration: 0.25
+  }], 0.2))[1],
+  ['1', '0.50000', '-0.120000', '0.120000', '2.500000', '1.100000', '0.250000', '0.20000']
+);
+assert.deepEqual(
+  plain(dashboard.PalladioCsvRowUtils.buildPendulumTrialCsvRows([{
+    lengthM: 1,
+    massG: 120,
+    angleDeg: 10,
+    durationS: 20,
+    deltaT: 9.2,
+    oscillations: 5,
+    measuredPeriod: 1.84,
+    period: 2
+  }], 100))[1],
+  ['1', '1.0000', '120.000', '10.00', '20.00', '9.2000', '5', '1.840000', '2.000000', '1.000000', '0.500000', '20.000000']
 );
 
 const viewState = (activeMode, activeExperimentId, activeForceExperiment = '', accelDisplayMode = 'accel') => ({

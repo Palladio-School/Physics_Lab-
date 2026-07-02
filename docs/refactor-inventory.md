@@ -6,8 +6,8 @@ This is a documentation and test inventory only. It does not change dashboard ru
 
 ## Current Size
 
-- `docs/index.html`: 6,926 lines, 346,471 bytes.
-- Extracted dashboard helpers in `docs/js/*.js`: 859 lines, 37,802 bytes.
+- `docs/index.html`: 6,849 lines, 343,205 bytes.
+- Extracted dashboard helpers in `docs/js/*.js`: 996 lines, 42,930 bytes.
 - Largest remaining file by far: `docs/index.html`.
 
 ## Script Load Order
@@ -18,13 +18,14 @@ Current order in `docs/index.html`:
 2. `js/app-config.js`
 3. `js/device-client.js`
 4. `js/storage-export.js`
-5. `js/experiment-view-utils.js`
-6. `js/sonar-utils.js`
-7. `js/chart-utils.js`
-8. `js/physics-calculations.js`
-9. `js/fit-utils.js`
-10. `js/pendulum-utils.js`
-11. Inline dashboard app script
+5. `js/csv-row-utils.js`
+6. `js/experiment-view-utils.js`
+7. `js/sonar-utils.js`
+8. `js/chart-utils.js`
+9. `js/physics-calculations.js`
+10. `js/fit-utils.js`
+11. `js/pendulum-utils.js`
+12. Inline dashboard app script
 
 The order matters because `app-config.js` reads `window.PalladioExperimentCatalog`, `device-client.js` reads `window.PalladioConfig`, and the inline app reads all exported globals.
 
@@ -54,6 +55,7 @@ See [`draw-contract.md`](draw-contract.md) for the current chart rendering contr
   - sonar echo-time normalization helpers,
   - pendulum period, sample, and interval helpers,
   - storage/export escaping and report generation,
+  - CSV row builders for live series and saved experiment exports,
   - linear, Hooke, collision, linear-system, polynomial, and auto fit helpers.
 - `tests/browser-smoke.spec.js` serves `docs/` locally with mocked M5-shaped API responses and checks:
   - script load order,
@@ -81,7 +83,7 @@ Good small PR candidates:
 - More pendulum pure helpers if they stay DOM-free. The period/sample/interval helpers now live in `js/pendulum-utils.js`; keep canvas geometry and drawing in `index.html` unless separately characterized.
 - More sonar helpers if they stay DOM-free. `sonarRoundTripTimeMs`, `firstFiniteNumber`, and echo-time conversion rules now live in `js/sonar-utils.js`; keep canvas drawing and drag handlers in `index.html`.
 - More experiment view helpers if they stay DOM-free. Mode predicates and right-rail titles now live in `js/experiment-view-utils.js` and take an explicit state object.
-- CSV row builders for saved experiment tables. These are mostly pure formatting, but should be separated from click handlers and `storageExport.downloadCsv`.
+- More CSV/export helpers if they stay DOM-free. Live series and saved experiment CSV rows now live in `js/csv-row-utils.js`; keep click handlers and `storageExport.downloadCsv` in `index.html`.
 - Table/readout formatting helpers around `compactNumber`, `resultCard`, and small summary-card builders, if they can be kept DOM-free.
 
 Avoid for now:
