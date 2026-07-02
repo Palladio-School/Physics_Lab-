@@ -28,6 +28,7 @@ function loadDashboardHelpers() {
     'docs/js/storage-export.js',
     'docs/js/csv-row-utils.js',
     'docs/js/readout-utils.js',
+    'docs/js/worksheet-utils.js',
     'docs/js/experiment-view-utils.js',
     'docs/js/sonar-utils.js',
     'docs/js/chart-utils.js',
@@ -85,14 +86,36 @@ dashboard.localStorage.setItem('valid-array', '[{"x":1}]');
 dashboard.localStorage.setItem('invalid-array', '{"x":1}');
 assert.equal(JSON.stringify(dashboard.PalladioStorageExport.loadJsonArray('valid-array')), '[{"x":1}]');
 assert.equal(JSON.stringify(dashboard.PalladioStorageExport.loadJsonArray('invalid-array')), '[]');
-assert.equal(dashboard.PalladioStorageExport.escapeHtml('<tag attr="x">'), '&lt;tag attr=&quot;x&quot;&gt;');
 assert.match(
-  dashboard.PalladioStorageExport.buildSonarWorksheetReport(
+  dashboard.PalladioWorksheetUtils.buildSonarWorksheetReport(
     [{ label: 'Θέση 1', dtMs: '1.2', dtS: '0.0012', distance: '0.89' }],
     '<ok>',
     '2026-06-27'
   ),
   /&lt;ok&gt;/
+);
+assert.equal(
+  dashboard.PalladioWorksheetUtils.listItems(['<one>', 'two']),
+  '<li>&lt;one&gt;</li><li>two</li>'
+);
+assert.deepEqual(
+  plain(dashboard.PalladioWorksheetUtils.buildSonarWorksheetData(
+    [{ label: 'Θέση <1>' }, { label: 'Θέση 2' }],
+    1,
+    [1.234, NaN],
+    { seconds: ['0.0012', ''], distance: ['0.91', ''] },
+    value => value.toFixed(2)
+  )),
+  [
+    { label: 'Θέση <1>', active: false, dtMs: '1.23', dtS: '0.0012', distance: '0.91' },
+    { label: 'Θέση 2', active: true, dtMs: '', dtS: '', distance: '' }
+  ]
+);
+assert.match(
+  dashboard.PalladioWorksheetUtils.buildSonarWorksheetRows([
+    { label: 'Θέση <1>', active: true, dtMs: '1.23', dtS: '<s>', distance: '0.91' }
+  ]),
+  /&lt;s&gt;/
 );
 
 assert.deepEqual(

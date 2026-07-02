@@ -1265,6 +1265,7 @@
 <script src="js/storage-export.js"></script>
 <script src="js/csv-row-utils.js"></script>
 <script src="js/readout-utils.js"></script>
+<script src="js/worksheet-utils.js"></script>
 <script src="js/experiment-view-utils.js"></script>
 <script src="js/sonar-utils.js"></script>
 <script src="js/chart-utils.js"></script>
@@ -1288,6 +1289,7 @@ const {
 const storageExport = window.PalladioStorageExport;
 const csvRowUtils = window.PalladioCsvRowUtils;
 const readoutUtils = window.PalladioReadoutUtils;
+const worksheetUtils = window.PalladioWorksheetUtils;
 const experimentViewUtils = window.PalladioExperimentViewUtils;
 const summaryCard = readoutUtils.summaryCard;
 const joinSummaryCards = readoutUtils.joinCards;
@@ -2088,8 +2090,8 @@ function renderMotionExperiment() {
   document.getElementById('motionWorksheetTitle').textContent = copy.worksheetTitle;
   document.getElementById('motionWorksheetDescription').textContent = copy.worksheetDescription;
   document.getElementById('motionWorksheetChip').textContent = copy.chip;
-  document.getElementById('motionWorksheetInstructions').innerHTML = copy.instructions.map(item => '<li>' + item + '</li>').join('');
-  document.getElementById('motionWorksheetQuestions').innerHTML = copy.questions.map(item => '<li>' + item + '</li>').join('');
+  document.getElementById('motionWorksheetInstructions').innerHTML = worksheetUtils.listItems(copy.instructions);
+  document.getElementById('motionWorksheetQuestions').innerHTML = worksheetUtils.listItems(copy.questions);
   const metrics = motionExperimentMetrics();
   const series = metrics && metrics.series ? metrics.series : currentMode().series[analysisSeriesIndex] || currentMode().series[0];
   const usingDistance = series.key === 'distance';
@@ -2265,29 +2267,30 @@ function renderSonarWorksheet() {
   const body = document.getElementById('sonarWorksheetRows');
   const conclusion = document.getElementById('sonarConclusion');
   if (!body) return;
-  body.innerHTML = SONAR_POSITIONS.map((position, index) => {
-    const dtMs = sonarDisplayEchoMs(index);
-    const savedSeconds = sonarWorksheetAnswers.seconds[index] || '';
-    const savedDistance = sonarWorksheetAnswers.distance[index] || '';
-    return '<tr class="' + (index === sonarPositionIndex ? 'active' : '') + '">' +
-      '<td>' + position.label + '</td>' +
-      '<td>' + (Number.isFinite(dtMs) ? compactNumber(dtMs) : '—') + '</td>' +
-      '<td><input data-sonar-seconds-answer="' + index + '" inputmode="decimal" value="' + savedSeconds + '" aria-label="Χρόνος σε δευτερόλεπτα για ' + position.label + '"></td>' +
-      '<td><input data-sonar-distance-answer="' + index + '" inputmode="decimal" value="' + savedDistance + '" aria-label="Απόσταση μαθητή για ' + position.label + '"></td>' +
-      '</tr>';
-  }).join('');
+  body.innerHTML = worksheetUtils.buildSonarWorksheetRows(sonarWorksheetDisplayData());
   if (conclusion && conclusion.value !== sonarWorksheetAnswers.conclusion) {
     conclusion.value = sonarWorksheetAnswers.conclusion;
   }
 }
 
+function sonarWorksheetDisplayData() {
+  return worksheetUtils.buildSonarWorksheetData(
+    SONAR_POSITIONS,
+    sonarPositionIndex,
+    SONAR_POSITIONS.map((position, index) => sonarDisplayEchoMs(index)),
+    sonarWorksheetAnswers,
+    compactNumber
+  );
+}
+
 function sonarWorksheetData() {
-  return SONAR_POSITIONS.map((position, index) => ({
-    label: position.label,
-    dtMs: Number.isFinite(sonarMeasuredEchoMs[index]) ? compactNumber(sonarMeasuredEchoMs[index]) : '',
-    dtS: sonarWorksheetAnswers.seconds[index] || '',
-    distance: sonarWorksheetAnswers.distance[index] || ''
-  }));
+  return worksheetUtils.buildSonarWorksheetData(
+    SONAR_POSITIONS,
+    sonarPositionIndex,
+    sonarMeasuredEchoMs,
+    sonarWorksheetAnswers,
+    compactNumber
+  );
 }
 
 function saveSonarWorksheetAndPrint() {
@@ -2300,7 +2303,7 @@ function saveSonarWorksheetAndPrint() {
   const conclusion = document.getElementById('sonarConclusion');
   if (conclusion) sonarWorksheetAnswers.conclusion = conclusion.value;
 
-  const reportHtml = storageExport.buildSonarWorksheetReport(
+  const reportHtml = worksheetUtils.buildSonarWorksheetReport(
     sonarWorksheetData(),
     sonarWorksheetAnswers.conclusion,
     new Date().toLocaleString('el-GR')
