@@ -29,6 +29,7 @@ function loadDashboardHelpers() {
     'docs/js/csv-row-utils.js',
     'docs/js/readout-utils.js',
     'docs/js/worksheet-utils.js',
+    'docs/js/panel-data-utils.js',
     'docs/js/experiment-view-utils.js',
     'docs/js/sonar-utils.js',
     'docs/js/chart-utils.js',
@@ -208,6 +209,44 @@ assert.equal(
 assert.equal(
   dashboard.PalladioReadoutUtils.emptyTableRow(3, 'no trials'),
   '<tr><td colspan="3" class="experiment-empty">no trials</td></tr>'
+);
+assert.deepEqual(
+  plain(dashboard.PalladioPanelDataUtils.buildMotionSummaryCards({
+    metrics: { ready: true, duration: 2, delta: 1.5, slope: 0.75, fitR2: 0.99 },
+    velocityArea: { signedArea: 1.48 },
+    seriesKey: 'distance'
+  }, value => Number(value).toFixed(2))),
+  [
+    { label: 'Διάρκεια', value: '2.00', detail: 's στο επιλεγμένο τμήμα' },
+    { label: 'Εμβαδό υ–t', value: '1.48', detail: 'm μετατόπιση στο A–B' },
+    { label: 'Δx', value: '1.50', detail: 'm μετατόπιση' },
+    { label: 'Μέση ταχύτητα', value: '0.75', detail: 'm/s από την κλίση' },
+    { label: 'R² fit', value: '0.99', detail: 'όσο πιο κοντά στο 1 τόσο πιο γραμμικό' }
+  ]
+);
+assert.equal(dashboard.PalladioPanelDataUtils.buildMotionSummaryCards({ metrics: { ready: false } }, String).length, 0);
+assert.deepEqual(
+  plain(dashboard.PalladioPanelDataUtils.buildHeatSummaryCards({ t1: 20, t2: 25, delta: -5, absDelta: 5 }, String)),
+  [
+    { label: 'Αισθητήρας T1', value: '20', detail: '°C κρύο νερό' },
+    { label: 'Αισθητήρας T2', value: '25', detail: '°C ζεστό νερό' },
+    { label: 'Διαφορά ΔT', value: '-5', detail: '°C = T1 - T2' },
+    { label: '|ΔT|', value: '5', detail: 'όσο μικραίνει, πλησιάζουν ισορροπία' }
+  ]
+);
+assert.deepEqual(
+  plain(dashboard.PalladioPanelDataUtils.buildPendulumSummaryCards({
+    lengthM: 1,
+    massG: 100,
+    angleDeg: 10,
+    measuredPeriod: 2.01,
+    period: 2,
+    inspectSample: { pendulumDisplacementCm: 3 },
+    inspectTime: 0.5,
+    selectedDelta: 10,
+    selectedInfo: { label: '5 T', detail: 'πέντε περίοδοι' }
+  }, value => Number(value).toFixed(1))).map(card => card.label),
+  ['Μήκος L', 'Μάζα m', 'Πλάτος A', 'Θέση σώματος', 'T από μέτρηση', 'T θεωρητική', 'T/2', 'T/4', 'Επιλεγμένο Δt A-B', 'Το A-B μοιάζει με']
 );
 
 const viewState = (activeMode, activeExperimentId, activeForceExperiment = '', accelDisplayMode = 'accel') => ({
