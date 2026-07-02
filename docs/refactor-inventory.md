@@ -6,8 +6,8 @@ This is a documentation and test inventory only. It does not change dashboard ru
 
 ## Current Size
 
-- `docs/index.html`: 6,858 lines, 338,216 bytes.
-- Extracted dashboard helpers in `docs/js/*.js`: 1,070 lines, 45,529 bytes.
+- `docs/index.html`: 6,836 lines, 335,730 bytes.
+- Extracted dashboard helpers in `docs/js/*.js`: 1,155 lines, 49,859 bytes.
 - Largest remaining file by far: `docs/index.html`.
 
 ## Script Load Order
@@ -21,13 +21,14 @@ Current order in `docs/index.html`:
 5. `js/csv-row-utils.js`
 6. `js/readout-utils.js`
 7. `js/worksheet-utils.js`
-8. `js/experiment-view-utils.js`
-9. `js/sonar-utils.js`
-10. `js/chart-utils.js`
-11. `js/physics-calculations.js`
-12. `js/fit-utils.js`
-13. `js/pendulum-utils.js`
-14. Inline dashboard app script
+8. `js/panel-data-utils.js`
+9. `js/experiment-view-utils.js`
+10. `js/sonar-utils.js`
+11. `js/chart-utils.js`
+12. `js/physics-calculations.js`
+13. `js/fit-utils.js`
+14. `js/pendulum-utils.js`
+15. Inline dashboard app script
 
 The order matters because `app-config.js` reads `window.PalladioExperimentCatalog`, `device-client.js` reads `window.PalladioConfig`, and the inline app reads all exported globals.
 
@@ -60,6 +61,7 @@ See [`draw-contract.md`](draw-contract.md) for the current chart rendering contr
   - CSV row builders for live series and saved experiment exports,
   - readout summary cards and empty table/message formatting,
   - worksheet list, Sonar worksheet row/data, and printable report helpers,
+  - panel summary display-model builders for Motion, Pendulum, and Heat,
   - linear, Hooke, collision, linear-system, polynomial, and auto fit helpers.
 - `tests/browser-smoke.spec.js` serves `docs/` locally with mocked M5-shaped API responses and checks:
   - script load order,
@@ -90,6 +92,7 @@ Good small PR candidates:
 - More CSV/export helpers if they stay DOM-free. Live series and saved experiment CSV rows now live in `js/csv-row-utils.js`; keep click handlers and `storageExport.downloadCsv` in `index.html`.
 - More readout formatting helpers if they stay DOM-free. Summary cards and empty readouts now live in `js/readout-utils.js`; keep render decisions and DOM assignment in `index.html`.
 - More worksheet/report helpers if they stay DOM-free. Motion worksheet lists and Sonar worksheet/report builders now live in `js/worksheet-utils.js`; keep user input collection and print-window opening in `index.html`.
+- More panel data-shaping helpers if they stay DOM-free. Motion, Pendulum, and Heat summary card models now live in `js/panel-data-utils.js`; keep render decisions and DOM assignment in `index.html`.
 
 Avoid for now:
 

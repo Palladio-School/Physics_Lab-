@@ -1266,6 +1266,7 @@
 <script src="js/csv-row-utils.js"></script>
 <script src="js/readout-utils.js"></script>
 <script src="js/worksheet-utils.js"></script>
+<script src="js/panel-data-utils.js"></script>
 <script src="js/experiment-view-utils.js"></script>
 <script src="js/sonar-utils.js"></script>
 <script src="js/chart-utils.js"></script>
@@ -1290,11 +1291,15 @@ const storageExport = window.PalladioStorageExport;
 const csvRowUtils = window.PalladioCsvRowUtils;
 const readoutUtils = window.PalladioReadoutUtils;
 const worksheetUtils = window.PalladioWorksheetUtils;
+const panelDataUtils = window.PalladioPanelDataUtils;
 const experimentViewUtils = window.PalladioExperimentViewUtils;
 const summaryCard = readoutUtils.summaryCard;
 const joinSummaryCards = readoutUtils.joinCards;
 const emptyMessage = readoutUtils.emptyMessage;
 const emptyTableRow = readoutUtils.emptyTableRow;
+function summaryCardsFromModels(cardModels) {
+  return joinSummaryCards(cardModels.map(card => summaryCard(card.label, card.value, card.detail)));
+}
 const {
   sonarRoundTripTimeMs: calculateSonarRoundTripTimeMs,
   firstFiniteNumber: findFirstFiniteNumber,
@@ -2096,7 +2101,6 @@ function renderMotionExperiment() {
   const series = metrics && metrics.series ? metrics.series : currentMode().series[analysisSeriesIndex] || currentMode().series[0];
   const usingDistance = series.key === 'distance';
   const usingVelocity = series.key === 'velocity';
-  const usingAcceleration = series.key === 'acceleration';
   const velocityArea = motionVelocityAreaMetrics();
 
   areaResult.hidden = !velocityArea;
@@ -2111,25 +2115,11 @@ function renderMotionExperiment() {
   if (!metrics || !metrics.ready) {
     summary.innerHTML = emptyMessage('Ξεκίνα μία διαδρομή μπροστά από τον αισθητήρα και μετά επίλεξε το πιο καθαρό κομμάτι στο γράφημα.');
   } else {
-    const cards = [];
-    cards.push(summaryCard('Διάρκεια', compactNumber(metrics.duration), 's στο επιλεγμένο τμήμα'));
-    if (velocityArea) {
-      cards.push(summaryCard('Εμβαδό υ–t', compactNumber(velocityArea.signedArea), 'm μετατόπιση στο A–B'));
-    }
-    if (usingDistance) {
-      cards.push(summaryCard('Δx', compactNumber(metrics.delta), 'm μετατόπιση'));
-      cards.push(summaryCard('Μέση ταχύτητα', compactNumber(metrics.slope), 'm/s από την κλίση'));
-      cards.push(summaryCard('R² fit', metrics.fitR2 !== null ? compactNumber(metrics.fitR2) : '—', 'όσο πιο κοντά στο 1 τόσο πιο γραμμικό'));
-    } else if (usingVelocity) {
-      cards.push(summaryCard('Μέση ταχύτητα', compactNumber(metrics.mean), 'm/s στο τμήμα'));
-      cards.push(summaryCard('Τυπική απόκλιση', compactNumber(metrics.stdDev), 'm/s σταθερότητα'));
-      cards.push(summaryCard('Κλίση υ-t', compactNumber(metrics.slope), 'm/s² ιδανικά κοντά στο 0'));
-    } else {
-      cards.push(summaryCard('Μέση επιτάχυνση', compactNumber(metrics.mean), 'm/s²'));
-      cards.push(summaryCard('Τυπική απόκλιση', compactNumber(metrics.stdDev), 'm/s²'));
-      cards.push(summaryCard('Γραμμικότητα', metrics.linearR2 !== null ? compactNumber(metrics.linearR2) : '—', 'βοηθητικός έλεγχος'));
-    }
-    summary.innerHTML = joinSummaryCards(cards);
+    summary.innerHTML = summaryCardsFromModels(panelDataUtils.buildMotionSummaryCards({
+      metrics,
+      velocityArea,
+      seriesKey: series.key
+    }, compactNumber));
   }
 
   const steps = usingDistance
@@ -3818,24 +3808,17 @@ function renderPendulumExperiment() {
   status.textContent = inspectSample
     ? 'Σώμα: t ' + compactNumber(pendulumInspectTime) + ' s · x ' + compactNumber(inspectSample.pendulumDisplacementCm) + ' cm'
     : 'T θεωρ. ' + compactNumber(period) + ' s';
-  summary.innerHTML = joinSummaryCards([
-    summaryCard('Μήκος L', compactNumber(pendulumLengthM), 'm'),
-    summaryCard('Μάζα m', compactNumber(pendulumMassG), 'g · δεν αλλάζει το T'),
-    summaryCard('Πλάτος A', compactNumber(pendulumLengthM * (pendulumAngleDeg * Math.PI / 180) * 100), 'cm από τη θέση ισορροπίας'),
-    inspectSample
-      ? summaryCard('Θέση σώματος', compactNumber(inspectSample.pendulumDisplacementCm), 'cm στη στιγμή t = ' + compactNumber(pendulumInspectTime) + ' s')
-      : '',
-    summaryCard('T από μέτρηση', compactNumber(measuredPeriod), 's = Δt / N'),
-    summaryCard('T θεωρητική', compactNumber(period), 's = 2π√(L/g), ανεξάρτητη από m'),
-    summaryCard('T/2', compactNumber(period / 2), 'ακραία θέση σε αντίθετη ακραία'),
-    summaryCard('T/4', compactNumber(period / 4), 'ισορροπία προς ακραία θέση'),
-    selectedDelta !== null
-      ? summaryCard('Επιλεγμένο Δt A-B', compactNumber(selectedDelta), 's από τη γραφική')
-      : '',
-    selectedDelta !== null && selectedInfo
-      ? summaryCard('Το A-B μοιάζει με', selectedInfo.label, selectedInfo.detail)
-      : ''
-  ]);
+  summary.innerHTML = summaryCardsFromModels(panelDataUtils.buildPendulumSummaryCards({
+    lengthM: pendulumLengthM,
+    massG: pendulumMassG,
+    angleDeg: pendulumAngleDeg,
+    measuredPeriod,
+    period,
+    inspectSample,
+    inspectTime: pendulumInspectTime,
+    selectedDelta,
+    selectedInfo
+  }, compactNumber));
   protocol.innerHTML =
     '<section class="experiment-study-card"><h5>Στόχος</h5><p>Να καταλάβουν οι μαθητές ότι περίοδος T είναι ο χρόνος για μία πλήρη ταλάντωση.</p></section>' +
     '<section class="experiment-study-card"><h5>Απομάκρυνση και πλάτος</h5><p>Η απομάκρυνση x δείχνει πόσο μακριά βρίσκεται το σώμα από τη θέση ισορροπίας κάθε στιγμή. Το πλάτος A είναι η μεγαλύτερη απομάκρυνση και φαίνεται ως σταθερή γραμμή στο γράφημα.</p></section>' +
@@ -3890,12 +3873,7 @@ function renderHeatExperiment() {
     : 'Αναμονή για δύο αισθητήρες DS18B20';
 
   summary.innerHTML = hasValues
-    ? joinSummaryCards([
-        summaryCard('Αισθητήρας T1', compactNumber(t1), '°C κρύο νερό'),
-        summaryCard('Αισθητήρας T2', compactNumber(t2), '°C ζεστό νερό'),
-        summaryCard('Διαφορά ΔT', compactNumber(delta), '°C = T1 - T2'),
-        summaryCard('|ΔT|', compactNumber(absDelta), 'όσο μικραίνει, πλησιάζουν ισορροπία')
-      ])
+    ? summaryCardsFromModels(panelDataUtils.buildHeatSummaryCards({ t1, t2, delta, absDelta }, compactNumber))
     : emptyMessage('Πάτα Έναρξη και περίμενε να εμφανιστούν οι δύο θερμοκρασίες.');
 
   protocol.innerHTML =
