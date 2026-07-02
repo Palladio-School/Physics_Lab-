@@ -1264,6 +1264,7 @@
 <script src="js/device-client.js"></script>
 <script src="js/storage-export.js"></script>
 <script src="js/csv-row-utils.js"></script>
+<script src="js/readout-utils.js"></script>
 <script src="js/experiment-view-utils.js"></script>
 <script src="js/sonar-utils.js"></script>
 <script src="js/chart-utils.js"></script>
@@ -1286,7 +1287,12 @@ const {
 } = window.PalladioConfig;
 const storageExport = window.PalladioStorageExport;
 const csvRowUtils = window.PalladioCsvRowUtils;
+const readoutUtils = window.PalladioReadoutUtils;
 const experimentViewUtils = window.PalladioExperimentViewUtils;
+const summaryCard = readoutUtils.summaryCard;
+const joinSummaryCards = readoutUtils.joinCards;
+const emptyMessage = readoutUtils.emptyMessage;
+const emptyTableRow = readoutUtils.emptyTableRow;
 const {
   sonarRoundTripTimeMs: calculateSonarRoundTripTimeMs,
   firstFiniteNumber: findFirstFiniteNumber,
@@ -2101,27 +2107,27 @@ function renderMotionExperiment() {
     : metrics.quality;
 
   if (!metrics || !metrics.ready) {
-    summary.innerHTML = '<div class="experiment-empty">Ξεκίνα μία διαδρομή μπροστά από τον αισθητήρα και μετά επίλεξε το πιο καθαρό κομμάτι στο γράφημα.</div>';
+    summary.innerHTML = emptyMessage('Ξεκίνα μία διαδρομή μπροστά από τον αισθητήρα και μετά επίλεξε το πιο καθαρό κομμάτι στο γράφημα.');
   } else {
     const cards = [];
-    cards.push('<div class="summary-card"><span>Διάρκεια</span><strong>' + compactNumber(metrics.duration) + '</strong><small>s στο επιλεγμένο τμήμα</small></div>');
+    cards.push(summaryCard('Διάρκεια', compactNumber(metrics.duration), 's στο επιλεγμένο τμήμα'));
     if (velocityArea) {
-      cards.push('<div class="summary-card"><span>Εμβαδό υ–t</span><strong>' + compactNumber(velocityArea.signedArea) + '</strong><small>m μετατόπιση στο A–B</small></div>');
+      cards.push(summaryCard('Εμβαδό υ–t', compactNumber(velocityArea.signedArea), 'm μετατόπιση στο A–B'));
     }
     if (usingDistance) {
-      cards.push('<div class="summary-card"><span>Δx</span><strong>' + compactNumber(metrics.delta) + '</strong><small>m μετατόπιση</small></div>');
-      cards.push('<div class="summary-card"><span>Μέση ταχύτητα</span><strong>' + compactNumber(metrics.slope) + '</strong><small>m/s από την κλίση</small></div>');
-      cards.push('<div class="summary-card"><span>R² fit</span><strong>' + (metrics.fitR2 !== null ? compactNumber(metrics.fitR2) : '—') + '</strong><small>όσο πιο κοντά στο 1 τόσο πιο γραμμικό</small></div>');
+      cards.push(summaryCard('Δx', compactNumber(metrics.delta), 'm μετατόπιση'));
+      cards.push(summaryCard('Μέση ταχύτητα', compactNumber(metrics.slope), 'm/s από την κλίση'));
+      cards.push(summaryCard('R² fit', metrics.fitR2 !== null ? compactNumber(metrics.fitR2) : '—', 'όσο πιο κοντά στο 1 τόσο πιο γραμμικό'));
     } else if (usingVelocity) {
-      cards.push('<div class="summary-card"><span>Μέση ταχύτητα</span><strong>' + compactNumber(metrics.mean) + '</strong><small>m/s στο τμήμα</small></div>');
-      cards.push('<div class="summary-card"><span>Τυπική απόκλιση</span><strong>' + compactNumber(metrics.stdDev) + '</strong><small>m/s σταθερότητα</small></div>');
-      cards.push('<div class="summary-card"><span>Κλίση υ-t</span><strong>' + compactNumber(metrics.slope) + '</strong><small>m/s² ιδανικά κοντά στο 0</small></div>');
+      cards.push(summaryCard('Μέση ταχύτητα', compactNumber(metrics.mean), 'm/s στο τμήμα'));
+      cards.push(summaryCard('Τυπική απόκλιση', compactNumber(metrics.stdDev), 'm/s σταθερότητα'));
+      cards.push(summaryCard('Κλίση υ-t', compactNumber(metrics.slope), 'm/s² ιδανικά κοντά στο 0'));
     } else {
-      cards.push('<div class="summary-card"><span>Μέση επιτάχυνση</span><strong>' + compactNumber(metrics.mean) + '</strong><small>m/s²</small></div>');
-      cards.push('<div class="summary-card"><span>Τυπική απόκλιση</span><strong>' + compactNumber(metrics.stdDev) + '</strong><small>m/s²</small></div>');
-      cards.push('<div class="summary-card"><span>Γραμμικότητα</span><strong>' + (metrics.linearR2 !== null ? compactNumber(metrics.linearR2) : '—') + '</strong><small>βοηθητικός έλεγχος</small></div>');
+      cards.push(summaryCard('Μέση επιτάχυνση', compactNumber(metrics.mean), 'm/s²'));
+      cards.push(summaryCard('Τυπική απόκλιση', compactNumber(metrics.stdDev), 'm/s²'));
+      cards.push(summaryCard('Γραμμικότητα', metrics.linearR2 !== null ? compactNumber(metrics.linearR2) : '—', 'βοηθητικός έλεγχος'));
     }
-    summary.innerHTML = cards.join('');
+    summary.innerHTML = joinSummaryCards(cards);
   }
 
   const steps = usingDistance
@@ -3128,16 +3134,16 @@ function renderHookeExperiment() {
     '<section class="experiment-study-card"><h5>Σημείωση καθηγητή</h5><p>Αν τα σημεία αποκλίνουν έντονα από ευθεία, συζήτησε αν φταίει το πείραμα, η μέτρηση της επιμήκυνσης ή το ότι το ελατήριο βγήκε έξω από την ελαστική περιοχή.</p></section>';
 
   if (!hookeTrials.length) {
-    body.innerHTML = '<tr><td colspan="5" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>';
+    body.innerHTML = emptyTableRow(5, 'Δεν έχουν αποθηκευτεί δοκιμές ακόμα.');
     if (current) {
-      summary.innerHTML = [
-        '<div class="summary-card"><span>Τρέχον Fmean</span><strong>' + compactNumber(current.meanForce) + '</strong><small>N στο plateau</small></div>',
-        '<div class="summary-card"><span>Τρέχον Fmax</span><strong>' + compactNumber(current.peakForce) + '</strong><small>N μέγιστη τιμή</small></div>',
-        '<div class="summary-card"><span>Τυπική απόκλιση</span><strong>' + compactNumber(current.stdDev) + '</strong><small>N σταθερότητα plateau</small></div>',
-        '<div class="summary-card"><span>Διάρκεια</span><strong>' + compactNumber(current.duration) + '</strong><small>s στο A-B</small></div>'
-      ].join('');
+      summary.innerHTML = joinSummaryCards([
+        summaryCard('Τρέχον Fmean', compactNumber(current.meanForce), 'N στο plateau'),
+        summaryCard('Τρέχον Fmax', compactNumber(current.peakForce), 'N μέγιστη τιμή'),
+        summaryCard('Τυπική απόκλιση', compactNumber(current.stdDev), 'N σταθερότητα plateau'),
+        summaryCard('Διάρκεια', compactNumber(current.duration), 's στο A-B')
+      ]);
     } else {
-      summary.innerHTML = '<div class="experiment-empty">Επίλεξε ένα plateau δύναμης και σώσε 2 ή περισσότερα σημεία για να υπολογιστεί το k.</div>';
+      summary.innerHTML = emptyMessage('Επίλεξε ένα plateau δύναμης και σώσε 2 ή περισσότερα σημεία για να υπολογιστεί το k.');
     }
     note.textContent = 'Η καλύτερη προσέγγιση είναι να κρατάς 2-3 s σταθερό plateau για κάθε επιμήκυνση και να γράφεις τη Δx σε cm.';
     drawHookeExperimentChart([], null);
@@ -3158,24 +3164,24 @@ function renderHookeExperiment() {
   const meanK = hookeTrials.reduce((sum, trial) => sum + trial.kEstimate, 0) / hookeTrials.length;
   const maxForce = hookeTrials.reduce((best, trial) => Math.max(best, Math.abs(trial.forceMax)), 0);
   const summaryCards = current ? [
-    '<div class="summary-card"><span>Τρέχον Fmean</span><strong>' + compactNumber(current.meanForce) + '</strong><small>N στο plateau</small></div>',
-    '<div class="summary-card"><span>Τρέχον Fmax</span><strong>' + compactNumber(current.peakForce) + '</strong><small>N μέγιστη τιμή</small></div>'
+    summaryCard('Τρέχον Fmean', compactNumber(current.meanForce), 'N στο plateau'),
+    summaryCard('Τρέχον Fmax', compactNumber(current.peakForce), 'N μέγιστη τιμή')
   ] : [];
   summaryCards.push(
-    '<div class="summary-card"><span>Δοκιμές</span><strong>' + hookeTrials.length + '</strong><small>αποθηκευμένα σημεία</small></div>',
-    '<div class="summary-card"><span>Μέση εκτίμηση k</span><strong>' + compactNumber(meanK) + '</strong><small>N/m από F/Δx</small></div>',
-    '<div class="summary-card"><span>Μέγιστη δύναμη</span><strong>' + compactNumber(maxForce) + '</strong><small>N</small></div>'
+    summaryCard('Δοκιμές', hookeTrials.length, 'αποθηκευμένα σημεία'),
+    summaryCard('Μέση εκτίμηση k', compactNumber(meanK), 'N/m από F/Δx'),
+    summaryCard('Μέγιστη δύναμη', compactNumber(maxForce), 'N')
   );
   if (fit) {
     summaryCards.push(
-      '<div class="summary-card"><span>k από fit</span><strong>' + compactNumber(fit.slope) + '</strong><small>N/m κλίση της ευθείας</small></div>',
-      '<div class="summary-card"><span>R² fit</span><strong>' + compactNumber(fit.r2) + '</strong><small>όσο πιο κοντά στο 1 τόσο πιο γραμμικό</small></div>'
+      summaryCard('k από fit', compactNumber(fit.slope), 'N/m κλίση της ευθείας'),
+      summaryCard('R² fit', compactNumber(fit.r2), 'όσο πιο κοντά στο 1 τόσο πιο γραμμικό')
     );
     note.textContent = 'Αν το R² είναι κοντά στο 1 και η τομή είναι μικρή, το πείραμα στηρίζει καλά τη σχέση F = k·Δx.';
   } else {
     note.textContent = 'Χρειάζεσαι τουλάχιστον 2 σημεία με διαφορετική επιμήκυνση για να υπολογιστεί το k από fit.';
   }
-  summary.innerHTML = summaryCards.join('');
+  summary.innerHTML = joinSummaryCards(summaryCards);
   drawHookeExperimentChart(hookeTrials, fit);
 }
 
@@ -3226,39 +3232,39 @@ function renderWeightExperiment() {
           '<td>' + trial.errorPercent.toFixed(1) + '</td>' +
           '</tr>';
       }).join('')
-    : '<tr><td colspan="8" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>';
+    : emptyTableRow(8, 'Δεν έχουν αποθηκευτεί δοκιμές ακόμα.');
 
   const cards = [];
   if (current) {
     cards.push(
-      '<div class="summary-card"><span>Τρέχον βάρος</span><strong>' + compactNumber(current.weight) + '</strong><small>N από το επιλεγμένο plateau</small></div>',
-      '<div class="summary-card"><span>Σταθερότητα</span><strong>' + compactNumber(current.stdDev) + '</strong><small>N τυπική απόκλιση</small></div>'
+      summaryCard('Τρέχον βάρος', compactNumber(current.weight), 'N από το επιλεγμένο plateau'),
+      summaryCard('Σταθερότητα', compactNumber(current.stdDev), 'N τυπική απόκλιση')
     );
   }
   cards.push(
-    '<div class="summary-card"><span>Αποθηκευμένο wπ</span><strong>' + (hasCapture ? compactNumber(Math.abs(weightCapturedForce)) : '—') + '</strong><small>N πειραματικό βάρος</small></div>',
-    '<div class="summary-card"><span>Μάζα</span><strong>' + compactNumber(weightMassG) + '</strong><small>g</small></div>',
-    '<div class="summary-card"><span>Επιμήκυνση Δx</span><strong>' + compactNumber(weightExtensionCm) + '</strong><small>cm</small></div>'
+    summaryCard('Αποθηκευμένο wπ', hasCapture ? compactNumber(Math.abs(weightCapturedForce)) : '—', 'N πειραματικό βάρος'),
+    summaryCard('Μάζα', compactNumber(weightMassG), 'g'),
+    summaryCard('Επιμήκυνση Δx', compactNumber(weightExtensionCm), 'cm')
   );
   if (preview) {
     cards.push(
-      '<div class="summary-card"><span>wθ = m·g</span><strong>' + compactNumber(preview.theoreticalWeight) + '</strong><small>N για g = 9,81 m/s²</small></div>',
-      '<div class="summary-card"><span>gπ = w/m</span><strong>' + compactNumber(preview.experimentalG) + '</strong><small>m/s² από τη μέτρηση</small></div>',
-      '<div class="summary-card"><span>Απόκλιση</span><strong>' + compactNumber(preview.errorPercent) + '</strong><small>% από τη θεωρητική τιμή</small></div>'
+      summaryCard('wθ = m·g', compactNumber(preview.theoreticalWeight), 'N για g = 9,81 m/s²'),
+      summaryCard('gπ = w/m', compactNumber(preview.experimentalG), 'm/s² από τη μέτρηση'),
+      summaryCard('Απόκλιση', compactNumber(preview.errorPercent), '% από τη θεωρητική τιμή')
     );
   }
   if (weightTrials.length) {
     const avgG = weightTrials.reduce((sum, trial) => sum + trial.experimentalG, 0) / weightTrials.length;
     const avgError = weightTrials.reduce((sum, trial) => sum + trial.errorPercent, 0) / weightTrials.length;
     cards.push(
-      '<div class="summary-card"><span>Δοκιμές</span><strong>' + weightTrials.length + '</strong><small>αποθηκευμένες μετρήσεις</small></div>',
-      '<div class="summary-card"><span>Μέσο gπ</span><strong>' + compactNumber(avgG) + '</strong><small>m/s² · μέση απόκλιση ' + compactNumber(avgError) + '%</small></div>'
+      summaryCard('Δοκιμές', weightTrials.length, 'αποθηκευμένες μετρήσεις'),
+      summaryCard('Μέσο gπ', compactNumber(avgG), 'm/s² · μέση απόκλιση ' + compactNumber(avgError) + '%')
     );
   }
 
   summary.innerHTML = cards.length
-    ? cards.join('')
-    : '<div class="experiment-empty">Επίλεξε πρώτα σταθερό plateau και γράψε τη μάζα.</div>';
+    ? joinSummaryCards(cards)
+    : emptyMessage('Επίλεξε πρώτα σταθερό plateau και γράψε τη μάζα.');
   note.textContent = 'Για τη θεωρητική τιμή χρησιμοποιείται g = 9,81 m/s². Η επιμήκυνση Δx είναι η διαφορά από το αρχικό μήκος του ελατηρίου χωρίς μάζα.';
 }
 
@@ -3310,24 +3316,24 @@ function renderBuoyancyExperiment() {
           '<td>' + (isFinite(errorPercent) ? errorPercent.toFixed(1) : '—') + '</td>' +
           '</tr>';
       }).join('')
-    : '<tr><td colspan="7" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>';
+    : emptyTableRow(7, 'Δεν έχουν αποθηκευτεί δοκιμές ακόμα.');
 
   const cards = [];
   if (current) {
     cards.push(
-      '<div class="summary-card"><span>Τρέχον plateau</span><strong>' + compactNumber(current.apparentWeight) + '</strong><small>N φαινόμενο βάρος</small></div>',
-      '<div class="summary-card"><span>Σταθερότητα</span><strong>' + compactNumber(current.stdDev) + '</strong><small>N τυπική απόκλιση</small></div>'
+      summaryCard('Τρέχον plateau', compactNumber(current.apparentWeight), 'N φαινόμενο βάρος'),
+      summaryCard('Σταθερότητα', compactNumber(current.stdDev), 'N τυπική απόκλιση')
     );
   }
   cards.push(
-    '<div class="summary-card"><span>W στον αέρα</span><strong>' + (hasAir ? compactNumber(Math.abs(buoyancyAirForce)) : '—') + '</strong><small>N αποθηκευμένο plateau</small></div>',
-    '<div class="summary-card"><span>W στο υγρό</span><strong>' + (hasLiquid ? compactNumber(Math.abs(buoyancyLiquidForce)) : '—') + '</strong><small>N αποθηκευμένο plateau</small></div>'
+    summaryCard('W στον αέρα', hasAir ? compactNumber(Math.abs(buoyancyAirForce)) : '—', 'N αποθηκευμένο plateau'),
+    summaryCard('W στο υγρό', hasLiquid ? compactNumber(Math.abs(buoyancyLiquidForce)) : '—', 'N αποθηκευμένο plateau')
   );
   if (preview) {
     cards.push(
-      '<div class="summary-card"><span>Aπ πειραματική</span><strong>' + compactNumber(preview.buoyantForce) + '</strong><small>N = Wαέρα - Wυγρό</small></div>',
-      '<div class="summary-card"><span>Aθ Αρχιμήδη</span><strong>' + compactNumber(preview.theoreticalBuoyancy) + '</strong><small>N = ρνερού · g · V</small></div>',
-      '<div class="summary-card"><span>Απόκλιση</span><strong>' + compactNumber(preview.errorPercent) + '</strong><small>% από τη θεωρητική τιμή</small></div>'
+      summaryCard('Aπ πειραματική', compactNumber(preview.buoyantForce), 'N = Wαέρα - Wυγρό'),
+      summaryCard('Aθ Αρχιμήδη', compactNumber(preview.theoreticalBuoyancy), 'N = ρνερού · g · V'),
+      summaryCard('Απόκλιση', compactNumber(preview.errorPercent), '% από τη θεωρητική τιμή')
     );
   }
   if (buoyancyTrials.length) {
@@ -3337,14 +3343,14 @@ function renderBuoyancyExperiment() {
       return sum + errorPercent;
     }, 0) / buoyancyTrials.length;
     cards.push(
-      '<div class="summary-card"><span>Δοκιμές</span><strong>' + buoyancyTrials.length + '</strong><small>αποθηκευμένες μετρήσεις</small></div>',
-      '<div class="summary-card"><span>Μέση απόκλιση</span><strong>' + compactNumber(avgError) + '</strong><small>% από Aθ νερού</small></div>'
+      summaryCard('Δοκιμές', buoyancyTrials.length, 'αποθηκευμένες μετρήσεις'),
+      summaryCard('Μέση απόκλιση', compactNumber(avgError), '% από Aθ νερού')
     );
   }
 
   summary.innerHTML = cards.length
-    ? cards.join('')
-    : '<div class="experiment-empty">Επίλεξε πρώτα σταθερό plateau στον αέρα και στο υγρό.</div>';
+    ? joinSummaryCards(cards)
+    : emptyMessage('Επίλεξε πρώτα σταθερό plateau στον αέρα και στο υγρό.');
   note.textContent = preview && preview.buoyantForce <= 0
     ? 'Η άνωση βγήκε μηδενική ή αρνητική. Έλεγξε αν πάτησες ανάποδα τις μετρήσεις ή αν η φορά της δύναμης άλλαξε.'
     : 'Για τη θεωρητική τιμή χρησιμοποιείται νερό με ρ = 1000 kg/m³ και g = 9,81 m/s². Ο όγκος είναι ο βυθισμένος όγκος, όχι ο συνολικός όγκος νερού στο ποτήρι.';
@@ -3387,16 +3393,16 @@ function renderCollisionExperiment() {
     '<section class="experiment-study-card"><h5>Ερώτηση τάξης</h5><p>' + teacherQuestion + '</p></section>';
 
   if (!collisionTrials.length) {
-    body.innerHTML = '<tr><td colspan="7" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>';
+    body.innerHTML = emptyTableRow(7, 'Δεν έχουν αποθηκευτεί δοκιμές ακόμα.');
     if (current) {
-      summary.innerHTML = [
-        '<div class="summary-card"><span>Τρέχον |Impulse|</span><strong>' + compactNumber(Math.abs(current.signedArea)) + '</strong><small>N·s από το A-B</small></div>',
-        '<div class="summary-card"><span>Τρέχον Fmax</span><strong>' + compactNumber(Math.abs(current.peakForce)) + '</strong><small>N κορυφή κρούσης</small></div>',
-        '<div class="summary-card"><span>Μέση δύναμη</span><strong>' + compactNumber(current.meanForce) + '</strong><small>N μέσα στο διάστημα</small></div>',
-        '<div class="summary-card"><span>Διάρκεια</span><strong>' + compactNumber(current.duration) + '</strong><small>s για την κρούση</small></div>'
-      ].join('');
+      summary.innerHTML = joinSummaryCards([
+        summaryCard('Τρέχον |Impulse|', compactNumber(Math.abs(current.signedArea)), 'N·s από το A-B'),
+        summaryCard('Τρέχον Fmax', compactNumber(Math.abs(current.peakForce)), 'N κορυφή κρούσης'),
+        summaryCard('Μέση δύναμη', compactNumber(current.meanForce), 'N μέσα στο διάστημα'),
+        summaryCard('Διάρκεια', compactNumber(current.duration), 's για την κρούση')
+      ]);
     } else {
-      summary.innerHTML = '<div class="experiment-empty">Αποθήκευσε 2 ή περισσότερες δοκιμές για σύγκριση impulse vs velocity.</div>';
+      summary.innerHTML = emptyMessage('Αποθήκευσε 2 ή περισσότερες δοκιμές για σύγκριση impulse vs velocity.');
     }
     note.textContent = 'Χρησιμοποίησε ίδιο αμαξίδιο/μάζα και διαφορετικές αρχικές ταχύτητες για να ελέγξεις αν το |Impulse| μεγαλώνει ανάλογα με το v0.';
     drawCollisionExperimentChart([], null);
@@ -3420,25 +3426,25 @@ function renderCollisionExperiment() {
   const avgVelocity = collisionTrials.reduce((sum, trial) => sum + trial.velocity, 0) / collisionTrials.length;
   const maxForce = collisionTrials.reduce((best, trial) => Math.max(best, Math.abs(trial.peakForce)), 0);
   const summaryCards = current ? [
-    '<div class="summary-card"><span>Τρέχον |Impulse|</span><strong>' + compactNumber(Math.abs(current.signedArea)) + '</strong><small>N·s από το A-B</small></div>',
-    '<div class="summary-card"><span>Τρέχον Fmax</span><strong>' + compactNumber(Math.abs(current.peakForce)) + '</strong><small>N κορυφή κρούσης</small></div>'
+    summaryCard('Τρέχον |Impulse|', compactNumber(Math.abs(current.signedArea)), 'N·s από το A-B'),
+    summaryCard('Τρέχον Fmax', compactNumber(Math.abs(current.peakForce)), 'N κορυφή κρούσης')
   ] : [];
   summaryCards.push(
-    '<div class="summary-card"><span>Δοκιμές</span><strong>' + collisionTrials.length + '</strong><small>Αποθηκευμένα runs</small></div>',
-    '<div class="summary-card"><span>Μέσο |Impulse|</span><strong>' + compactNumber(avgImpulse) + '</strong><small>N·s</small></div>',
-    '<div class="summary-card"><span>Μέση v0</span><strong>' + compactNumber(avgVelocity) + '</strong><small>m/s</small></div>',
-    '<div class="summary-card"><span>Μέγιστη κορυφή</span><strong>' + compactNumber(maxForce) + '</strong><small>N</small></div>'
+    summaryCard('Δοκιμές', collisionTrials.length, 'Αποθηκευμένα runs'),
+    summaryCard('Μέσο |Impulse|', compactNumber(avgImpulse), 'N·s'),
+    summaryCard('Μέση v0', compactNumber(avgVelocity), 'm/s'),
+    summaryCard('Μέγιστη κορυφή', compactNumber(maxForce), 'N')
   );
   if (fit) {
     summaryCards.push(
-      '<div class="summary-card"><span>Κλίση |J|-v0</span><strong>' + compactNumber(fit.slope) + '</strong><small>θεωρητικά κοντά στη μάζα ' + compactNumber(collisionMassKg) + ' kg</small></div>',
-      '<div class="summary-card"><span>Τομή fit</span><strong>' + compactNumber(fit.intercept) + '</strong><small>N·s</small></div>'
+      summaryCard('Κλίση |J|-v0', compactNumber(fit.slope), 'θεωρητικά κοντά στη μάζα ' + compactNumber(collisionMassKg) + ' kg'),
+      summaryCard('Τομή fit', compactNumber(fit.intercept), 'N·s')
     );
     note.textContent = 'Για σώμα που σταματά, περιμένουμε περίπου |Impulse| ≈ m·v0. Αν η κλίση είναι κοντά στη μάζα, το πείραμα βγαίνει συνεπές.';
   } else {
     note.textContent = 'Αποθήκευσε τουλάχιστον 2 δοκιμές με διαφορετικές ταχύτητες για να εμφανιστεί σύγκριση |Impulse| ως προς v0.';
   }
-  summary.innerHTML = summaryCards.join('');
+  summary.innerHTML = joinSummaryCards(summaryCards);
   drawCollisionExperimentChart(collisionTrials, fit);
 }
 
@@ -3809,24 +3815,24 @@ function renderPendulumExperiment() {
   status.textContent = inspectSample
     ? 'Σώμα: t ' + compactNumber(pendulumInspectTime) + ' s · x ' + compactNumber(inspectSample.pendulumDisplacementCm) + ' cm'
     : 'T θεωρ. ' + compactNumber(period) + ' s';
-  summary.innerHTML = [
-    '<div class="summary-card"><span>Μήκος L</span><strong>' + compactNumber(pendulumLengthM) + '</strong><small>m</small></div>',
-    '<div class="summary-card"><span>Μάζα m</span><strong>' + compactNumber(pendulumMassG) + '</strong><small>g · δεν αλλάζει το T</small></div>',
-    '<div class="summary-card"><span>Πλάτος A</span><strong>' + compactNumber(pendulumLengthM * (pendulumAngleDeg * Math.PI / 180) * 100) + '</strong><small>cm από τη θέση ισορροπίας</small></div>',
-    (inspectSample
-      ? '<div class="summary-card"><span>Θέση σώματος</span><strong>' + compactNumber(inspectSample.pendulumDisplacementCm) + '</strong><small>cm στη στιγμή t = ' + compactNumber(pendulumInspectTime) + ' s</small></div>'
-      : ''),
-    '<div class="summary-card"><span>T από μέτρηση</span><strong>' + compactNumber(measuredPeriod) + '</strong><small>s = Δt / N</small></div>',
-    '<div class="summary-card"><span>T θεωρητική</span><strong>' + compactNumber(period) + '</strong><small>s = 2π√(L/g), ανεξάρτητη από m</small></div>',
-    '<div class="summary-card"><span>T/2</span><strong>' + compactNumber(period / 2) + '</strong><small>ακραία θέση σε αντίθετη ακραία</small></div>',
-    '<div class="summary-card"><span>T/4</span><strong>' + compactNumber(period / 4) + '</strong><small>ισορροπία προς ακραία θέση</small></div>' +
-    (selectedDelta !== null
-      ? '<div class="summary-card"><span>Επιλεγμένο Δt A-B</span><strong>' + compactNumber(selectedDelta) + '</strong><small>s από τη γραφική</small></div>' +
-        (selectedInfo
-          ? '<div class="summary-card"><span>Το A-B μοιάζει με</span><strong>' + selectedInfo.label + '</strong><small>' + selectedInfo.detail + '</small></div>'
-          : '')
-      : '')
-  ].join('');
+  summary.innerHTML = joinSummaryCards([
+    summaryCard('Μήκος L', compactNumber(pendulumLengthM), 'm'),
+    summaryCard('Μάζα m', compactNumber(pendulumMassG), 'g · δεν αλλάζει το T'),
+    summaryCard('Πλάτος A', compactNumber(pendulumLengthM * (pendulumAngleDeg * Math.PI / 180) * 100), 'cm από τη θέση ισορροπίας'),
+    inspectSample
+      ? summaryCard('Θέση σώματος', compactNumber(inspectSample.pendulumDisplacementCm), 'cm στη στιγμή t = ' + compactNumber(pendulumInspectTime) + ' s')
+      : '',
+    summaryCard('T από μέτρηση', compactNumber(measuredPeriod), 's = Δt / N'),
+    summaryCard('T θεωρητική', compactNumber(period), 's = 2π√(L/g), ανεξάρτητη από m'),
+    summaryCard('T/2', compactNumber(period / 2), 'ακραία θέση σε αντίθετη ακραία'),
+    summaryCard('T/4', compactNumber(period / 4), 'ισορροπία προς ακραία θέση'),
+    selectedDelta !== null
+      ? summaryCard('Επιλεγμένο Δt A-B', compactNumber(selectedDelta), 's από τη γραφική')
+      : '',
+    selectedDelta !== null && selectedInfo
+      ? summaryCard('Το A-B μοιάζει με', selectedInfo.label, selectedInfo.detail)
+      : ''
+  ]);
   protocol.innerHTML =
     '<section class="experiment-study-card"><h5>Στόχος</h5><p>Να καταλάβουν οι μαθητές ότι περίοδος T είναι ο χρόνος για μία πλήρη ταλάντωση.</p></section>' +
     '<section class="experiment-study-card"><h5>Απομάκρυνση και πλάτος</h5><p>Η απομάκρυνση x δείχνει πόσο μακριά βρίσκεται το σώμα από τη θέση ισορροπίας κάθε στιγμή. Το πλάτος A είναι η μεγαλύτερη απομάκρυνση και φαίνεται ως σταθερή γραμμή στο γράφημα.</p></section>' +
@@ -3841,7 +3847,7 @@ function renderPendulumExperiment() {
         (trial.deltaT || 0).toFixed(2) + '</td><td>' + (trial.oscillations || 0).toFixed(0) + '</td><td>' +
         (trial.measuredPeriod || trial.period).toFixed(3) + '</td><td>' +
         trial.period.toFixed(3) + '</td><td>' + (trial.period * 10).toFixed(3) + '</td></tr>').join('')
-    : '<tr><td colspan="9" class="experiment-empty">Δεν έχουν αποθηκευτεί δοκιμές ακόμα.</td></tr>';
+    : emptyTableRow(9, 'Δεν έχουν αποθηκευτεί δοκιμές ακόμα.');
   drawPendulumCanvas();
 }
 
@@ -3881,13 +3887,13 @@ function renderHeatExperiment() {
     : 'Αναμονή για δύο αισθητήρες DS18B20';
 
   summary.innerHTML = hasValues
-    ? [
-        '<div class="summary-card"><span>Αισθητήρας T1</span><strong>' + compactNumber(t1) + '</strong><small>°C κρύο νερό</small></div>',
-        '<div class="summary-card"><span>Αισθητήρας T2</span><strong>' + compactNumber(t2) + '</strong><small>°C ζεστό νερό</small></div>',
-        '<div class="summary-card"><span>Διαφορά ΔT</span><strong>' + compactNumber(delta) + '</strong><small>°C = T1 - T2</small></div>',
-        '<div class="summary-card"><span>|ΔT|</span><strong>' + compactNumber(absDelta) + '</strong><small>όσο μικραίνει, πλησιάζουν ισορροπία</small></div>'
-      ].join('')
-    : '<div class="experiment-empty">Πάτα Έναρξη και περίμενε να εμφανιστούν οι δύο θερμοκρασίες.</div>';
+    ? joinSummaryCards([
+        summaryCard('Αισθητήρας T1', compactNumber(t1), '°C κρύο νερό'),
+        summaryCard('Αισθητήρας T2', compactNumber(t2), '°C ζεστό νερό'),
+        summaryCard('Διαφορά ΔT', compactNumber(delta), '°C = T1 - T2'),
+        summaryCard('|ΔT|', compactNumber(absDelta), 'όσο μικραίνει, πλησιάζουν ισορροπία')
+      ])
+    : emptyMessage('Πάτα Έναρξη και περίμενε να εμφανιστούν οι δύο θερμοκρασίες.');
 
   protocol.innerHTML =
     '<section class="experiment-study-card"><h5>Στόχος</h5><p>Να παρατηρήσουν οι μαθητές ότι δύο σώματα σε θερμική επαφή ανταλλάσσουν θερμότητα και τείνουν προς θερμική ισορροπία.</p></section>' +

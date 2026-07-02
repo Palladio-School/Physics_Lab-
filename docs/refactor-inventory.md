@@ -6,8 +6,8 @@ This is a documentation and test inventory only. It does not change dashboard ru
 
 ## Current Size
 
-- `docs/index.html`: 6,849 lines, 343,205 bytes.
-- Extracted dashboard helpers in `docs/js/*.js`: 996 lines, 42,930 bytes.
+- `docs/index.html`: 6,855 lines, 338,820 bytes.
+- Extracted dashboard helpers in `docs/js/*.js`: 1,033 lines, 43,951 bytes.
 - Largest remaining file by far: `docs/index.html`.
 
 ## Script Load Order
@@ -19,13 +19,14 @@ Current order in `docs/index.html`:
 3. `js/device-client.js`
 4. `js/storage-export.js`
 5. `js/csv-row-utils.js`
-6. `js/experiment-view-utils.js`
-7. `js/sonar-utils.js`
-8. `js/chart-utils.js`
-9. `js/physics-calculations.js`
-10. `js/fit-utils.js`
-11. `js/pendulum-utils.js`
-12. Inline dashboard app script
+6. `js/readout-utils.js`
+7. `js/experiment-view-utils.js`
+8. `js/sonar-utils.js`
+9. `js/chart-utils.js`
+10. `js/physics-calculations.js`
+11. `js/fit-utils.js`
+12. `js/pendulum-utils.js`
+13. Inline dashboard app script
 
 The order matters because `app-config.js` reads `window.PalladioExperimentCatalog`, `device-client.js` reads `window.PalladioConfig`, and the inline app reads all exported globals.
 
@@ -56,6 +57,7 @@ See [`draw-contract.md`](draw-contract.md) for the current chart rendering contr
   - pendulum period, sample, and interval helpers,
   - storage/export escaping and report generation,
   - CSV row builders for live series and saved experiment exports,
+  - readout summary cards and empty table/message formatting,
   - linear, Hooke, collision, linear-system, polynomial, and auto fit helpers.
 - `tests/browser-smoke.spec.js` serves `docs/` locally with mocked M5-shaped API responses and checks:
   - script load order,
@@ -84,7 +86,7 @@ Good small PR candidates:
 - More sonar helpers if they stay DOM-free. `sonarRoundTripTimeMs`, `firstFiniteNumber`, and echo-time conversion rules now live in `js/sonar-utils.js`; keep canvas drawing and drag handlers in `index.html`.
 - More experiment view helpers if they stay DOM-free. Mode predicates and right-rail titles now live in `js/experiment-view-utils.js` and take an explicit state object.
 - More CSV/export helpers if they stay DOM-free. Live series and saved experiment CSV rows now live in `js/csv-row-utils.js`; keep click handlers and `storageExport.downloadCsv` in `index.html`.
-- Table/readout formatting helpers around `compactNumber`, `resultCard`, and small summary-card builders, if they can be kept DOM-free.
+- More readout formatting helpers if they stay DOM-free. Summary cards and empty readouts now live in `js/readout-utils.js`; keep render decisions and DOM assignment in `index.html`.
 
 Avoid for now:
 
